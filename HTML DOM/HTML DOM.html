@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML DOM</title>
+</head>
+<style>
+    fd{
+        height: 20px;
+        width: 10px;
+    }
+</style>
+
+<body>
+    <h2>Apps</h2>
+    <ol id="apps">
+
+    </ol>
+    <script>
+        let ol = document.getElementById('apps');
+
+        let l1 = document.createElement("li");
+        let l2 = document.createElement("li");
+        let l3 = document.createElement("li");
+
+        let im1 = document.createElement("img");
+        let im2 = document.createElement("img");
+        let im3 = document.createElement("img");
+
+
+        let i1 = ol.appendChild(l1).appendChild(im1).setAttribute("src", "netflix.png");
+        let i2 = ol.appendChild(l2).appendChild(im2).setAttribute("src", "amz.png");
+        let i3 = ol.appendChild(l3).appendChild(im3).setAttribute("src", "dh.png");
+
+        let s1 = document.createElement("span");
+        let s2 = document.createElement("span");
+        let s3 = document.createElement("span");
+
+        s1.innerHTML = "Netflix"
+        s2.innerHTML = "Amazon Prime"
+        s3.innerHTML = "Hotstar"
+
+        l1.appendChild(s1).setAttribute("style", "font-weight:bold");
+        l2.appendChild(s2).setAttribute("style", "font-weight:bold");
+        l3.appendChild(s3).setAttribute("style", "font-weight:bold");
+
+    </script>
+</body>
+
+</html>
