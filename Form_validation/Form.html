@@ -1,132 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
-        crossorigin="anonymous"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
     <title>Form Validation</title>
-</head>
+  </head>
 
-<body>
-    <div class="container fluid" style="width: 50%; margin: 50px;border: 2px solid black;padding: 10px;">
-        <legend>
-            <h1>Registration Form</h1>
-        </legend>
-        <form name="myForm" onsubmit="return validation()">
-            <div class="row mb-3">
-                <label for="inputUser" class="col-sm-2 font-weigth-bold col-form-label">UserName :</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="inputUser" />
-                    <span id="usererror" class="text-danger font-weigth-bold"></span>
-                </div>
+  <body>
+    <div
+      class="container fluid"
+      style="width: 50%; margin: 50px; border: 2px solid black; padding: 10px"
+    >
+      <legend>
+        <h1>Registration Form</h1>
+      </legend>
+      <form id="myForm">
+        <div class="row mb-3">
+          <label
+            for="inputUser"
+            class="col-sm-2 font-weigth-bold col-form-label"
+            >UserName :</label
+          >
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="inputUser" />
+            <span id="usererror" class="text-danger font-weigth-bold"></span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="inputemail" class="col-sm-2 col-form-label"
+            >Email :</label
+          >
+          <div class="col-sm-6">
+            <input
+              type="email"
+              class="form-control"
+              id="inputemail"
+              value="abc@gmail.com"
+            />
+            <span id="emailerror" class="text-danger font-weigth-bold"></span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="inputPassword" class="col-sm-2 col-form-label"
+            >Password :</label
+          >
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="inputPassword" />
+            <span
+              id="passworderror"
+              class="text-danger font-weigth-bold"
+            ></span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="cnPassword" class="col-sm-2 col-form-label"
+            >Confirm Password:</label
+          >
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="confirmPassword" />
+            <span
+              id="confirmPassworderror"
+              class="text-danger font-weigth-bold"
+            ></span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="inputcity" class="col-sm-2 col-form-label"
+            >City Of Employment :</label
+          >
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="inputcity" />
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="inputserver" class="col-sm-2 col-form-label"
+            >Web Server :</label
+          >
+          <select class="col-sm-6" aria-label="Default select example">
+            <option selected>----Choose A Server----</option>
+            <option value="1">Apache</option>
+            <option value="2">Jagsaw</option>
+            <option value="3">IIS</option>
+            <option value="4">lightpad</option>
+          </select>
+        </div>
+        <fieldset class="row mb-3">
+          <legend class="col-form-label col-sm-2 pt-0">
+            Please specify your Role :
+          </legend>
+          <div class="col-sm-10">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="gridRadios"
+                id="gridRadios1"
+                value="option1"
+              />
+              <label class="form-check-label" for="gridRadios1"> Admin </label>
             </div>
-            <div class="row mb-3">
-                <label for="inputemail" class="col-sm-2 col-form-label">Email :</label>
-                <div class="col-sm-6">
-                    <input type="email" class="form-control" id="inputemail" />
-                    <span id="emailerror" class="text-danger font-weigth-bold"></span>
-                </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="gridRadios"
+                id="gridRadios2"
+                value="option2"
+              />
+              <label class="form-check-label" for="gridRadios2">
+                Engineer
+              </label>
             </div>
-            <div class="row mb-3">
-                <label for="inputPassword" class="col-sm-2 col-form-label">Password :</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="inputPassword" />
-                    <span id="passworderror" class="text-danger font-weigth-bold"></span>
-                </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="gridRadios"
+                id="gridRadios3"
+                value="option3"
+              />
+              <label class="form-check-label" for="gridRadios3">
+                Manager
+              </label>
             </div>
-            <div class="row mb-3">
-                <label for="cnPassword" class="col-sm-2 col-form-label">Confirm Password:</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="cnPassword" />
-                    <span id="cnpassworderror" class="text-danger font-weigth-bold"></span>
-                </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="gridRadios"
+                id="gridRadios4"
+                value="option4"
+              />
+              <label class="form-check-label" for="gridRadios4"> Guest </label>
             </div>
-            <div class="row mb-3">
-                <label for="inputcity" class="col-sm-2 col-form-label">City Of Employment :</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="inputcity" />
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="inputserver" class="col-sm-2 col-form-label">Web Server :</label>
-                <select class="col-sm-6" aria-label="Default select example">
-                    <option selected>----Choose A Server----</option>
-                    <option value="1">Apache</option>
-                    <option value="2">Jagsaw</option>
-                    <option value="3">IIS</option>
-                    <option value="4">lightpad</option>
-                </select>
-            </div>
-            <fieldset class="row mb-3">
-                <legend class="col-form-label col-sm-2 pt-0">Please specify your Role :</legend>
-                <div class="col-sm-10">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1"
-                            value="option1" />
-                        <label class="form-check-label" for="gridRadios1">
-                            Admin
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2"
-                            value="option2" />
-                        <label class="form-check-label" for="gridRadios2">
-                            Engineer
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3"
-                            value="option3" />
-                        <label class="form-check-label" for="gridRadios3">
-                            Manager
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios4"
-                            value="option4" />
-                        <label class="form-check-label" for="gridRadios4">
-                            Guest
-                        </label>
-                    </div>
-                </div>
-            </fieldset>
-            <div class="row mb-3">
-                <label for="inputserver" class="col-sm-2 col-form-label">Single sign-on to the following :</label>
+          </div>
+        </fieldset>
+        <div class="row mb-3">
+          <label for="inputserver" class="col-sm-2 col-form-label"
+            >Single sign-on to the following :</label
+          >
 
-                <div class="col-sm-10 ">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gridCheck1" />
-                        <label class="form-check-label" for="gridCheck1">
-                            Mail
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gridCheck2" />
-                        <label class="form-check-label" for="gridCheck2">
-                            Payroll
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gridCheck3" />
-                        <label class="form-check-label" for="gridCheck3">
-                            Self-Service
-                        </label>
-                    </div>
-                </div>
+          <div class="col-sm-10">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gridCheck1" />
+              <label class="form-check-label" for="gridCheck1"> Mail </label>
             </div>
-            <div class="container">
-                <button type="submit" class="btn m-auto btn-primary">Login</button>
-                <button type="reset" class="btn m-auto btn-primary">Reset</button>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gridCheck2" />
+              <label class="form-check-label" for="gridCheck2"> Payroll </label>
             </div>
-            <script src="form.js"></script>
-        </form>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gridCheck3" />
+              <label class="form-check-label" for="gridCheck3">
+                Self-Service
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <button type="submit" class="btn m-auto btn-primary">Login</button>
+          <button type="reset" class="btn m-auto btn-primary">Reset</button>
+        </div>
+        <script src="form.js"></script>
+      </form>
     </div>
-</body>
-
+  </body>
 </html>

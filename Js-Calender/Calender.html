@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <title>Calender</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Quattrocento Sans", sans-serif;
+      }
+
+      table {
+        border: solid rgb(206, 218, 230);
+        border-collapse: collapse;
+
+        font-size: 2em;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      th {
+        width: 14vw;
+        height: 10vh;
+        border: none;
+      }
+
+      th:hover {
+        background-color: aqua;
+      }
+
+      td {
+        width: 14vw;
+
+        text-align: center;
+      }
+
+      td.date:hover {
+        background-color: rgb(229, 229, 128);
+      }
+
+      td.date:nth-child(1) {
+        color: rgb(255, 45, 45);
+      }
+
+      td.date:nth-child(6) {
+        color: rgb(75, 198, 75);
+      }
+
+      td.curr_month {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="calender"></div>
+    <script>
+      var table = document.createElement("table");
+      document.body.appendChild(table);
+      var thead = document.createElement("thead");
+      var th = document.createElement("th");
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+      for (let i = 0; i < days.length; i++) {
+        var th = document.createElement("th");
+        th.append(days[i]);
+        thead.appendChild(th);
+      }
+
+      table.appendChild(thead);
+      table.setAttribute("border", "1");
+      tbody = document.createElement("tbody");
+      table.appendChild(tbody);
+
+      let today = new Date();
+      let currentMonth = today.getMonth();
+      let currentYear = today.getFullYear();
+      showCalendar(currentMonth, currentYear);
+
+      function showCalendar() {
+        tbody.innerHTML = "";
+        let firstDayOfMonth = new Date(currentYear, currentMonth).getDay();
+        const DaysInWeek = 7;
+        const numberOfCellsInCalender = 35;
+        today.setMonth(currentMonth + 1, 0);
+        let lastDateOfMonth = today.getDate();
+        var day = 1;
+
+        for (i = 0; i < 35; i++) {
+          if (i % 7 == 0) {
+            var tr = document.createElement("tr");
+            tbody.appendChild(tr);
+          }
+
+          if (i >= firstDayOfMonth && day <= lastDateOfMonth) {
+            var td = document.createElement("td");
+            td.setAttribute("class", "date");
+            td.innerHTML = `${day}`;
+            day++;
+            tr.appendChild(td);
+          } else {
+            let td = document.createElement("td");
+            td.setAttribute("class", "blanck");
+            tr.appendChild(td);
+          }
+        }
+        const mon = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+
+        var td = document.createElement("td");
+        td.setAttribute("class", "curr_month");
+        td.setAttribute("colspan", "7");
+        td.innerHTML = `${mon[currentMonth]} ${currentYear}`;
+        tbody.appendChild(td);
+      }
+    </script>
+  </body>
+</html>
