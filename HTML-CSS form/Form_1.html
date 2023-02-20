@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form 1</title>
+    <style>
+      .pro {
+        font-family: "Courier New", Courier, monospace;
+      }
+      table:nth-child(even){
+        color: gray;
+      }
+      td {
+        padding: 10px;
+      }
+      .btn {
+        font-size: 15px;
+        padding: 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <form action="">
+      <fieldset>
+        <legend><h1>Registration Form</h1></legend>
+        <table>
+          <colgroup>
+            <col span="1" style="width: 100px" />
+          </colgroup>
+          <tr>
+            <td><label class="pro" for="uname">UserName:</label></td>
+            <td><input type="text" name="uname" id="uname" /></td>
+          </tr>
+          <tr>
+            <td><label class="pro" for="pass">Password:</label></td>
+            <td><input type="password" name="pass" id="pass" /></td>
+          </tr>
+          <tr>
+            <td><label class="pro" for="city">City of Employment:</label></td>
+            <td><input type="text" name="city" id="city" /></td>
+          </tr>
+          <tr>
+            <td><label class="pro" for="webs">Web Server:</label></td>
+            <td>
+              <select name="webs" id="webs">
+                <option value="s0" selected>---Choose a server---</option>
+                <option value="s1">Apache</option>
+                <option value="s2">ligthttpd</option>
+                <option value="s3">IIS</option>
+                <option value="s4">Jagsaw</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label class="pro" for="role">Please specify your Role:</label>
+            </td>
+            <td>
+              <input type="radio" name="role" id="admin" value="Admin" />
+              <label for="admin">Admin</label><br />
+              <input type="radio" name="role" id="engineer" value="Engineer" />
+              <label for="engineer">Engineer</label><br />
+              <input type="radio" name="role" id="manager" value="Manager" />
+              <label for="manager">Manager</label><br />
+              <input type="radio" name="role" id="guest" value="Guest" />
+              <label for="guest">Guest</label><br />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label class="pro" for="sign"
+                >Single Sign-on to the following:</label
+              >
+            </td>
+            <td>
+              <input type="checkbox" name="sign" id="mail" />
+              <label for="mail">Mail</label><br />
+              <input type="checkbox" name="sign" id="payroll" />
+              <label for="payroll">Payroll</label><br />
+              <input type="checkbox" name="sign" id="self" />
+              <label for="self">Self-service</label><br />
+            </td>
+          </tr>
+        </table>
+        <br />
+        <input
+          class="pro btn"
+          class="btn"
+          type="submit"
+          value="Login"
+          style="margin-left: 100px"
+        />
+        <input class="pro btn" type="reset" value="Reset" />
+      </fieldset>
+    </form>
+  </body>
+</html>
