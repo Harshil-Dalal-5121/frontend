@@ -94,7 +94,7 @@
       let currentMonth = today.getMonth();
       let currentYear = today.getFullYear();
       showCalendar(currentMonth, currentYear);
-
+      
       const change_mon = (a) => {
         if (a === "next") {
           currentMonth = today.getMonth() + 1;
@@ -107,7 +107,7 @@
         }
       };
 
-      function showCalendar() {
+      function showCalendar(currentMonth, currentYear) {
         tbody.innerHTML = "";
         let firstDayOfMonth = new Date(currentYear, currentMonth).getDay();
         today.setMonth(currentMonth + 1, 0);
@@ -117,7 +117,7 @@
         const numberOfCellsInCalender = 35;
 
         for (i = 0; i < numberOfCellsInCalender; i++) {
-          if (i % DaysInWeek == 0) {
+          if (i % daysInWeek == 0) {
             var tr = document.createElement("tr");
             tbody.appendChild(tr);
           }

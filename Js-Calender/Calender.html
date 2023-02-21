@@ -56,9 +56,9 @@
       td.curr_month {
         text-align: center;
       }
-    </style>
+      </style>
   </head>
-
+  
   <body>
     <div id="calender"></div>
     <script>
@@ -67,34 +67,34 @@
       var thead = document.createElement("thead");
       var th = document.createElement("th");
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
+      
       for (let i = 0; i < days.length; i++) {
         var th = document.createElement("th");
         th.append(days[i]);
         thead.appendChild(th);
       }
-
+      
       table.appendChild(thead);
       table.setAttribute("border", "1");
       tbody = document.createElement("tbody");
       table.appendChild(tbody);
-
+      
       let today = new Date();
       let currentMonth = today.getMonth();
       let currentYear = today.getFullYear();
-      showCalendar(currentMonth, currentYear);
-
-      function showCalendar() {
+      showCalendar(currentMonth,currentYear);
+      
+      function showCalendar(currentMonth,currentYear) {
         tbody.innerHTML = "";
         let firstDayOfMonth = new Date(currentYear, currentMonth).getDay();
-        const DaysInWeek = 7;
+        const daysInWeek = 7;
         const numberOfCellsInCalender = 35;
         today.setMonth(currentMonth + 1, 0);
         let lastDateOfMonth = today.getDate();
         var day = 1;
 
-        for (i = 0; i < 35; i++) {
-          if (i % 7 == 0) {
+        for (i = 0; i < numberOfCellsInCalender; i++) {
+          if (i % daysInWeek == 0) {
             var tr = document.createElement("tr");
             tbody.appendChild(tr);
           }
@@ -120,7 +120,7 @@
           "June",
           "July",
           "August",
-          "September",
+          "September",+
           "October",
           "November",
           "December",
@@ -132,6 +132,8 @@
         td.innerHTML = `${mon[currentMonth]} ${currentYear}`;
         tbody.appendChild(td);
       }
+    
+
     </script>
   </body>
 </html>
