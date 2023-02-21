@@ -107,7 +107,7 @@
         }
       };
 
-      function showCalendar() {
+      function showCalendar(currentMonth,currentYear) {
         tbody.innerHTML = "";
         let firstDayOfMonth = new Date(currentYear, currentMonth).getDay();
         today.setMonth(currentMonth + 1, 0);

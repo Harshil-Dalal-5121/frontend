@@ -84,17 +84,17 @@
       let currentYear = today.getFullYear();
       showCalendar(currentMonth, currentYear);
 
-      function showCalendar() {
+      function showCalendar(currentMonth, currentYear) {
         tbody.innerHTML = "";
         let firstDayOfMonth = new Date(currentYear, currentMonth).getDay();
-        const DaysInWeek = 7;
+        const daysInWeek = 7;
         const numberOfCellsInCalender = 35;
         today.setMonth(currentMonth + 1, 0);
         let lastDateOfMonth = today.getDate();
         var day = 1;
 
-        for (i = 0; i < 35; i++) {
-          if (i % 7 == 0) {
+        for (i = 0; i < numberOfCellsInCalender; i++) {
+          if (i % daysInWeek == 0) {
             var tr = document.createElement("tr");
             tbody.appendChild(tr);
           }
