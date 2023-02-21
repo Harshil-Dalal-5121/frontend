@@ -76,11 +76,11 @@
       document.body.appendChild(table);
       var thead = document.createElement("thead");
       var th = document.createElement("th");
-      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-      for (let i = 0; i < days.length; i++) {
+      for (let i = 0; i < DAYS.length; i++) {
         var th = document.createElement("th");
-        th.append(days[i]);
+        th.append(DAYS[i]);
         thead.appendChild(th);
       }
 
@@ -94,16 +94,22 @@
       let currentMonth = today.getMonth();
       let currentYear = today.getFullYear();
       showCalendar(currentMonth, currentYear);
+<<<<<<< HEAD
       
       const change_mon = (a) => {
         if (a === "next") {
+=======
+
+      const CHANGE_MONTH = (a) => {
+        if (a === "NEXT") {
+>>>>>>> js
           currentMonth = today.getMonth() + 1;
           showCalendar(currentMonth, currentYear);
-          console.log(`next click`);
-        } else if (a === "prev") {
+          console.log(`NEXT click`);
+        } else if (a === "PREV") {
           currentMonth = today.getMonth() - 1;
           showCalendar(currentMonth, currentYear);
-          console.log(`prev click`);
+          console.log(`PREV click`);
         }
       };
 
@@ -117,11 +123,11 @@
         today.setMonth(currentMonth + 1, 0);
         let lastDateOfMonth = today.getDate();
         var day = 1;
-        const daysInWeek = 7;
-        const numberOfCellsInCalender = 35;
+        const DAYS_IN_WEEK = 7;
+        const NUMBER_OF_CELLS_IN_CALENDER = 35;
 
-        for (i = 0; i < numberOfCellsInCalender; i++) {
-          if (i % daysInWeek == 0) {
+        for (i = 0; i < NUMBER_OF_CELLS_IN_CALENDER; i++) {
+          if (i % DAYS_IN_WEEK == 0) {
             var tr = document.createElement("tr");
             tbody.appendChild(tr);
           }
@@ -142,7 +148,7 @@
           }
         }
 
-        const mon = [
+        const MONTH = [
           "January",
           "February",
           "March",
@@ -162,27 +168,27 @@
         var td1 = document.createElement("td");
         var td2 = document.createElement("td");
 
-        const prev = document.createElement("button");
-        prev.innerHTML = "<===========";
+        const PREV = document.createElement("button");
+        PREV.innerHTML = "<===========";
         td1.setAttribute("colspan", "2");
         td1.setAttribute("class", "tdbtn");
-        prev.setAttribute("onclick", "change_mon('prev')");
-        prev.setAttribute("class", "btn");
-        td1.appendChild(prev);
+        PREV.setAttribute("onclick", "CHANGE_MONTH('PREV')");
+        PREV.setAttribute("class", "btn");
+        td1.appendChild(PREV);
         tr.appendChild(td1);
 
-        const next = document.createElement("button");
-        next.innerHTML = "===========>";
+        const NEXT = document.createElement("button");
+        NEXT.innerHTML = "===========>";
         td2.setAttribute("colspan", "2");
         td2.setAttribute("class", "tdbtn");
-        next.setAttribute("onclick", "change_mon('next')");
-        next.setAttribute("class", "btn");
-        td2.appendChild(next);
+        NEXT.setAttribute("onclick", "CHANGE_MONTH('NEXT')");
+        NEXT.setAttribute("class", "btn");
+        td2.appendChild(NEXT);
         tr.appendChild(td2);
 
         td.setAttribute("class", "curr_month");
         td.setAttribute("colspan", "3");
-        td.innerHTML = `${mon[currentMonth]} ${currentYear}`;
+        td.innerHTML = `${MONTH[currentMonth]} ${currentYear}`;
 
         tr.appendChild(td1);
         tr.appendChild(td);
