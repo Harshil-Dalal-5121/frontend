@@ -94,15 +94,9 @@
       let currentMonth = today.getMonth();
       let currentYear = today.getFullYear();
       showCalendar(currentMonth, currentYear);
-<<<<<<< HEAD
-      
-      const change_mon = (a) => {
-        if (a === "next") {
-=======
 
       const CHANGE_MONTH = (a) => {
         if (a === "NEXT") {
->>>>>>> js
           currentMonth = today.getMonth() + 1;
           showCalendar(currentMonth, currentYear);
           console.log(`NEXT click`);
@@ -113,11 +107,7 @@
         }
       };
 
-<<<<<<< HEAD
-      function showCalendar(currentMonth, currentYear) {
-=======
       function showCalendar(currentMonth,currentYear) {
->>>>>>> js
         tbody.innerHTML = "";
         let firstDayOfMonth = new Date(currentYear, currentMonth).getDay();
         today.setMonth(currentMonth + 1, 0);

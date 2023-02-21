@@ -66,15 +66,9 @@
       document.body.appendChild(table);
       var thead = document.createElement("thead");
       var th = document.createElement("th");
-<<<<<<< HEAD
-      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      
-      for (let i = 0; i < days.length; i++) {
-=======
       const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
       for (let i = 0; i < DAYS.length; i++) {
->>>>>>> js
         var th = document.createElement("th");
         th.append(DAYS[i]);
         thead.appendChild(th);
@@ -88,15 +82,9 @@
       let today = new Date();
       let currentMonth = today.getMonth();
       let currentYear = today.getFullYear();
-<<<<<<< HEAD
-      showCalendar(currentMonth,currentYear);
-      
-      function showCalendar(currentMonth,currentYear) {
-=======
       showCalendar(currentMonth, currentYear);
 
       function showCalendar(currentMonth, currentYear) {
->>>>>>> js
         tbody.innerHTML = "";
         let firstDayOfMonth = new Date(currentYear, currentMonth).getDay();
         const DAYS_IN_WEEK = 7;
