@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ToastContainer } from "react-bootstrap";
 
@@ -43,6 +43,7 @@ function App() {
   const [cartItems, setCartItems] = useState(getStorageCart());
   const [toasts, setToasts] = useState([]);
   const [products, setProducts] = useState(ItemData);
+  const [sort, setSort] = useState(null);
   const compareUp = (a, b) => {
     if (a.cardTitle < b.cardTitle) {
       return -1;
@@ -63,25 +64,25 @@ function App() {
     return 0;
   };
 
-  // const a = React.useMemo(() => {}, []);
-
-  // // $product = React.useMemo)() => },[items]
-  // function sortUp({ obj }) {
-  //   // state(obj).
-  // }
-  // eslint-disable-next-line no-lone-blocks
-
-  function sortUp() {
+  const sortUp = useCallback(() => {
     $ItemData.sort(compareUp);
+    setSort();
+
     setProducts($ItemData);
-    console.log(products);
-  }
+  }, []);
 
   function sortDown() {
     $ItemData.sort(compareDown);
-    setProducts(ItemData);
-    console.log(products);
+
+    setProducts($ItemData);
   }
+
+  const $products = useMemo(() => {
+    if (sort) {
+      return sortUp(sort, products);
+    }
+    return products;
+  }, [products, sort, sortUp]);
 
   const addToCart = (itemData) => {
     const toast = getToast(itemData.cardTitle);
@@ -120,15 +121,12 @@ function App() {
     });
   };
 
-  console.log("Hello");
-  setTimeout(console.clear, 1000);
-
   return (
     <>
       <Header sortUp={sortUp} sortDown={sortDown} />
       <div className="row">
         <div className="col-md-8 py-2">
-          <CardList data={$ItemData} onAdd={addToCart} />
+          <CardList data={$products} onAdd={addToCart} />
         </div>
         <div className="col-md-4 py-2">
           <Cart cart={cartItems} onClick={clearCart} />
