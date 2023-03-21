@@ -1,0 +1,10 @@
+/* backgroundImage: `url(${image})`,
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+        height: "150px", */
+
+.image {
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 150px;
+}
