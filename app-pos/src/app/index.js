@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { ToastContainer } from "react-bootstrap";
 
@@ -37,52 +37,75 @@ const getToast = (toastTitle) => {
     toastTitle,
   };
 };
-const $ItemData = [...ItemData];
 
+const initialState = [...ItemData];
 function App() {
   const [cartItems, setCartItems] = useState(getStorageCart());
   const [toasts, setToasts] = useState([]);
   const [products, setProducts] = useState(ItemData);
-  const [sort, setSort] = useState(null);
-  const compareUp = (a, b) => {
-    if (a.cardTitle < b.cardTitle) {
-      return -1;
+  const [sort, setSort] = useState(false);
+
+  const setTitleSort = () => {
+    setSort(!sort);
+    let $products;
+    if (!sort) {
+      $products = [...products].sort((a, b) => {
+        if (a.cardTitle < b.cardTitle) {
+          return -1;
+        }
+        if (a.cardTitle > b.cardTitle) {
+          return 1;
+        }
+        return 0;
+      });
+      setProducts($products);
+    } else {
+      $products = [...products].sort((a, b) => {
+        if (a.cardTitle < b.cardTitle) {
+          return 1;
+        }
+        if (a.cardTitle > b.cardTitle) {
+          return -1;
+        }
+        return 0;
+      });
+
+      setProducts($products);
     }
-    if (a.cardTitle > b.cardTitle) {
-      return 1;
-    }
-    return 0;
   };
 
-  const compareDown = (a, b) => {
-    if (a.cardTitle > b.cardTitle) {
-      return -1;
+  const setPriceSort = () => {
+    setSort(!sort);
+    let $products;
+    if (!sort) {
+      $products = [...products].sort((a, b) => {
+        if (a.itemPrice < b.itemPrice) {
+          return -1;
+        }
+        if (a.itemPrice > b.itemPrice) {
+          return 1;
+        }
+        return 0;
+      });
+      setProducts($products);
+    } else {
+      $products = [...products].sort((a, b) => {
+        if (a.itemPrice < b.itemPrice) {
+          return 1;
+        }
+        if (a.itemPrice > b.itemPrice) {
+          return -1;
+        }
+        return 0;
+      });
+
+      setProducts($products);
     }
-    if (a.cardTitle < b.cardTitle) {
-      return 1;
-    }
-    return 0;
   };
 
-  const sortUp = useCallback(() => {
-    $ItemData.sort(compareUp);
-    setSort();
-
-    setProducts($ItemData);
-  }, []);
-
-  function sortDown() {
-    $ItemData.sort(compareDown);
-
-    setProducts($ItemData);
-  }
-
-  const $products = useMemo(() => {
-    if (sort) {
-      return sortUp(sort, products);
-    }
-    return products;
-  }, [products, sort, sortUp]);
+  const clearSort = () => {
+    return setProducts(initialState);
+  };
 
   const addToCart = (itemData) => {
     const toast = getToast(itemData.cardTitle);
@@ -123,10 +146,15 @@ function App() {
 
   return (
     <>
-      <Header sortUp={sortUp} sortDown={sortDown} />
+      <Header
+        clearSort={clearSort}
+        sort={sort}
+        setTitleSort={setTitleSort}
+        setPriceSort={setPriceSort}
+      />
       <div className="row">
         <div className="col-md-8 py-2">
-          <CardList data={$products} onAdd={addToCart} />
+          <CardList data={products} onAdd={addToCart} />
         </div>
         <div className="col-md-4 py-2">
           <Cart cart={cartItems} onClick={clearCart} />

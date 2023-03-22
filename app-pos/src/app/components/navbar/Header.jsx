@@ -1,9 +1,15 @@
 import React from "react";
 import { NavDropdown } from "react-bootstrap";
 import { Nav } from "react-bootstrap";
+import {
+  SortAlphaDown,
+  SortAlphaUp,
+  SortNumericDown,
+  SortNumericUp,
+} from "react-bootstrap-icons";
 import Navbar from "react-bootstrap/Navbar";
 
-const Header = ({ sortUp, sortDown }) => {
+const Header = ({ setTitleSort, clearSort, sort, setPriceSort }) => {
   return (
     <>
       <Navbar sticky="top" bg="dark" variant="dark">
@@ -17,12 +23,14 @@ const Header = ({ sortUp, sortDown }) => {
             title="Sort"
             menuVariant="dark"
           >
-            <NavDropdown.Item onClick={sortUp}>By Title up</NavDropdown.Item>
-            <NavDropdown.Item onClick={sortDown}>
-              By Title down
+            <NavDropdown.Item onClick={setTitleSort}>
+              By Title{!sort ? <SortAlphaDown /> : <SortAlphaUp />}
+            </NavDropdown.Item>
+            <NavDropdown.Item onClick={setPriceSort}>
+              By Price{!sort ? <SortNumericDown /> : <SortNumericUp />}
             </NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">Clear</NavDropdown.Item>
+            <NavDropdown.Item onClick={clearSort}>Clear</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar>
