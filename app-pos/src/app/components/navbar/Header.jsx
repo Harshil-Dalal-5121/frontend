@@ -1,13 +1,13 @@
 import React from "react";
 import { NavDropdown } from "react-bootstrap";
 import { Nav } from "react-bootstrap";
-import {
-  SortAlphaDown,
-  SortAlphaUp,
-  SortNumericDown,
-  SortNumericUp,
-} from "react-bootstrap-icons";
+import { SortDown, SortUp } from "react-bootstrap-icons";
 import Navbar from "react-bootstrap/Navbar";
+
+const type = [
+  { key: "cardTitle", title: "By Title" },
+  { key: "itemPrice", title: "By Price" },
+];
 
 const Header = ({ setOrder, clearSort, sort }) => {
   return (
@@ -23,12 +23,21 @@ const Header = ({ setOrder, clearSort, sort }) => {
             title="Sort"
             menuVariant="dark"
           >
-            <NavDropdown.Item onClick={() => setOrder({ name: "cardTitle" })}>
+            {/* <NavDropdown.Item onClick={() => setOrder({ name: "cardTitle" })}>
               By Title{!sort ? <SortAlphaDown /> : <SortAlphaUp />}
             </NavDropdown.Item>
             <NavDropdown.Item onClick={() => setOrder({ name: "itemPrice" })}>
               By Price{!sort ? <SortNumericDown /> : <SortNumericUp />}
-            </NavDropdown.Item>
+            </NavDropdown.Item> */}
+            {type.map(({ title, key }) => {
+              return (
+                <NavDropdown.Item onClick={() => setOrder({ name: { key } })}>
+                  {" "}
+                  {title}
+                  {!sort ? <SortUp /> : <SortDown />}
+                </NavDropdown.Item>
+              );
+            })}
             <NavDropdown.Divider />
             <NavDropdown.Item onClick={clearSort}>Clear</NavDropdown.Item>
           </NavDropdown>
