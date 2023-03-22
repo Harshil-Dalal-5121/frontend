@@ -45,15 +45,15 @@ function App() {
   const [products, setProducts] = useState(ItemData);
   const [sort, setSort] = useState(false);
 
-  const setTitleSort = () => {
+  const setOrder = ({ name }) => {
     setSort(!sort);
     let $products;
     if (!sort) {
       $products = [...products].sort((a, b) => {
-        if (a.cardTitle < b.cardTitle) {
+        if (a[name] < b[name]) {
           return -1;
         }
-        if (a.cardTitle > b.cardTitle) {
+        if (a[name] > b[name]) {
           return 1;
         }
         return 0;
@@ -61,39 +61,10 @@ function App() {
       setProducts($products);
     } else {
       $products = [...products].sort((a, b) => {
-        if (a.cardTitle < b.cardTitle) {
+        if (a[name] < b[name]) {
           return 1;
         }
-        if (a.cardTitle > b.cardTitle) {
-          return -1;
-        }
-        return 0;
-      });
-
-      setProducts($products);
-    }
-  };
-
-  const setPriceSort = () => {
-    setSort(!sort);
-    let $products;
-    if (!sort) {
-      $products = [...products].sort((a, b) => {
-        if (a.itemPrice < b.itemPrice) {
-          return -1;
-        }
-        if (a.itemPrice > b.itemPrice) {
-          return 1;
-        }
-        return 0;
-      });
-      setProducts($products);
-    } else {
-      $products = [...products].sort((a, b) => {
-        if (a.itemPrice < b.itemPrice) {
-          return 1;
-        }
-        if (a.itemPrice > b.itemPrice) {
+        if (a[name] > b[name]) {
           return -1;
         }
         return 0;
@@ -146,12 +117,7 @@ function App() {
 
   return (
     <>
-      <Header
-        clearSort={clearSort}
-        sort={sort}
-        setTitleSort={setTitleSort}
-        setPriceSort={setPriceSort}
-      />
+      <Header clearSort={clearSort} sort={sort} setOrder={setOrder} />
       <div className="row">
         <div className="col-md-8 py-2">
           <CardList data={products} onAdd={addToCart} />

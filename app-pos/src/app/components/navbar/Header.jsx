@@ -9,7 +9,7 @@ import {
 } from "react-bootstrap-icons";
 import Navbar from "react-bootstrap/Navbar";
 
-const Header = ({ setTitleSort, clearSort, sort, setPriceSort }) => {
+const Header = ({ setOrder, clearSort, sort }) => {
   return (
     <>
       <Navbar sticky="top" bg="dark" variant="dark">
@@ -23,10 +23,10 @@ const Header = ({ setTitleSort, clearSort, sort, setPriceSort }) => {
             title="Sort"
             menuVariant="dark"
           >
-            <NavDropdown.Item onClick={setTitleSort}>
+            <NavDropdown.Item onClick={() => setOrder({ name: "cardTitle" })}>
               By Title{!sort ? <SortAlphaDown /> : <SortAlphaUp />}
             </NavDropdown.Item>
-            <NavDropdown.Item onClick={setPriceSort}>
+            <NavDropdown.Item onClick={() => setOrder({ name: "itemPrice" })}>
               By Price{!sort ? <SortNumericDown /> : <SortNumericUp />}
             </NavDropdown.Item>
             <NavDropdown.Divider />
