@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const initalize = useRef();
+
   const navigate = useNavigate();
 
   const logout = () => {
@@ -11,16 +11,15 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("authenticated");
+  const loggedInUser = JSON.parse(localStorage.getItem("authenticated"));
 
+  useEffect(() => {
     if (loggedInUser) {
       setIsLoggedIn(true);
     }
-    initalize.current = true;
-  }, []);
+  }, [loggedInUser]);
 
-  if (!isLoggedIn && initalize.current) {
+  if (!loggedInUser) {
     return (
       <>
         <Navigate replace to="/" />

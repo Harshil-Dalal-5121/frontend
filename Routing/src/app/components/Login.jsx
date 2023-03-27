@@ -19,10 +19,12 @@ const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (userName === "admin" && password === "admin") {
+      localStorage.setItem("Username", userName);
+      localStorage.setItem("Password", password);
       localStorage.setItem("authenticated", true);
       navigate("/dashboard");
     } else {
-      localStorage.remove("authenticated");
+      localStorage.setItem("authenticated", false);
     }
   };
 
@@ -34,7 +36,7 @@ const Login = () => {
           <input
             type="text"
             name="userName"
-            value={loginInfo.userName}
+            value={userName}
             onChange={handleChange}
           />
           <br />
@@ -42,7 +44,7 @@ const Login = () => {
           <input
             type="password"
             name="password"
-            value={loginInfo.password}
+            value={password}
             onChange={handleChange}
           />
           <br />
