@@ -12,7 +12,10 @@ import React, { useEffect, useState } from "react";
 import { Check, XCircle } from "react-bootstrap-icons";
 import {
   Button,
+  FormControlLabel,
+  FormGroup,
   Paper,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -22,6 +25,7 @@ import {
 } from "@mui/material";
 
 import axios from "axios";
+import { Delete, Edit } from "@mui/icons-material";
 
 const tableFields = [
   "name",
@@ -35,14 +39,6 @@ const tableFields = [
   "code",
 ];
 
-// const auth = async () => {
-//   const data = await axios.post("/callback", {
-//     username: "admin",
-//     password: "admin",
-//   });
-//   localStorage.setItem("csrf-token", data.headers["x-csrf-token"]);
-// };
-
 const intialValues = {
   name: "",
   fromDate: "",
@@ -50,67 +46,65 @@ const intialValues = {
   parentProject: "",
   clientPartner: "",
   toDate: "",
-  imputable: "",
-  assignedTo: "",
+  imputable: false,
+  assignedTo: { code: "admin", fullName: "Admin", id: 1 },
   code: "",
 };
 
+const rest = axios.create({
+  headers: {
+    Authorization: "Basic YWRtaW46YWRtaW4=",
+  },
+});
 const App = () => {
   const [projects, setProjects] = useState();
   const [newproject, setNewProject] = useState(intialValues);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewProject({ ...newproject, [name]: value });
+    const { name, value, checked } = e.target;
+    setNewProject({
+      ...newproject,
+      [name]: name === "imputable" ? checked : value,
+    });
+    if (name === "assignedTo") {
+      setNewProject({
+        ...newproject,
+        assignedTo: {
+          fullName: value,
+        },
+      });
+    }
   };
 
-  const rest = axios.create({
-    headers: {
-      Authorization: "Basic YWRtaW46YWRtaW4=",
-    },
-  });
-
-  // useEffect(() => {
-  //   auth();
-  // }, []);
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("csrf-token");
-  //   axios
-  //     .post(
-  //       "ws/rest/com.axelor.apps.project.db.Project/search",
-  //       {
-  //         fields: tableFields,
-  //       },
-  //       {
-  //         headers: {
-  //           "X-CSRF-TOKEN": token,
-  //         },
-  //       }
-  //     )
-  //     .then((reponse) => {
-  //       setProjects(reponse.data.data);
-  //     });
-  // }, []);
+  useEffect(() => {
+    rest
+      .post("ws/rest/com.axelor.apps.project.db.Project/search", {
+        fields: tableFields,
+      })
+      .then((reponse) => {
+        setProjects(reponse.data.data);
+      });
+  }, []);
 
   const saveProject = () => {
     let data = newproject;
-
     console.log(data);
-    rest.post("ws/rest/com.axelor.apps.project.db.Project", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: data,
-    });
+    rest.post(
+      "ws/rest/com.axelor.apps.project.db.Project",
+      { data },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
   };
 
   return (
     <>
       <legend>Projects</legend>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} style={{ padding: "10px" }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -130,53 +124,58 @@ const App = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {projects?.map((project) => (
-              <TableRow
-                key={project.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="project">
-                  {project?.id}
-                </TableCell>
-                <TableCell component="th" scope="project">
-                  {project?.name || "-"}
-                </TableCell>
-                <TableCell align="center">{project.code || "-"}</TableCell>
-                <TableCell align="center">
-                  {project?.parentProject || "-"}
-                </TableCell>
-                <TableCell align="center">
-                  {project.clientPartner?.fullName || "-"}
-                </TableCell>
-                <TableCell align="center">
-                  {project.assignedTo?.fullName || "-"}
-                </TableCell>
-                <TableCell align="center">{project?.fromDate || "-"}</TableCell>
-                <TableCell align="center">{project?.toDate || "-"}</TableCell>
-                <TableCell align="center">
-                  {project?.imputable === true ? <Check /> : <XCircle />}
-                </TableCell>
-                <TableCell align="center">
-                  {project.projectStatus?.name}
-                </TableCell>
+            {projects?.map((project, i) => {
+              return (
+                <TableRow
+                  key={i + 1}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="project">
+                    {i + 1}
+                  </TableCell>
+                  <TableCell component="th" scope="project">
+                    {project?.name || "-"}
+                  </TableCell>
+                  <TableCell align="center">{project.code || "-"}</TableCell>
+                  <TableCell align="center">
+                    {project?.parentProject || "-"}
+                  </TableCell>
+                  <TableCell align="center">
+                    {project.clientPartner?.fullName || "-"}
+                  </TableCell>
+                  <TableCell align="center">
+                    {project.assignedTo?.fullName || "-"}
+                  </TableCell>
+                  <TableCell align="center">
+                    {project?.fromDate || "-"}
+                  </TableCell>
+                  <TableCell align="center">{project?.toDate || "-"}</TableCell>
+                  <TableCell align="center">
+                    {project?.imputable === true ? <Check /> : <XCircle />}
+                  </TableCell>
+                  <TableCell align="center">
+                    {project.projectStatus?.name}
+                  </TableCell>
 
-                <TableCell align="center">
-                  <Button variant="contained" color="success" id={project.id}>
-                    Update
-                  </Button>
-                </TableCell>
-                <TableCell align="center">
-                  <Button variant="contained" color="success">
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell align="center">
+                    <Button variant="contained" color="success" id={project.id}>
+                      <Edit />
+                    </Button>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button variant="contained" color="success">
+                      <Delete />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
 
       <div style={{ padding: "50px" }}>
+        <legend>New Project</legend>
         <form>
           <table border={`2`}>
             <tr>
@@ -235,12 +234,23 @@ const App = () => {
               </td>
             </tr>
             <tr>
+              <td>Imputable :</td>
+              <td>
+                <FormGroup>
+                  <FormControlLabel
+                    control={<Switch onClick={handleChange} name="imputable" />}
+                  />
+                </FormGroup>
+              </td>
+            </tr>
+
+            <tr>
               <td>From Date :</td>
               <td>
                 <input
                   type="date"
-                  name="fromTo"
-                  id="fromTo"
+                  name="fromDate"
+                  id="fromDate"
                   onChange={handleChange}
                 />
               </td>
@@ -256,6 +266,7 @@ const App = () => {
                 />
               </td>
             </tr>
+
             <tr>
               <td colSpan={"2"}>
                 <Button
@@ -263,7 +274,7 @@ const App = () => {
                   color="success"
                   onClick={saveProject}
                 >
-                  Update
+                  Create
                 </Button>
               </td>
             </tr>
