@@ -47,7 +47,7 @@ const intialValues = {
   clientPartner: "",
   toDate: "",
   imputable: false,
-  assignedTo: { code: "admin", fullName: "Admin", id: 1 },
+  assignedTo: "",
   code: "",
 };
 
@@ -72,6 +72,14 @@ const App = () => {
         assignedTo: {
           fullName: value,
         },
+      });
+    }
+  };
+
+  const deleteData = (id, version, name) => {
+    if (window.confirm(`Do You want to delete record of ${name}?`)) {
+      rest.post("ws/rest/com.axelor.apps.project.db.Project/removeAll", {
+        records: [{ id: id, version: version }],
       });
     }
   };
@@ -163,7 +171,13 @@ const App = () => {
                     </Button>
                   </TableCell>
                   <TableCell align="center">
-                    <Button variant="contained" color="success">
+                    <Button
+                      variant="contained"
+                      onClick={() =>
+                        deleteData(project.id, project.version, project.name)
+                      }
+                      color="success"
+                    >
                       <Delete />
                     </Button>
                   </TableCell>
