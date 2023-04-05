@@ -4,6 +4,7 @@ import Index from "app/views";
 import Projects from "app/views/projects";
 import Tasks from "app/views/tasks";
 import Tickets from "app/views/tickets";
+import Form from "./views/form/Form";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
       {
         path: "tickets",
         element: <Tickets />,
+      },
+      {
+        path: "/new",
+        element: <Form />,
       },
     ],
   },

@@ -1,56 +1,55 @@
 import React from "react";
-import { useEffect, useState } from "react";
 import { Button, TableBody, TableCell, TableRow } from "@mui/material";
-
-import { rest, model, tableFields } from "app/services/services";
-
 import { Check, XCircle } from "react-bootstrap-icons";
 import { Delete, Edit } from "@mui/icons-material";
+import { deleteData } from "app/services/services";
 
-const TableContent = () => {
-  const [projects, setProjects] = useState([]);
+const cellWidth_5 = {
+  width: "5vw",
+};
 
-  const deleteData = (id, version, name) => {
-    if (window.confirm(`Do You want to delete record of ${name}?`)) {
-      rest.post("ws/rest/com.axelor.apps.project.db.Project/removeAll", {
-        records: [{ id: id, version: version }],
-      });
-    }
-  };
+const cellWidth_10 = {
+  width: "10vw",
+};
 
-  useEffect(() => {
-    rest
-      .post(`${model}`, {
-        fields: tableFields,
-      })
-      .then((reponse) => {
-        setProjects(reponse.data.data);
-      });
-  }, []);
+const TableContent = ({ data }) => {
   return (
     <>
       <TableBody>
-        {projects?.map((project) => (
+        {data?.map((project, i) => (
           <TableRow
-            key={project.id}
+            key={i}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
           >
-            <TableCell component="th">{project.id}</TableCell>
-            <TableCell>{project.name || "-"}</TableCell>
-            <TableCell align="center">{project.code || "-"}</TableCell>
-            <TableCell align="center">{project.parentProject || "-"}</TableCell>
-            <TableCell align="center">
+            <TableCell component="th" style={cellWidth_5}>
+              {i + 1}
+            </TableCell>
+            <TableCell style={cellWidth_5}>{project.id}</TableCell>
+            <TableCell style={cellWidth_10}>{project.name || "-"}</TableCell>
+            <TableCell align="center" style={cellWidth_10}>
+              {project.code || "-"}
+            </TableCell>
+            <TableCell align="center" style={cellWidth_10}>
+              {project.parentProject?.fullName || "-"}
+            </TableCell>
+            <TableCell align="center" style={cellWidth_10}>
               {project.clientPartner?.fullName || "-"}
             </TableCell>
-            <TableCell align="center">
+            <TableCell align="center" style={cellWidth_10}>
               {project.assignedTo?.fullName || "-"}
             </TableCell>
-            <TableCell align="center">{project.fromDate || "-"}</TableCell>
-            <TableCell align="center">{project.toDate || "-"}</TableCell>
-            <TableCell align="center">
+            <TableCell align="center" style={cellWidth_10}>
+              {project.fromDate || "-"}
+            </TableCell>
+            <TableCell align="center" style={cellWidth_10}>
+              {project.toDate || "-"}
+            </TableCell>
+            <TableCell align="center" style={{ cellWidth_5 }}>
               {project.imputable === true ? <Check /> : <XCircle />}
             </TableCell>
-            <TableCell align="center">{project.projectStatus?.name}</TableCell>
+            <TableCell align="center" style={{ cellWidth_10 }}>
+              {project.projectStatus?.name}
+            </TableCell>
             <TableCell align="center">
               <Button variant="contained" color="success" id={project.id}>
                 <Edit />

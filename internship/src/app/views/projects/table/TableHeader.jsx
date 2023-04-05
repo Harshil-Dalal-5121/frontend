@@ -8,9 +8,12 @@ const TableHeader = () => {
     <>
       <TableHead>
         <TableRow>
-          {tableFields?.map((field) => {
+          <TableCell>Serial No.</TableCell>
+          {tableFields?.map((field, i) => {
             return (
-              <TableCell align="center">{field.toLocaleUpperCase()}</TableCell>
+              <TableCell key={i} align="center">
+                {field.toLocaleUpperCase()}
+              </TableCell>
             );
           })}
           <TableCell align="center" colSpan={2}>

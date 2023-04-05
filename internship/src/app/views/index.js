@@ -37,9 +37,10 @@ function Header() {
       <Toolbar>
         <Box flexGrow={1}></Box>
         <Box display="flex" alignItems="center">
-          {navButtons?.map(({ path, Title }) => {
+          {navButtons?.map(({ path, Title }, i) => {
             return (
               <Button
+                key={i}
                 onClick={handleRedirection(path)}
                 sx={{ mr: 1 }}
                 color="secondary"
