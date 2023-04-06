@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -10,18 +10,10 @@ import {
   TableContainer,
   TableRow,
   TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
-  useMediaQuery,
 } from "@mui/material";
 import { saveNewProject, getProject } from "app/services/services";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate, useParams } from "react-router";
-import { useTheme } from "@emotion/react";
 
 const intialValues = {
   name: "",
@@ -34,32 +26,11 @@ const intialValues = {
   code: "",
 };
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 const Form = () => {
   const [formData, setFormData] = useState(intialValues);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = React.useState(false);
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const navigate = useNavigate();
-  const handleClose = () => {
-    saveNewProject(formData);
-    setOpen(false);
-    navigate("/projects");
-  };
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
   const { id } = useParams();
   useEffect(() => {
     setLoading(true);
@@ -155,7 +126,6 @@ const Form = () => {
                     type="date"
                     variant="outlined"
                     value={formData.toDate?.slice(0, 10)}
-                    error={formData.toDate === "" ? true : false}
                   />
                 </TableCell>
               </TableRow>
@@ -165,7 +135,9 @@ const Form = () => {
                     variant="contained"
                     color="success"
                     style={{ margin: "0 10px" }}
-                    onClick={handleClickOpen}
+                    onClick={() => {
+                      saveNewProject(formData);
+                    }}
                   >
                     Add
                   </Button>
@@ -184,29 +156,6 @@ const Form = () => {
           </Table>
         </TableContainer>
       )}
-      <Dialog
-        open={open}
-        fullScreen={fullScreen}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="responsive-alert-dialog-slide-description"
-      >
-        <DialogTitle>{" Do you want to save this data ?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            This data will be saved.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} variant="outlined">
-            Cancel
-          </Button>
-          <Button onClick={handleClose} variant="contained" color="secondary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

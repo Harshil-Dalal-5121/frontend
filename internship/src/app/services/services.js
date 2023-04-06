@@ -27,16 +27,19 @@ const navigate = (path) => {
 };
 
 const saveNewProject = (data) => {
-  rest.post(
-    // `${model}`,
-    { data },
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  navigate();
+  if (window.confirm(`Do you want to add this project ?`)) {
+    rest.post(
+      "ws/rest/com.axelor.apps.project.db.Project",
+      { data },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 };
 
 const getProject = async (id, setData) => {
