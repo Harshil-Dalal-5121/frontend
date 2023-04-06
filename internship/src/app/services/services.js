@@ -7,7 +7,7 @@ const rest = axios.create({
   },
 });
 
-const model = "ws/rest/com.axelor.apps.project.db.Project/search";
+const model = "/ws/rest/com.axelor.apps.project.db.Project";
 
 const tableFields = [
   "id",
@@ -27,27 +27,42 @@ const navigate = (path) => {
 };
 
 const saveNewProject = (data) => {
-  navigate();
-  // if (window.confirm(`Do you want to add this project ?`)) {
-  //   rest.post(
-  //     "ws/rest/com.axelor.apps.project.db.Project",
-  //     { data },
-  //     {
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  // }
+  rest.post(
+    // `${model}`,
+    { data },
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 
-const deleteData = (id, version, name) => {
+const getProject = async (id, setData) => {
+  await rest
+    .post(`${model}/${id}/fetch`, { fields: tableFields })
+    .then(({ data }) => setData(data?.data[0]));
+};
+
+const deleteData = (id, version, name, setData) => {
   if (window.confirm(`Do You want to delete record of ${name}?`)) {
-    rest.post("ws/rest/com.axelor.apps.project.db.Project/removeAll", {
-      records: [{ id: id, version: version }],
-    });
+    rest
+      .post(`${model}/removeAll`, {
+        records: [{ id: id, version: version }],
+      })
+      .then(() => {
+        setData((prev) => prev.filter((project) => project.id !== id));
+      });
   }
 };
 
-export { rest, model, tableFields, saveNewProject, deleteData, navigate };
+export {
+  rest,
+  model,
+  tableFields,
+  saveNewProject,
+  deleteData,
+  navigate,
+  getProject,
+};

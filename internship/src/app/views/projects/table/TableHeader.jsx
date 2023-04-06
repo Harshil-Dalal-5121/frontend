@@ -8,7 +8,6 @@ const TableHeader = () => {
     <>
       <TableHead>
         <TableRow>
-          <TableCell>Serial No.</TableCell>
           {tableFields?.map((field, i) => {
             return (
               <TableCell key={i} align="center">

@@ -3,6 +3,7 @@ import { Button, TableBody, TableCell, TableRow } from "@mui/material";
 import { Check, XCircle } from "react-bootstrap-icons";
 import { Delete, Edit } from "@mui/icons-material";
 import { deleteData } from "app/services/services";
+import { Link } from "react-router-dom";
 
 const cellWidth_5 = {
   width: "5vw",
@@ -12,7 +13,7 @@ const cellWidth_10 = {
   width: "10vw",
 };
 
-const TableContent = ({ data }) => {
+const TableContent = ({ data, setData }) => {
   return (
     <>
       <TableBody>
@@ -21,9 +22,6 @@ const TableContent = ({ data }) => {
             key={i}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
           >
-            <TableCell component="th" style={cellWidth_5}>
-              {i + 1}
-            </TableCell>
             <TableCell style={cellWidth_5}>{project.id}</TableCell>
             <TableCell style={cellWidth_10}>{project.name || "-"}</TableCell>
             <TableCell align="center" style={cellWidth_10}>
@@ -39,10 +37,10 @@ const TableContent = ({ data }) => {
               {project.assignedTo?.fullName || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.fromDate || "-"}
+              {project.fromDate?.slice(0, 10) || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.toDate || "-"}
+              {project.toDate?.slice(0, 10) || "-"}
             </TableCell>
             <TableCell align="center" style={{ cellWidth_5 }}>
               {project.imputable === true ? <Check /> : <XCircle />}
@@ -51,15 +49,17 @@ const TableContent = ({ data }) => {
               {project.projectStatus?.name}
             </TableCell>
             <TableCell align="center">
-              <Button variant="contained" color="success" id={project.id}>
-                <Edit />
-              </Button>
+              <Link to={`${project.id}`}>
+                <Button variant="contained" color="success">
+                  <Edit />
+                </Button>
+              </Link>
             </TableCell>
             <TableCell align="center">
               <Button
                 variant="contained"
                 onClick={() =>
-                  deleteData(project.id, project.version, project.name)
+                  deleteData(project.id, project.version, project.name, setData)
                 }
                 color="success"
               >
