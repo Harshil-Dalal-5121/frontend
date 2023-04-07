@@ -64,43 +64,40 @@ const TableContent = ({ data, setData }) => {
   return (
     <>
       <TableBody>
-        {data?.map((project, i) => (
+        {data?.map((task, i) => (
           <TableRow
             key={i}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
           >
             <TableCell align="center" style={cellWidth_5}>
-              {project.id}
+              {task?.id}
+            </TableCell>
+            <TableCell align="center" style={cellWidth_5}>
+              {task?.ticketNumber}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.name || "-"}
+              {task?.name || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.code || "-"}
+              {task?.project?.fullName || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.parentProject?.fullName || "-"}
+              {task.taskDate?.slice(0, 10) || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.clientPartner?.fullName || "-"}
+              {task?.status?.name || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.assignedTo?.fullName || "-"}
+              {task?.priority?.name || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.fromDate?.slice(0, 10) || "-"}
+              {task.taskDate || "-"}
             </TableCell>
             <TableCell align="center" style={cellWidth_10}>
-              {project.toDate?.slice(0, 10) || "-"}
-            </TableCell>
-            <TableCell align="center" style={{ cellWidth_5 }}>
-              {project.imputable === true ? <Check /> : <XCircle />}
-            </TableCell>
-            <TableCell align="center" style={{ cellWidth_10 }}>
-              {project.projectStatus?.name || "-"}
+              {task.targetVersion || "-"}
             </TableCell>
             <TableCell align="center">
-              <Link to={`${project.id}`}>
+              <Link to={`${task.id}`}>
                 <Button variant="contained" color="success">
                   <Edit />
                 </Button>
@@ -110,12 +107,7 @@ const TableContent = ({ data, setData }) => {
               <Button
                 variant="contained"
                 onClick={() =>
-                  handleClickOpen(
-                    project.id,
-                    project.version,
-                    project.name,
-                    setData
-                  )
+                  handleClickOpen(task.id, task.version, task.name, setData)
                 }
                 color="success"
               >

@@ -1,14 +1,15 @@
-import React from "react";
 import { TableCell, TableHead, TableRow } from "@mui/material";
-
-import { tableFields } from "app/services/services";
+import { taskTableFields } from "app/services/services";
+import { Tab } from "bootstrap";
+import React from "react";
 
 const TableHeader = () => {
   return (
     <>
       <TableHead>
         <TableRow>
-          {tableFields?.map((field, i) => {
+          <TableCell align="center">Id</TableCell>
+          {taskTableFields?.map((field, i) => {
             return (
               <TableCell
                 key={i}

@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import { Add } from "@mui/icons-material";
+import { Button, Typography } from "@mui/material";
 import { useTranslation } from "app/services/translate";
 import { useNavigate } from "react-router";
 
@@ -18,10 +18,11 @@ export function Projects() {
         variant="contained"
         color="success"
         onClick={() => {
-          navigate("/new");
+          navigate("/projects/new");
         }}
+        style={{ textTransform: "capitalize", margin: "1em" }}
       >
-        Create new project
+        <Add /> Create new project
       </Button>
       <ProjectTable />
     </>

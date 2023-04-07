@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Paper, Table, TableContainer } from "@mui/material";
+import { Container, Paper, Table, TableContainer } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -33,23 +33,32 @@ const ProjectTable = () => {
 
   return (
     <>
-      <TableContainer
-        style={{ padding: "20px", height: "450px" }}
-        component={Paper}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHeader />
-          {loading ? (
-            <CircularProgress />
-          ) : (
+      {loading ? (
+        <Container
+          style={{
+            height: "450px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </Container>
+      ) : (
+        <TableContainer
+          style={{ padding: "20px", height: "450px" }}
+          component={Paper}
+        >
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHeader />
             <TableContent
               data={projects}
               setData={setProjects}
               style={{ height: "50vh" }}
             />
-          )}
-        </Table>
-      </TableContainer>
+          </Table>
+        </TableContainer>
+      )}
       <div>
         <p>Total Items: {total}</p>
         <p>Page: {page}</p>

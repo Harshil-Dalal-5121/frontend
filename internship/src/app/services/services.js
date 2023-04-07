@@ -22,42 +22,63 @@ const tableFields = [
   "projectStatus",
 ];
 
+const taskTableFields = [
+  "ticketNumber",
+  "name",
+  "project",
+  "taskDate",
+  "status",
+  "priority",
+  "projectTaskCategory",
+  "targetVersion",
+];
+
+const getTasks = (LIMIT, page, setTasks, setTotal, setLoading) => {
+  const offset = (page - 1) * LIMIT;
+  rest
+    .post(`${model}Task/search`, {
+      fields: taskTableFields,
+      offset,
+      limit: LIMIT,
+    })
+    .then((response) => {
+      setTasks(response.data.data);
+      setTotal(response.data.total);
+      setLoading(false);
+    });
+};
+
 const navigate = (path) => {
   return <Navigate replace to={path} />;
 };
 
 const saveNewProject = (data) => {
-  navigate();
-  if (window.confirm(`Do you want to add this project ?`)) {
-    rest.post(
-      "ws/rest/com.axelor.apps.project.db.Project",
-      { data },
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-  }
+  rest.post(
+    // `${model}`,
+    { data },
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 
-const getProject = async (id, setData) => {
-  await rest
+const getProject = (id, setData) => {
+  rest
     .post(`${model}/${id}/fetch`, { fields: tableFields })
     .then(({ data }) => setData(data?.data[0]));
 };
 
 const deleteData = (id, version, name, setData) => {
-  if (window.confirm(`Do You want to delete record of ${name}?`)) {
-    rest
-      .post(`${model}/removeAll`, {
-        records: [{ id: id, version: version }],
-      })
-      .then(() => {
-        setData((prev) => prev.filter((project) => project.id !== id));
-      });
-  }
+  rest
+    .post(`${model}/removeAll`, {
+      records: [{ id: id, version: version, name: name }],
+    })
+    .then(() => {
+      setData((prev) => prev.filter((project) => project.id !== id));
+    });
 };
 
 export {
@@ -68,4 +89,6 @@ export {
   deleteData,
   navigate,
   getProject,
+  getTasks,
+  taskTableFields,
 };

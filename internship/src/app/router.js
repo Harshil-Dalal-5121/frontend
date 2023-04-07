@@ -18,7 +18,10 @@ export const router = createBrowserRouter([
             index: true,
             element: <Projects />,
           },
-
+          {
+            path: "new",
+            element: <Form />,
+          },
           {
             path: ":id",
             element: <Form />,
@@ -32,10 +35,6 @@ export const router = createBrowserRouter([
       {
         path: "tickets",
         element: <Tickets />,
-      },
-      {
-        path: "new",
-        element: <Form />,
       },
     ],
   },
