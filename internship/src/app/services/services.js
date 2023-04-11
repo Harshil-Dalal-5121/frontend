@@ -126,31 +126,26 @@ const deleteData = (id, version, name, setData) => {
     });
 };
 
-const handleSearch = (
-  LIMIT,
-  page,
-  setProjects,
-  setTotal,
-  setLoading,
-  search
-) => {
-  const offset = (page - 1) * LIMIT;
-  rest
-    .post(`${model}/search`, {
-      data: {
-        criteria: [{ fieldName: "name", operator: "like", value: search }],
-        operator: "or",
-      },
-      fields: tableFields,
-      offset,
-      limit: LIMIT,
-      sortBy: ["id"],
-    })
-    .then((response) => {
-      setProjects(response.data.data);
-      setTotal(response.data.total);
-      setLoading(false);
-    });
+const getProjects = async (reqBody) => {
+  try {
+    const response = await rest.post(` ${model}/search`, reqBody);
+    if (response && response.status !== -1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
+const handleSearch = async (data) => {
+  try {
+    const response = await rest.post(`${model}/search`, data);
+    if (response && response.status !== 1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
 };
 
 export {
@@ -159,6 +154,7 @@ export {
   tableFields,
   saveProject,
   deleteData,
+  getProjects,
   handleSearch,
   navigate,
   getProject,

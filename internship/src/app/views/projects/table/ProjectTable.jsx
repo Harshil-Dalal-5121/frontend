@@ -3,13 +3,10 @@ import { Container, Paper, Table, TableContainer } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { handleSearch, model, rest, tableFields } from "app/services/services";
-
 import ProjectTableHeader from "./ProjectTableHeader";
 import ProjectTableContent from "./ProjectTableContent";
 
 const LIMIT = 5;
-const timeout = 5000;
 
 const ProjectTable = ({
   search,
@@ -23,45 +20,9 @@ const ProjectTable = ({
   setTotal,
   setSearchParams,
 }) => {
-  const initialized = React.useRef();
-
   const handleChange = (event, value) => {
     setPage(value);
   };
-
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-    }
-
-    const offset = (page - 1) * LIMIT;
-    /**
-     * Make API request
-     */
-    if (!search || search === "") {
-      setLoading(true);
-      rest
-        .post(`${model}/search`, {
-          fields: tableFields,
-          offset,
-          limit: LIMIT,
-          sortBy: ["id"],
-        })
-        .then((response) => {
-          setProjects(response.data.data);
-          setTotal(response.data.total);
-          setLoading(false);
-        });
-    } else {
-      const timer = setTimeout(() => {
-        handleSearch(LIMIT, page, setProjects, setTotal, setLoading, search);
-      }, timeout);
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-    //search
-  }, [page, search, setLoading, setProjects, setTotal]);
 
   useEffect(() => {
     setSearchParams({ page, limit: LIMIT });

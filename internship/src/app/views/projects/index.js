@@ -1,12 +1,17 @@
 import { Add, Search } from "@mui/icons-material";
 import { Button, TextField, Typography } from "@mui/material";
-import { handleSearch } from "app/services/services";
+import { tableFields, handleSearch, getProjects } from "app/services/services";
+
 import { useTranslation } from "app/services/translate";
-import { useState } from "react";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 
 import ProjectTable from "./table/ProjectTable";
+
+const LIMIT = 5;
+const timeout = 5000;
 
 export function Projects() {
   const [projects, setProjects] = useState([]);
@@ -21,12 +26,77 @@ export function Projects() {
   const handleChange = (event) => {
     setSearch(event.target.value);
   };
+  const initialized = useRef();
+
+  const handleSearchSubmit = useCallback(async () => {
+    const offset = (page - 1) * LIMIT;
+    const reqBody = {
+      data: {
+        criteria: [{ fieldName: "name", operator: "like", value: search }],
+        operator: "or",
+      },
+      fields: tableFields,
+      offset,
+      limit: LIMIT,
+      sortBy: ["id"],
+    };
+
+    const data = await handleSearch(reqBody);
+
+    setProjects(data?.data?.data);
+    setTotal(data?.data?.total);
+    setLoading(false);
+  }, [page, search]);
+
+  const Projects = useCallback(async () => {
+    const offset = (page - 1) * LIMIT;
+    const reqBody = {
+      fields: tableFields,
+      offset,
+      limit: LIMIT,
+      sortBy: ["id"],
+    };
+
+    const response = await getProjects(reqBody);
+    if (response) {
+      setProjects(response?.data?.data);
+      setTotal(response?.data?.total);
+      setLoading(false);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+    }
+
+    if (!search || search === "") {
+      setLoading(true);
+      Projects();
+    } else {
+      const timer = setTimeout(() => {
+        handleSearchSubmit();
+      }, timeout);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [
+    Projects,
+    handleSearchSubmit,
+    page,
+    search,
+    setLoading,
+    setProjects,
+    setTotal,
+  ]);
 
   return (
     <>
       <legend>
         <Typography>{t("Projects")}</Typography>
       </legend>
+
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button
           variant="contained"
@@ -49,22 +119,11 @@ export function Projects() {
             variant="outlined"
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                handleSearch(
-                  5,
-                  page,
-                  setProjects,
-                  setTotal,
-                  setLoading,
-                  search
-                );
+                handleSearchSubmit();
               }
             }}
           />
-          <Button
-            onClick={() =>
-              handleSearch(5, page, setProjects, setTotal, setLoading, search)
-            }
-          >
+          <Button onClick={handleSearchSubmit}>
             <Search
               style={{ margin: "1em 1em 1em 0" }}
               variant="contained"
@@ -78,9 +137,9 @@ export function Projects() {
         projects={projects}
         loading={loading}
         total={total}
-        setProjects={setProjects}
         page={page}
         searchParams={searchParams}
+        setProjects={setProjects}
         setLoading={setLoading}
         setPage={setPage}
         setTotal={setTotal}
