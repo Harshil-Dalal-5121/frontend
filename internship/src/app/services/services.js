@@ -126,12 +126,40 @@ const deleteData = (id, version, name, setData) => {
     });
 };
 
+const handleSearch = (
+  LIMIT,
+  page,
+  setProjects,
+  setTotal,
+  setLoading,
+  search
+) => {
+  const offset = (page - 1) * LIMIT;
+  rest
+    .post(`${model}/search`, {
+      data: {
+        criteria: [{ fieldName: "name", operator: "like", value: search }],
+        operator: "or",
+      },
+      fields: tableFields,
+      offset,
+      limit: LIMIT,
+      sortBy: ["id"],
+    })
+    .then((response) => {
+      setProjects(response.data.data);
+      setTotal(response.data.total);
+      setLoading(false);
+    });
+};
+
 export {
   rest,
   model,
   tableFields,
   saveProject,
   deleteData,
+  handleSearch,
   navigate,
   getProject,
   getTasks,

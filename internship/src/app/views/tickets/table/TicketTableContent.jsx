@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { TableBody, TableCell, TableRow, TextField } from "@mui/material";
+import {
+  TableBody,
+  TableCell,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Container } from "@mui/system";
 
 const cellWidth_5 = {
   width: "5vw",
@@ -17,28 +24,9 @@ const TicketTableContent = ({ data, setData }) => {
   };
   return (
     <>
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan={12}>
-            <TextField
-              fullWidth
-              style={{ height: "30px" }}
-              id="search"
-              onChange={(e) => handleSearch(e)}
-              name="search"
-              label="Search Task"
-              variant="standard"
-              InputProps={{
-                disableUnderline: true,
-              }}
-            />
-          </TableCell>
-        </TableRow>
-        {data
-          ?.filter((ticket) =>
-            !search ? ticket : ticket?.name?.toLowerCase()?.includes(search)
-          )
-          .map((ticket, i) => (
+      {data ? (
+        <TableBody>
+          {data?.map((ticket, i) => (
             <TableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -73,7 +61,10 @@ const TicketTableContent = ({ data, setData }) => {
               </TableCell>
             </TableRow>
           ))}
-      </TableBody>
+        </TableBody>
+      ) : (
+        <Container>No Records</Container>
+      )}
     </>
   );
 };
