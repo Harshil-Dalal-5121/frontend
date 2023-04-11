@@ -17,6 +17,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { deleteData } from "app/services/services";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
+import { Container } from "@mui/system";
 
 const cellWidth_5 = {
   width: "5vw",
@@ -69,68 +70,73 @@ const ProjectTableContent = ({ data, setData, search }) => {
 
   return (
     <>
-      <TableBody>
-        {data?.map((project, i) => (
-          <TableRow
-            key={i}
-            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-          >
-            <TableCell align="center" style={cellWidth_5}>
-              {project.id}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {project.name || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {project.code || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {project.parentProject?.fullName || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {project.clientPartner?.fullName || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {project.assignedTo?.fullName || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {project.fromDate?.slice(0, 10) || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {project.toDate?.slice(0, 10) || "-"}
-            </TableCell>
-            <TableCell align="center" style={{ cellWidth_5 }}>
-              {project.imputable === true ? <Check /> : <XCircle />}
-            </TableCell>
-            <TableCell align="center" style={{ cellWidth_10 }}>
-              {project.projectStatus?.name || "-"}
-            </TableCell>
-            <TableCell align="center">
-              <Link to={`${project.id}`}>
-                <Button variant="contained" color="success">
-                  <Edit />
+      {data ? (
+        <TableBody>
+          {data?.map((project, i) => (
+            <TableRow
+              key={i}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell align="center" style={cellWidth_5}>
+                {project.id}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {project.name || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {project.code || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {project.parentProject?.fullName || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {project.clientPartner?.fullName || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {project.assignedTo?.fullName || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {project.fromDate?.slice(0, 10) || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {project.toDate?.slice(0, 10) || "-"}
+              </TableCell>
+              <TableCell align="center" style={{ cellWidth_5 }}>
+                {project.imputable === true ? <Check /> : <XCircle />}
+              </TableCell>
+              <TableCell align="center" style={{ cellWidth_10 }}>
+                {project.projectStatus?.name || "-"}
+              </TableCell>
+              <TableCell align="center">
+                <Link to={`${project.id}`}>
+                  <Button variant="contained" color="success">
+                    <Edit />
+                  </Button>
+                </Link>
+              </TableCell>
+              <TableCell align="center">
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    handleClickOpen(
+                      project.id,
+                      project.version,
+                      project.name,
+                      setData
+                    )
+                  }
+                  color="success"
+                >
+                  <Delete />
                 </Button>
-              </Link>
-            </TableCell>
-            <TableCell align="center">
-              <Button
-                variant="contained"
-                onClick={() =>
-                  handleClickOpen(
-                    project.id,
-                    project.version,
-                    project.name,
-                    setData
-                  )
-                }
-                color="success"
-              >
-                <Delete />
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      ) : (
+        <Container>No Records</Container>
+      )}
+
       <Dialog
         open={open}
         fullScreen={fullScreen}

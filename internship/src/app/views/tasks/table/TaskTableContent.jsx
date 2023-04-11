@@ -17,6 +17,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { deleteTask } from "app/services/services";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
+import { Container } from "@mui/system";
 
 const cellWidth_5 = {
   width: "5vw",
@@ -30,7 +31,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TaskTableContent = ({ data, setData, search }) => {
+const TaskTableContent = ({ data, setData }) => {
   const [open, setOpen] = useState(false);
 
   const [deleteProject, setDeleteProject] = useState({
@@ -77,61 +78,66 @@ const TaskTableContent = ({ data, setData, search }) => {
   };
   return (
     <>
-      <TableBody>
-        {data?.map((task, i) => (
-          <TableRow
-            key={i}
-            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            style={{ height: "70px" }}
-          >
-            <TableCell align="center" style={cellWidth_5}>
-              {task?.id || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_5}>
-              {task?.ticketNumber || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {task?.name || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {task?.project?.fullName || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {task.taskDate?.slice(0, 10) || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {task?.status?.name || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {task?.priority?.name || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {task?.projectTaskCategory || "-"}
-            </TableCell>
-            <TableCell align="center" style={cellWidth_10}>
-              {task?.targetVersion || "-"}
-            </TableCell>
-            <TableCell align="center">
-              <Link to={`${task.id}`}>
-                <Button variant="contained" color="success">
-                  <Edit />
+      {data ? (
+        <TableBody>
+          {data?.map((task, i) => (
+            <TableRow
+              key={i}
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              style={{ height: "70px" }}
+            >
+              <TableCell align="center" style={cellWidth_5}>
+                {task?.id || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_5}>
+                {task?.ticketNumber || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {task?.name || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {task?.project?.fullName || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {task.taskDate?.slice(0, 10) || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {task?.status?.name || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {task?.priority?.name || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {task?.projectTaskCategory || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {task?.targetVersion || "-"}
+              </TableCell>
+              <TableCell align="center">
+                <Link to={`${task.id}`}>
+                  <Button variant="contained" color="success">
+                    <Edit />
+                  </Button>
+                </Link>
+              </TableCell>
+              <TableCell align="center">
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    handleClickOpen(task.id, task.version, task.name, setData)
+                  }
+                  color="success"
+                >
+                  <Delete />
                 </Button>
-              </Link>
-            </TableCell>
-            <TableCell align="center">
-              <Button
-                variant="contained"
-                onClick={() =>
-                  handleClickOpen(task.id, task.version, task.name, setData)
-                }
-                color="success"
-              >
-                <Delete />
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      ) : (
+        <Container>No Records</Container>
+      )}
+
       <Dialog
         open={open}
         fullScreen={fullScreen}

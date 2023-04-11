@@ -155,8 +155,25 @@ const deleteTask = async (reqBody) => {
   }
 };
 
+const deleteTicket = async (reqBody) => {
+  const response = await rest.post(`${model}Task/removeAll`, reqBody);
+  if (response) {
+    return response;
+  }
+};
+
+const handleTicketSearch = async (data) => {
+  try {
+    const response = await rest.post(`${model}Task/search}`, data);
+    if (response && response.status !== 1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 const handleTaskSearch = async (data) => {
-  // http://188.165.230.109:8080/ws/rest/com.axelor.apps.project.db.ProjectTask/search
   try {
     const response = await rest.post(`${model}Task/search`, data);
     if (response && response.status !== 1) {
@@ -183,4 +200,6 @@ export {
   ticketTableFields,
   deleteTask,
   handleTaskSearch,
+  deleteTicket,
+  handleTicketSearch,
 };
