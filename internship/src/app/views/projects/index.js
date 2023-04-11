@@ -75,15 +75,15 @@ export function Projects() {
       </div>
       <ProjectTable
         search={search}
-        setProjects={setProjects}
         projects={projects}
         loading={loading}
-        setLoading={setLoading}
-        page={page}
-        setPage={setPage}
         total={total}
-        setTotal={setTotal}
+        setProjects={setProjects}
+        page={page}
         searchParams={searchParams}
+        setLoading={setLoading}
+        setPage={setPage}
+        setTotal={setTotal}
         setSearchParams={setSearchParams}
       />
     </>

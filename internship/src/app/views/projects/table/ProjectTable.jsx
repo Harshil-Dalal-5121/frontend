@@ -34,13 +34,12 @@ const ProjectTable = ({
       initialized.current = true;
     }
 
-    setLoading(true);
     const offset = (page - 1) * LIMIT;
     /**
      * Make API request
      */
     if (!search || search === "") {
-      console.log(search);
+      setLoading(true);
       rest
         .post(`${model}/search`, {
           fields: tableFields,
