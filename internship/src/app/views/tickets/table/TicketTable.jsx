@@ -6,15 +6,15 @@ import {
   Table,
   TableContainer,
 } from "@mui/material";
-import { getTasks } from "app/services/services";
+import { getTickets } from "app/services/services";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import TaskTableContent from "./TaskTableContent";
-import TaskTableHeader from "./TaskTableHeader";
+import TicketTableContent from "./TicketTableContent";
+import TicketTableHeader from "./TicketTableHeader";
 
 const LIMIT = 5;
 
-const TasksTable = () => {
+const TicketTable = () => {
   const [tasks, setTasks] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,7 +26,7 @@ const TasksTable = () => {
   };
 
   useEffect(() => {
-    getTasks(LIMIT, page, setTasks, setTotal, setLoading);
+    getTickets(LIMIT, page, setTasks, setTotal, setLoading);
   }, [page]);
   useEffect(() => {
     setSearchParams({ page, limit: LIMIT });
@@ -52,8 +52,8 @@ const TasksTable = () => {
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TaskTableHeader />
-              <TaskTableContent
+              <TicketTableHeader />
+              <TicketTableContent
                 data={tasks}
                 setData={setTasks}
                 style={{ height: "50vh" }}
@@ -75,4 +75,4 @@ const TasksTable = () => {
   );
 };
 
-export default TasksTable;
+export default TicketTable;

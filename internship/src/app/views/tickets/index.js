@@ -2,13 +2,16 @@ import Typography from "@mui/material/Typography";
 
 import { useTranslation } from "app/services/translate";
 
-export function Tickets() {
+import TicketTable from "./table/TicketTable";
+
+export function Tasks() {
   const { t } = useTranslation();
   return (
     <>
-      <Typography>{t("Tickets")}</Typography>
+      <Typography>{t("Tasks")}</Typography>
+      <TicketTable />
     </>
   );
 }
 
-export default Tickets;
+export default Tasks;

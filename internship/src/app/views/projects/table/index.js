@@ -1,3 +1,3 @@
 export * from "./ProjectTable";
-export * from "./TableContent";
-export * from "./TableHeader";
+export * from "./ProjectTableContent";
+export * from "./ProjectTableHeader";

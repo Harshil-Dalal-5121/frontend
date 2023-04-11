@@ -18,7 +18,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getProject, saveNewProject } from "app/services/services";
+import { getProject, saveProject } from "app/services/services";
 import { useNavigate, useParams } from "react-router";
 
 const intialValues = {
@@ -86,7 +86,7 @@ const Form = () => {
   };
   const handleSave = () => {
     setOpen(false);
-    saveNewProject(formData);
+    saveProject(formData);
     navigate("/projects");
   };
   const validateForm = () => {
@@ -123,6 +123,9 @@ const Form = () => {
       ) : (
         <>
           <Container>
+            <Typography component="h3" variant="h3" align="center">
+              {id ? "Update Project Data" : "Add a new Project"}
+            </Typography>
             <form id="form" onSubmit={handleSubmit}>
               <Grid
                 container
@@ -133,21 +136,19 @@ const Form = () => {
                 alignItems="center"
               >
                 <Grid item xs={12} sm={8}>
-                  <Typography style={{ margin: "5px" }}> Name:</Typography>
                   <TextField
                     fullWidth
                     id="name"
                     name="name"
                     error={errors?.name ? true : false}
                     helperText={errors?.name ? `${errors.name}` : ""}
-                    value={formData.name}
+                    value={formData.name || ""}
                     onChange={handleChange}
                     label="Add Name"
                     variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <Typography style={{ margin: "5px" }}>Code :</Typography>
                   <TextField
                     fullWidth
                     id="code"
@@ -155,14 +156,13 @@ const Form = () => {
                     error={errors?.code ? true : false}
                     helperText={errors?.code ? `${errors.code}` : ""}
                     onChange={handleChange}
-                    value={formData.code}
+                    value={formData.code || ""}
                     label="Add Code"
                     variant="outlined"
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={8}>
-                  <Typography style={{ margin: "5px" }}>From Date: </Typography>
                   <TextField
                     fullWidth
                     id="fromDate"
@@ -172,11 +172,10 @@ const Form = () => {
                     onChange={handleChange}
                     type="date"
                     variant="outlined"
-                    value={formData.fromDate?.slice(0, 10)}
+                    value={formData.fromDate?.slice(0, 10) || ""}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <Typography style={{ margin: "5px" }}>To Date :</Typography>
                   <TextField
                     fullWidth
                     id="toDate"
@@ -186,12 +185,12 @@ const Form = () => {
                     onChange={handleChange}
                     type="date"
                     variant="outlined"
-                    value={formData.toDate?.slice(0, 10)}
+                    value={formData.toDate?.slice(0, 10) || ""}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <Typography style={{ margin: "5px" }}>
-                    Imputable :{" "}
+                  <Typography style={{ margin: "10px" }}>
+                    Imputable :
                   </Typography>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Switch
