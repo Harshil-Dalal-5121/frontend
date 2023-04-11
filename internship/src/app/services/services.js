@@ -43,6 +43,9 @@ const ticketTableFields = [
   "projectTaskCategory",
   "targetVersion",
 ];
+const navigate = (path) => {
+  return <Navigate replace to={path} />;
+};
 
 const getTasks = (LIMIT, page, setTasks, setTotal, setLoading) => {
   setLoading(true);
@@ -91,10 +94,6 @@ const getTickets = (LIMIT, page, setTasks, setTotal, setLoading) => {
       setTotal(response.data.total);
       setLoading(false);
     });
-};
-
-const navigate = (path) => {
-  return <Navigate replace to={path} />;
 };
 
 const saveProject = (data) => {
@@ -148,6 +147,26 @@ const handleSearch = async (data) => {
   }
 };
 
+const deleteTask = async (reqBody) => {
+  const response = await rest.post(`${model}Task/removeAll`, reqBody);
+
+  if (response && response.status !== -1) {
+    return response;
+  }
+};
+
+const handleTaskSearch = async (data) => {
+  // http://188.165.230.109:8080/ws/rest/com.axelor.apps.project.db.ProjectTask/search
+  try {
+    const response = await rest.post(`${model}Task/search`, data);
+    if (response && response.status !== 1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   rest,
   model,
@@ -162,4 +181,6 @@ export {
   taskTableFields,
   getTickets,
   ticketTableFields,
+  deleteTask,
+  handleTaskSearch,
 };

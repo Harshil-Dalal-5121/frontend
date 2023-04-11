@@ -6,28 +6,30 @@ import {
   Table,
   TableContainer,
 } from "@mui/material";
-import { getTasks } from "app/services/services";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect } from "react";
+
 import TaskTableContent from "./TaskTableContent";
 import TaskTableHeader from "./TaskTableHeader";
 
 const LIMIT = 5;
 
-const TasksTable = () => {
-  const [tasks, setTasks] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const [loading, setLoading] = useState(false);
-
+const TasksTable = ({
+  tasks,
+  setTasks,
+  page,
+  setPage,
+  search,
+  searchParams,
+  setSearchParams,
+  loading,
+  setLoading,
+  total,
+  setTotal,
+}) => {
   const handleChange = (event, value) => {
     setPage(value);
   };
 
-  useEffect(() => {
-    getTasks(LIMIT, page, setTasks, setTotal, setLoading);
-  }, [page]);
   useEffect(() => {
     setSearchParams({ page, limit: LIMIT });
   }, [page, setSearchParams]);

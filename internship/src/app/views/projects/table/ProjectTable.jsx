@@ -13,11 +13,9 @@ const ProjectTable = ({
   setProjects,
   projects,
   loading,
-  setLoading,
   page,
   setPage,
   total,
-  setTotal,
   setSearchParams,
 }) => {
   const handleChange = (event, value) => {

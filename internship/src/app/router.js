@@ -5,6 +5,7 @@ import Projects from "app/views/projects";
 import Tasks from "app/views/tasks";
 import Tickets from "app/views/tickets";
 import Form from "./views/form/Form";
+import TaskForm from "./views/form/TaskForm";
 
 export const router = createBrowserRouter([
   {
@@ -30,7 +31,20 @@ export const router = createBrowserRouter([
       },
       {
         path: "tasks",
-        element: <Tasks />,
+        children: [
+          {
+            index: true,
+            element: <Tasks />,
+          },
+          {
+            path: "new",
+            element: <TaskForm />,
+          },
+          {
+            path: ":id",
+            element: <TaskForm />,
+          },
+        ],
       },
       {
         path: "tickets",

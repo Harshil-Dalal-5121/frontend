@@ -140,9 +140,7 @@ export function Projects() {
         page={page}
         searchParams={searchParams}
         setProjects={setProjects}
-        setLoading={setLoading}
         setPage={setPage}
-        setTotal={setTotal}
         setSearchParams={setSearchParams}
       />
     </>
