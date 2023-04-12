@@ -15,14 +15,9 @@ import TicketTableHeader from "./TicketTableHeader";
 const LIMIT = 5;
 
 const TicketTable = ({
-  search,
   tickets,
   loading,
-  setLoading,
-  setSearch,
   total,
-  setTotal,
-  searchParams,
   setTickets,
   page,
   setPage,

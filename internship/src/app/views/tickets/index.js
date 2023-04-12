@@ -102,7 +102,7 @@ export function Tickets() {
           variant="contained"
           color="success"
           onClick={() => {
-            navigate("/ticket/new");
+            navigate("/tickets/new");
           }}
           style={{ textTransform: "capitalize", margin: "1em" }}
         >

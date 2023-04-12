@@ -47,7 +47,6 @@ const TicketTableContent = ({ data, setData }) => {
     };
 
     await deleteTicket(reqBody);
-
     setData((prev) => prev.filter((ticket) => ticket.id !== id));
   };
 

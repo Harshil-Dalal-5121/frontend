@@ -109,6 +109,70 @@ const getProjects = async (reqBody) => {
   }
 };
 
+const getOptions = async (setData) => {
+  try {
+    const response = await rest.post(` ${model}/search`, {
+      data: {
+        _domain: "self.projectStatus.isCompleted = false",
+        _domainContext: {
+          _project: null,
+          _projectIds: [0],
+          _typeSelect: "ticket",
+          toInvoice: false,
+          hasDateOrFrequencyChanged: false,
+          "project.isShowStatus": true,
+          discountAmount: "0",
+          typeSelect: "ticket",
+          isFirst: true,
+          progressSelect: 0,
+          unitPrice: "0",
+          plannedProgress: "0",
+          invoiced: false,
+          isTaskRefused: false,
+          isPaid: false,
+          "project.isShowTimeSpent": false,
+          totalRealHrs: "0",
+          "project.isShowFrequency": false,
+          "project.isShowTaskCategory": true,
+          isPrivate: false,
+          doApplyToAllNextTasks: false,
+          discountTypeSelect: 3,
+          "project.isShowProgress": true,
+          "project.invoicingSequenceSelect": 0,
+          isOrderAccepted: false,
+          quantity: "0",
+          assignment: 2,
+          "project.isShowPlanning": true,
+          isOrderProposed: false,
+          exTaxTotal: "0",
+          totalPlannedHrs: "0",
+          invoicingType: "",
+          "project.isShowSection": true,
+          priceDiscounted: "0",
+          budgetedTime: "0",
+          "project.isShowPriority": true,
+          taskDate: "2023-04-12",
+          project: null,
+          assignedTo: {
+            code: "admin",
+            fullName: "Admin",
+            id: "1",
+          },
+          attrs: "{}",
+          _model: "com.axelor.apps.project.db.ProjectTask",
+        },
+      },
+      fields: ["id", "fullName", "name", "code"],
+      limit: 10,
+    });
+    if (response && response.status !== -1) {
+      setData(response?.data?.data);
+    }
+  } catch (error) {
+    return console.log(error);
+  }
+};
+
 const handleSearch = async (data) => {
   try {
     const response = await rest.post(`${model}/search`, data);
@@ -176,4 +240,5 @@ export {
   deleteTicket,
   handleTaskSearch,
   handleTicketSearch,
+  getOptions,
 };
