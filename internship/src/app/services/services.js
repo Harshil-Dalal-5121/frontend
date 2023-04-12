@@ -47,53 +47,26 @@ const navigate = (path) => {
   return <Navigate replace to={path} />;
 };
 
-const getTasks = (LIMIT, page, setTasks, setTotal, setLoading) => {
-  setLoading(true);
-  const offset = (page - 1) * LIMIT;
-  rest
-    .post(`${model}Task/search`, {
-      data: {
-        _domain: "self.typeSelect = :_typeSelect",
-        _domainContext: {
-          _typeSelect: "task",
-          _model: "com.axelor.apps.project.db.ProjectTask",
-        },
-      },
-      fields: taskTableFields,
-      offset,
-      limit: LIMIT,
-    })
-    .then((response) => {
-      setTasks(response.data.data);
-      setTotal(response.data.total);
-      setLoading(false);
-    });
+const getTasks = async (reqBody) => {
+  try {
+    const response = await rest.post(` ${model}Task/search`, reqBody);
+    if (response && response.status !== -1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
 };
 
-const getTickets = (LIMIT, page, setTasks, setTotal, setLoading) => {
-  setLoading(true);
-  const offset = (page - 1) * LIMIT;
-  rest
-    .post(`${model}Task/search`, {
-      data: {
-        _domain:
-          "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet",
-        _domainContext: {
-          _project: null,
-          _projectIds: [0],
-          _typeSelect: "ticket",
-          _model: "com.axelor.apps.project.db.ProjectTask",
-        },
-      },
-      fields: ticketTableFields,
-      offset,
-      limit: LIMIT,
-    })
-    .then((response) => {
-      setTasks(response.data.data);
-      setTotal(response.data.total);
-      setLoading(false);
-    });
+const getTickets = async (reqBody) => {
+  try {
+    const response = await rest.post(`${model}Task/search`, reqBody);
+    if (response) {
+      return response;
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const saveProject = (data) => {
@@ -155,13 +128,6 @@ const deleteTask = async (reqBody) => {
   }
 };
 
-const deleteTicket = async (reqBody) => {
-  const response = await rest.post(`${model}Task/removeAll`, reqBody);
-  if (response) {
-    return response;
-  }
-};
-
 const handleTicketSearch = async (data) => {
   try {
     const response = await rest.post(`${model}Task/search}`, data);
@@ -200,6 +166,5 @@ export {
   ticketTableFields,
   deleteTask,
   handleTaskSearch,
-  deleteTicket,
   handleTicketSearch,
 };

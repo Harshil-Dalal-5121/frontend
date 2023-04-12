@@ -4,8 +4,7 @@ import { Add, Search } from "@mui/icons-material";
 import {
   taskTableFields,
   handleTaskSearch,
-  rest,
-  model,
+  getTasks,
 } from "app/services/services";
 import { useTranslation } from "app/services/translate";
 import { useNavigate } from "react-router";
@@ -23,28 +22,17 @@ export function Tasks() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
   const [loading, setLoading] = useState(false);
-  const { t } = useTranslation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleChange = (event) => {
     setSearch(event.target.value);
   };
 
   const initialized = useRef();
-
-  const getTasks = async (reqBody) => {
-    try {
-      const response = await rest.post(` ${model}Task/search`, reqBody);
-      if (response && response.status !== -1) {
-        return response;
-      }
-    } catch (error) {
-      return error;
-    }
-  };
+  const offset = (page - 1) * LIMIT;
 
   const handleSearchSubmit = useCallback(async () => {
-    const offset = (page - 1) * LIMIT;
     const reqBody = {
       data: {
         criteria: [
@@ -67,10 +55,9 @@ export function Tasks() {
     setTasks(data?.data?.data);
     setTotal(data?.data?.total);
     setLoading(false);
-  }, [page, search]);
+  }, [offset, search]);
 
   const Tasks = useCallback(async () => {
-    const offset = (page - 1) * LIMIT;
     const reqBody = {
       data: {
         criteria: [],
@@ -96,7 +83,7 @@ export function Tasks() {
       setTotal(response?.data?.total);
       setLoading(false);
     }
-  }, [page]);
+  }, [offset]);
 
   useEffect(() => {
     if (!initialized.current) {
@@ -114,7 +101,7 @@ export function Tasks() {
         clearTimeout(timer);
       };
     }
-  }, [Tasks, handleSearchSubmit, page, search, setLoading, setTasks, setTotal]);
+  }, [Tasks, handleSearchSubmit, search]);
 
   return (
     <>
