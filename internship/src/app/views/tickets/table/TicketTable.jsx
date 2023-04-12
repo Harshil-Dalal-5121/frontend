@@ -41,7 +41,7 @@ const TicketTable = ({
       {loading ? (
         <Container
           style={{
-            height: "500px",
+            height: "450px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -52,7 +52,7 @@ const TicketTable = ({
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "500px" }}
+            style={{ padding: "15px", height: "450px" }}
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">

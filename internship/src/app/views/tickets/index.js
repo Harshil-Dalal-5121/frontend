@@ -94,7 +94,9 @@ export function Tickets() {
 
   return (
     <>
-      <Typography>{t("Tickets")}</Typography>
+      <legend>
+        <Typography>{t("Tickets")}</Typography>
+      </legend>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button
           variant="contained"

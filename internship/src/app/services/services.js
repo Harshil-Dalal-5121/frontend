@@ -128,6 +128,14 @@ const deleteTask = async (reqBody) => {
   }
 };
 
+const deleteTicket = async (reqBody) => {
+  const response = await rest.post(`${model}Task/removeAll`, reqBody);
+
+  if (response && response.status !== -1) {
+    return response;
+  }
+};
+
 const handleTicketSearch = async (data) => {
   try {
     const response = await rest.post(`${model}Task/search}`, data);
@@ -165,6 +173,7 @@ export {
   getTickets,
   ticketTableFields,
   deleteTask,
+  deleteTicket,
   handleTaskSearch,
   handleTicketSearch,
 };

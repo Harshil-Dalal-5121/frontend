@@ -35,7 +35,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Tickets />,
+            element: <Tasks />,
           },
           {
             path: "new",
@@ -52,7 +52,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Tasks />,
+            element: <Tickets />,
           },
           {
             path: "new",

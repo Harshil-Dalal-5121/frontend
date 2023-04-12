@@ -20,11 +20,11 @@ import { useTheme } from "@emotion/react";
 import { Container } from "@mui/system";
 
 const cellWidth_5 = {
-  width: "5vw",
+  width: "10vw",
 };
 
 const cellWidth_10 = {
-  width: "10vw",
+  width: "15vw",
 };
 
 const Transition = forwardRef(function Transition(props, ref) {
