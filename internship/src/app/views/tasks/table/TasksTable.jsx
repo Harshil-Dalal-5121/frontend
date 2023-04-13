@@ -6,28 +6,26 @@ import {
   Table,
   TableContainer,
 } from "@mui/material";
-import { getTasks } from "app/services/services";
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect } from "react";
+
 import TaskTableContent from "./TaskTableContent";
 import TaskTableHeader from "./TaskTableHeader";
 
 const LIMIT = 5;
 
-const TasksTable = () => {
-  const [tasks, setTasks] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const [loading, setLoading] = useState(false);
-
+const TasksTable = ({
+  tasks,
+  setTasks,
+  page,
+  setPage,
+  setSearchParams,
+  loading,
+  total,
+}) => {
   const handleChange = (event, value) => {
     setPage(value);
   };
 
-  useEffect(() => {
-    getTasks(LIMIT, page, setTasks, setTotal, setLoading);
-  }, [page]);
   useEffect(() => {
     setSearchParams({ page, limit: LIMIT });
   }, [page, setSearchParams]);
@@ -37,7 +35,7 @@ const TasksTable = () => {
       {loading ? (
         <Container
           style={{
-            height: "500px",
+            height: "450px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -48,7 +46,7 @@ const TasksTable = () => {
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "500px" }}
+            style={{ padding: "15px", height: "450px" }}
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">

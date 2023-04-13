@@ -212,7 +212,7 @@ const TicketForm = () => {
       getTicket(id, setFormData);
     }
   }, [id]);
-  console.log(formData?.project?.fullName);
+  console.log(formData);
 
   const handleChange = (e) => {
     const { name, value } = e.target || {};
@@ -231,6 +231,8 @@ const TicketForm = () => {
     }
     console.log(errors);
   };
+
+  console.log(verify);
 
   const handleClose = () => {
     setOpen(false);
@@ -319,13 +321,11 @@ const TicketForm = () => {
                   fullWidth
                   id="project"
                   name="project"
+                  value={formData.project}
                   options={projectOptions}
                   getOptionLabel={(option) => {
-                    return option.name;
+                    return option.fullName || "";
                   }}
-                  isOptionEqualToValue={(option, value) =>
-                    option.fullName === value.fullName
-                  }
                   onChange={(e, newValue) => {
                     setFormData({
                       ...formData,
@@ -362,13 +362,11 @@ const TicketForm = () => {
                   fullWidth
                   id="priority"
                   name="priority"
+                  value={formData.priority}
                   options={priority}
                   getOptionLabel={(option) => {
-                    return option.name;
+                    return option.name || "";
                   }}
-                  isOptionEqualToValue={(option, value) =>
-                    option.name === value.name
-                  }
                   onChange={(e, newValue) => {
                     setFormData({
                       ...formData,

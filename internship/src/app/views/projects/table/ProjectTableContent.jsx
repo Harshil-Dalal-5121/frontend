@@ -11,13 +11,13 @@ import {
   DialogTitle,
   Slide,
   useMediaQuery,
-  TextField,
 } from "@mui/material";
 import { Check, XCircle } from "react-bootstrap-icons";
 import { Delete, Edit } from "@mui/icons-material";
 import { deleteData } from "app/services/services";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
+import { Container } from "@mui/system";
 
 const cellWidth_5 = {
   width: "5vw",
@@ -31,9 +31,8 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ProjectTableContent = ({ data, setData }) => {
+const ProjectTableContent = ({ data, setData, search }) => {
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState();
 
   const [deleteProject, setDeleteProject] = useState({
     id: "",
@@ -56,42 +55,24 @@ const ProjectTableContent = ({ data, setData }) => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleDelete = () => {
     const { name, id, version, setData } = deleteProject;
     deleteData(id, version, name, setData);
+    setOpen(false);
+  };
+
+  const handleClose = () => {
     setOpen(false);
   };
   const handleCancel = () => {
     setOpen(false);
   };
 
-  const handleSearch = (e) => {
-    setTimeout(() => setSearch(e.target.value), 1000);
-  };
   return (
     <>
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan={12}>
-            <TextField
-              fullWidth
-              id="search"
-              style={{ height: "30px" }}
-              onChange={(e) => handleSearch(e)}
-              name="search"
-              label="Search Project"
-              variant="standard"
-              InputProps={{
-                disableUnderline: true,
-              }}
-            />
-          </TableCell>
-        </TableRow>
-        {data
-          ?.filter((task) =>
-            !search ? task : task?.name?.toLowerCase()?.includes(search)
-          )
-          ?.map((project, i) => (
+      {data ? (
+        <TableBody>
+          {data?.map((project, i) => (
             <TableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -151,7 +132,11 @@ const ProjectTableContent = ({ data, setData }) => {
               </TableCell>
             </TableRow>
           ))}
-      </TableBody>
+        </TableBody>
+      ) : (
+        <Container>No Records</Container>
+      )}
+
       <Dialog
         open={open}
         fullScreen={fullScreen}
@@ -172,7 +157,7 @@ const ProjectTableContent = ({ data, setData }) => {
           <Button onClick={handleCancel} variant="outlined">
             Cancel
           </Button>
-          <Button onClick={handleClose} variant="contained" color="error">
+          <Button onClick={handleDelete} variant="contained" color="error">
             Delete
           </Button>
         </DialogActions>
