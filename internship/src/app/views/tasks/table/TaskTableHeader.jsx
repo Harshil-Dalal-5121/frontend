@@ -20,9 +20,6 @@ const TaskTableHeader = () => {
               </TableCell>
             );
           })}
-          <TableCell align="center" colSpan={2}>
-            Operations
-          </TableCell>
         </TableRow>
       </TableHead>
     </>

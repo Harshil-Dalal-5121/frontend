@@ -123,7 +123,12 @@ const Form = () => {
       ) : (
         <>
           <Container>
-            <Typography component="h3" variant="h3" align="center">
+            <Typography
+              component="h3"
+              variant="h3"
+              style={{ fontFamily: "'Tilt Neon',cursive" }}
+              align="center"
+            >
               {id ? "Update Project Data" : "Add a new Project"}
             </Typography>
             <form id="form" onSubmit={handleSubmit}>
@@ -136,6 +141,7 @@ const Form = () => {
                 alignItems="center"
               >
                 <Grid item xs={12} sm={8}>
+                  <Typography style={{ margin: "10px" }}> Name:</Typography>
                   <TextField
                     fullWidth
                     id="name"
@@ -149,6 +155,7 @@ const Form = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
+                  <Typography style={{ margin: "10px" }}>Code :</Typography>
                   <TextField
                     fullWidth
                     id="code"
@@ -163,6 +170,9 @@ const Form = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={8}>
+                  <Typography style={{ margin: "10px" }}>
+                    From Date:{" "}
+                  </Typography>
                   <TextField
                     fullWidth
                     id="fromDate"
@@ -176,6 +186,7 @@ const Form = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
+                  <Typography style={{ margin: "10px" }}>To Date :</Typography>
                   <TextField
                     fullWidth
                     id="toDate"
@@ -190,7 +201,7 @@ const Form = () => {
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <Typography style={{ margin: "10px" }}>
-                    Imputable :
+                    Imputable :{" "}
                   </Typography>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Switch

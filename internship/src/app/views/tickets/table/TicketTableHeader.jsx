@@ -20,9 +20,6 @@ const TicketTableHeader = () => {
               </TableCell>
             );
           })}
-          <TableCell colSpan={2} align="center">
-            Operations
-          </TableCell>
         </TableRow>
       </TableHead>
     </>

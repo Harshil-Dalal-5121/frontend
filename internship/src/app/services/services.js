@@ -42,50 +42,64 @@ const ticketTableFields = [
   "priority",
   "projectTaskCategory",
   "targetVersion",
-  "progressSelect",
 ];
+
+const getTasks = (LIMIT, page, setTasks, setTotal, setLoading) => {
+  setLoading(true);
+  const offset = (page - 1) * LIMIT;
+  rest
+    .post(`${model}Task/search`, {
+      data: {
+        _domain: "self.typeSelect = :_typeSelect",
+        _domainContext: {
+          _typeSelect: "task",
+          _model: "com.axelor.apps.project.db.ProjectTask",
+        },
+      },
+      fields: taskTableFields,
+      offset,
+      limit: LIMIT,
+    })
+    .then((response) => {
+      setTasks(response.data.data);
+      setTotal(response.data.total);
+      setLoading(false);
+    });
+};
+
+const getTickets = (LIMIT, page, setTasks, setTotal, setLoading) => {
+  setLoading(true);
+  const offset = (page - 1) * LIMIT;
+  rest
+    .post(`${model}Task/search`, {
+      data: {
+        _domain:
+          "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet",
+        _domainContext: {
+          _project: null,
+          _projectIds: [0],
+          _typeSelect: "ticket",
+          _model: "com.axelor.apps.project.db.ProjectTask",
+        },
+      },
+      fields: ticketTableFields,
+      offset,
+      limit: LIMIT,
+    })
+    .then((response) => {
+      setTasks(response.data.data);
+      setTotal(response.data.total);
+      setLoading(false);
+    });
+};
+
 const navigate = (path) => {
   return <Navigate replace to={path} />;
 };
 
-const getTasks = async (reqBody) => {
-  try {
-    const response = await rest.post(` ${model}Task/search`, reqBody);
-    if (response && response.data.status !== -1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
-const getTickets = async (reqBody) => {
-  try {
-    const response = await rest.post(`${model}Task/search`, reqBody);
-    if (response) {
-      return response;
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 const saveProject = (data) => {
   rest.post(
-    `${model}`,
-    { data },
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }
-  );
-};
-
-const saveTicket = (data) => {
-  rest.post(
-    // `${model}Task`,
+    // `${model}`,
     { data },
     {
       headers: {
@@ -102,12 +116,6 @@ const getProject = (id, setData) => {
     .then(({ data }) => setData(data?.data[0]));
 };
 
-const getTicket = (id, setData) => {
-  rest
-    .post(`${model}Task/${id}/fetch`, { fields: ticketTableFields })
-    .then(({ data }) => setData(data?.data[0]));
-};
-
 const deleteData = (id, version, name, setData) => {
   rest
     .post(`${model}/removeAll`, {
@@ -118,108 +126,16 @@ const deleteData = (id, version, name, setData) => {
     });
 };
 
-const getProjects = async (reqBody) => {
-  try {
-    const response = await rest.post(` ${model}/search`, reqBody);
-    if (response && response.data.status !== -1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
-const getPriority = async (setData, reqBody) => {
-  try {
-    const response = await rest.post(` ${model}Priority/search`, reqBody);
-    if (response && response.data.status !== -1) {
-      setData(response?.data?.data);
-    }
-  } catch (error) {
-    return console.log(error);
-  }
-};
-
-const getOptions = async (setData, reqBody) => {
-  try {
-    const response = await rest.post(` ${model}/search`, reqBody);
-    if (response && response.data.status !== -1) {
-      setData(response?.data?.data);
-    }
-  } catch (error) {
-    return console.log(error);
-  }
-};
-
-const handleSearch = async (data) => {
-  try {
-    const response = await rest.post(`${model}/search`, data);
-    if (response && response.data.status !== 1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
-const deleteTask = async (reqBody) => {
-  const response = await rest.post(`${model}Task/removeAll`, reqBody);
-
-  if (response && response.data.status !== -1) {
-    return response;
-  }
-};
-
-const deleteTicket = async (reqBody) => {
-  const response = await rest.post(`${model}Task/removeAll`, reqBody);
-
-  if (response && response.data.status !== -1) {
-    return response;
-  }
-};
-
-const handleTicketSearch = async (data) => {
-  try {
-    const response = await rest.post(`${model}Task/search`, data);
-    if (response && response.data.status !== 1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
-const handleTaskSearch = async (data) => {
-  try {
-    const response = await rest.post(`${model}Task/search`, data);
-    if (response && response.data.status !== 1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
 export {
   rest,
   model,
   tableFields,
   saveProject,
   deleteData,
-  getProjects,
-  handleSearch,
   navigate,
   getProject,
   getTasks,
   taskTableFields,
   getTickets,
   ticketTableFields,
-  deleteTask,
-  saveTicket,
-  deleteTicket,
-  handleTaskSearch,
-  handleTicketSearch,
-  getOptions,
-  getPriority,
-  getTicket,
 };

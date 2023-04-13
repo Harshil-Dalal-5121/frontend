@@ -6,27 +6,28 @@ import {
   Table,
   TableContainer,
 } from "@mui/material";
-
-import React, { useEffect } from "react";
-
+import { getTickets } from "app/services/services";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import TicketTableContent from "./TicketTableContent";
 import TicketTableHeader from "./TicketTableHeader";
 
 const LIMIT = 5;
 
-const TicketTable = ({
-  tickets,
-  loading,
-  total,
-  setTickets,
-  page,
-  setPage,
-  setSearchParams,
-}) => {
+const TicketTable = () => {
+  const [tasks, setTasks] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = useState(Number(searchParams.get("page") || 1));
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (event, value) => {
     setPage(value);
   };
 
+  useEffect(() => {
+    getTickets(LIMIT, page, setTasks, setTotal, setLoading);
+  }, [page]);
   useEffect(() => {
     setSearchParams({ page, limit: LIMIT });
   }, [page, setSearchParams]);
@@ -36,7 +37,7 @@ const TicketTable = ({
       {loading ? (
         <Container
           style={{
-            height: "450px",
+            height: "500px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -47,14 +48,14 @@ const TicketTable = ({
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "450px" }}
+            style={{ padding: "15px", height: "500px" }}
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TicketTableHeader />
               <TicketTableContent
-                data={tickets}
-                setData={setTickets}
+                data={tasks}
+                setData={setTasks}
                 style={{ height: "50vh" }}
               />
             </Table>
