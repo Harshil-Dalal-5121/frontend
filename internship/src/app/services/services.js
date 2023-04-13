@@ -42,6 +42,7 @@ const ticketTableFields = [
   "priority",
   "projectTaskCategory",
   "targetVersion",
+  "progressSelect",
 ];
 const navigate = (path) => {
   return <Navigate replace to={path} />;
@@ -50,7 +51,7 @@ const navigate = (path) => {
 const getTasks = async (reqBody) => {
   try {
     const response = await rest.post(` ${model}Task/search`, reqBody);
-    if (response && response.status !== -1) {
+    if (response && response.data.status !== -1) {
       return response;
     }
   } catch (error) {
@@ -82,9 +83,28 @@ const saveProject = (data) => {
   );
 };
 
+const saveTicket = (data) => {
+  rest.post(
+    // `${model}Task`,
+    { data },
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }
+  );
+};
+
 const getProject = (id, setData) => {
   rest
     .post(`${model}/${id}/fetch`, { fields: tableFields })
+    .then(({ data }) => setData(data?.data[0]));
+};
+
+const getTicket = (id, setData) => {
+  rest
+    .post(`${model}Task/${id}/fetch`, { fields: ticketTableFields })
     .then(({ data }) => setData(data?.data[0]));
 };
 
@@ -101,7 +121,7 @@ const deleteData = (id, version, name, setData) => {
 const getProjects = async (reqBody) => {
   try {
     const response = await rest.post(` ${model}/search`, reqBody);
-    if (response && response.status !== -1) {
+    if (response && response.data.status !== -1) {
       return response;
     }
   } catch (error) {
@@ -109,63 +129,21 @@ const getProjects = async (reqBody) => {
   }
 };
 
-const getOptions = async (setData) => {
+const getPriority = async (setData, reqBody) => {
   try {
-    const response = await rest.post(` ${model}/search`, {
-      data: {
-        _domain: "self.projectStatus.isCompleted = false",
-        _domainContext: {
-          _project: null,
-          _projectIds: [0],
-          _typeSelect: "ticket",
-          toInvoice: false,
-          hasDateOrFrequencyChanged: false,
-          "project.isShowStatus": true,
-          discountAmount: "0",
-          typeSelect: "ticket",
-          isFirst: true,
-          progressSelect: 0,
-          unitPrice: "0",
-          plannedProgress: "0",
-          invoiced: false,
-          isTaskRefused: false,
-          isPaid: false,
-          "project.isShowTimeSpent": false,
-          totalRealHrs: "0",
-          "project.isShowFrequency": false,
-          "project.isShowTaskCategory": true,
-          isPrivate: false,
-          doApplyToAllNextTasks: false,
-          discountTypeSelect: 3,
-          "project.isShowProgress": true,
-          "project.invoicingSequenceSelect": 0,
-          isOrderAccepted: false,
-          quantity: "0",
-          assignment: 2,
-          "project.isShowPlanning": true,
-          isOrderProposed: false,
-          exTaxTotal: "0",
-          totalPlannedHrs: "0",
-          invoicingType: "",
-          "project.isShowSection": true,
-          priceDiscounted: "0",
-          budgetedTime: "0",
-          "project.isShowPriority": true,
-          taskDate: "2023-04-12",
-          project: null,
-          assignedTo: {
-            code: "admin",
-            fullName: "Admin",
-            id: "1",
-          },
-          attrs: "{}",
-          _model: "com.axelor.apps.project.db.ProjectTask",
-        },
-      },
-      fields: ["id", "fullName", "name", "code"],
-      limit: 10,
-    });
-    if (response && response.status !== -1) {
+    const response = await rest.post(` ${model}Priority/search`, reqBody);
+    if (response && response.data.status !== -1) {
+      setData(response?.data?.data);
+    }
+  } catch (error) {
+    return console.log(error);
+  }
+};
+
+const getOptions = async (setData, reqBody) => {
+  try {
+    const response = await rest.post(` ${model}/search`, reqBody);
+    if (response && response.data.status !== -1) {
       setData(response?.data?.data);
     }
   } catch (error) {
@@ -176,7 +154,7 @@ const getOptions = async (setData) => {
 const handleSearch = async (data) => {
   try {
     const response = await rest.post(`${model}/search`, data);
-    if (response && response.status !== 1) {
+    if (response && response.data.status !== 1) {
       return response;
     }
   } catch (error) {
@@ -187,7 +165,7 @@ const handleSearch = async (data) => {
 const deleteTask = async (reqBody) => {
   const response = await rest.post(`${model}Task/removeAll`, reqBody);
 
-  if (response && response.status !== -1) {
+  if (response && response.data.status !== -1) {
     return response;
   }
 };
@@ -195,15 +173,15 @@ const deleteTask = async (reqBody) => {
 const deleteTicket = async (reqBody) => {
   const response = await rest.post(`${model}Task/removeAll`, reqBody);
 
-  if (response && response.status !== -1) {
+  if (response && response.data.status !== -1) {
     return response;
   }
 };
 
 const handleTicketSearch = async (data) => {
   try {
-    const response = await rest.post(`${model}Task/search}`, data);
-    if (response && response.status !== 1) {
+    const response = await rest.post(`${model}Task/search`, data);
+    if (response && response.data.status !== 1) {
       return response;
     }
   } catch (error) {
@@ -214,7 +192,7 @@ const handleTicketSearch = async (data) => {
 const handleTaskSearch = async (data) => {
   try {
     const response = await rest.post(`${model}Task/search`, data);
-    if (response && response.status !== 1) {
+    if (response && response.data.status !== 1) {
       return response;
     }
   } catch (error) {
@@ -237,8 +215,11 @@ export {
   getTickets,
   ticketTableFields,
   deleteTask,
+  saveTicket,
   deleteTicket,
   handleTaskSearch,
   handleTicketSearch,
   getOptions,
+  getPriority,
+  getTicket,
 };

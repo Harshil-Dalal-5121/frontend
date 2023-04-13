@@ -8,31 +8,32 @@ import {
 } from "app/services/services";
 
 import { useTranslation } from "app/services/translate";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Search } from "react-bootstrap-icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import TicketTable from "./table/TicketTable";
 
 const LIMIT = 5;
+const timeout = 500;
 
 export function Tickets() {
   const [tickets, setTickets] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   const offset = (page - 1) * LIMIT;
 
-  const handleChange = (event, value) => {
-    setPage(value);
+  const handleChange = (event) => {
+    setSearch(event.target.value);
   };
-  const { t } = useTranslation();
 
+  const initialized = useRef();
   const Tickets = useCallback(async () => {
     const req = {
       data: {
@@ -59,38 +60,67 @@ export function Tickets() {
   }, [offset]);
 
   const handleSearchSubmit = useCallback(async () => {
-    const reqBody = {
-      data: {
-        criteria: {
-          fieldName: "name",
-          operator: "like",
-          value: search,
+    if (search) {
+      const reqBody = {
+        data: {
+          criteria: [
+            {
+              fieldName: "name",
+              operator: "like",
+              value: search,
+            },
+          ],
+          operator: "or",
+          _domain:
+            "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet",
+          _domainContext: {
+            _project: null,
+            _projectIds: [0],
+            _typeSelect: "ticket",
+            _model: "com.axelor.apps.project.db.ProjectTask",
+          },
+          _searchText: search,
+          _domains: [],
         },
-      },
-      operator: "or",
-      _domain:
-        "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet",
-      _domainContext: {
-        _project: null,
-        _projectIds: [0],
-        _typeSelect: "ticket",
-        _model: "com.axelor.apps.project.db.ProjectTask",
-      },
-      fields: ticketTableFields,
-      offset,
-      limit: LIMIT,
-      sortBy: ["id"],
-    };
-    const data = await handleTicketSearch(reqBody);
-
-    setTickets(data?.data?.data);
-    setTotal(data?.data?.total);
-    setLoading(false);
+        fields: ticketTableFields,
+        limit: LIMIT,
+        offset: offset,
+        sortBy: ["id"],
+      };
+      const data = await handleTicketSearch(reqBody);
+      console.log(data.data);
+      if (data.data.status === 0) {
+        setTickets(data?.data?.data);
+      }
+      setTotal(data?.data?.total);
+      setLoading(false);
+    }
   }, [offset, search]);
 
   useEffect(() => {
-    Tickets();
-  }, [Tickets, page]);
+    if (!initialized.current) {
+      initialized.current = true;
+    }
+    if (!search && search === "") {
+      setLoading(true);
+      Tickets();
+    } else {
+      const timer = setTimeout(() => {
+        handleSearchSubmit();
+      }, timeout);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [
+    Tickets,
+    handleSearchSubmit,
+    page,
+    search,
+    setLoading,
+    setTickets,
+    setTotal,
+  ]);
 
   return (
     <>

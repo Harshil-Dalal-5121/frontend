@@ -13,7 +13,7 @@ import { useSearchParams } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const LIMIT = 5;
-const timeout = 5000;
+const timeout = 500;
 
 export function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -33,28 +33,38 @@ export function Tasks() {
   const offset = (page - 1) * LIMIT;
 
   const handleSearchSubmit = useCallback(async () => {
-    const reqBody = {
-      data: {
-        criteria: [
-          {
-            fieldName: "name",
-            operator: "like",
-            value: search,
+    if (search) {
+      const reqBody = {
+        data: {
+          criteria: [
+            {
+              fieldName: "name",
+              operator: "like",
+              value: search,
+            },
+          ],
+          operator: "or",
+          _domain: "self.typeSelect = :_typeSelect",
+          _domainContext: {
+            _typeSelect: "task",
+            _model: "com.axelor.apps.project.db.ProjectTask",
           },
-        ],
-        operator: "or",
-      },
-      fields: taskTableFields,
-      offset,
-      limit: LIMIT,
-      sortBy: ["id"],
-    };
+          _typeSelect: "task",
+          _domains: [],
+          _searchText: search,
+        },
+        fields: taskTableFields,
+        offset,
+        limit: LIMIT,
+        sortBy: ["id"],
+      };
 
-    const data = await handleTaskSearch(reqBody);
+      const data = await handleTaskSearch(reqBody);
 
-    setTasks(data?.data?.data);
-    setTotal(data?.data?.total);
-    setLoading(false);
+      setTasks(data?.data?.data);
+      setTotal(data?.data?.total);
+      setLoading(false);
+    }
   }, [offset, search]);
 
   const Tasks = useCallback(async () => {

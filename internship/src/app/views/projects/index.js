@@ -11,7 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import ProjectTable from "./table/ProjectTable";
 
 const LIMIT = 5;
-const timeout = 5000;
+const timeout = 500;
 
 export function Projects() {
   const [projects, setProjects] = useState([]);
@@ -27,26 +27,28 @@ export function Projects() {
     setSearch(event.target.value);
   };
   const initialized = useRef();
+  const offset = (page - 1) * LIMIT;
 
   const handleSearchSubmit = useCallback(async () => {
-    const offset = (page - 1) * LIMIT;
-    const reqBody = {
-      data: {
-        criteria: [{ fieldName: "name", operator: "like", value: search }],
-        operator: "or",
-      },
-      fields: tableFields,
-      offset,
-      limit: LIMIT,
-      sortBy: ["id"],
-    };
+    if (search) {
+      const reqBody = {
+        data: {
+          criteria: [{ fieldName: "name", operator: "like", value: search }],
+          operator: "or",
+        },
+        fields: tableFields,
+        offset,
+        limit: LIMIT,
+        sortBy: ["id"],
+      };
 
-    const data = await handleSearch(reqBody);
+      const data = await handleSearch(reqBody);
 
-    setProjects(data?.data?.data);
-    setTotal(data?.data?.total);
-    setLoading(false);
-  }, [page, search]);
+      setProjects(data?.data?.data);
+      setTotal(data?.data?.total);
+      setLoading(false);
+    }
+  }, [offset, search]);
 
   const Projects = useCallback(async () => {
     const offset = (page - 1) * LIMIT;
