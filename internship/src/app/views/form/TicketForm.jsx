@@ -3,8 +3,9 @@ import {
   getTicket,
   getOptions,
   getPriority,
-  saveTask,
   fetchOptions,
+  saveData,
+  model,
 } from "app/services/services";
 
 import {
@@ -124,8 +125,7 @@ const TicketForm = () => {
   };
   const handleSave = () => {
     setOpen(false);
-    saveTask(formData);
-    console.log(formData);
+    saveData(`${model}Task`, formData);
     navigate("/tickets");
   };
 

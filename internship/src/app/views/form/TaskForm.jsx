@@ -3,8 +3,9 @@ import {
   getTask,
   getOptions,
   getPriority,
-  saveTask,
   fetchOptions,
+  saveData,
+  model,
 } from "app/services/services";
 
 import {
@@ -119,8 +120,7 @@ const TaskForm = () => {
   };
   const handleSave = () => {
     setOpen(false);
-    saveTask(formData);
-    console.log(formData);
+    saveData(`${model}Task`, formData);
     navigate("/tasks");
   };
 
