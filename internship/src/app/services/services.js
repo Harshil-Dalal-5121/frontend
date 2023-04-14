@@ -75,7 +75,7 @@ const getTickets = async (reqBody) => {
 
 const saveProject = (data) => {
   rest.post(
-    // `${model}`,
+    `${model}`,
     { data },
     {
       headers: {

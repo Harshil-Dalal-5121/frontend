@@ -202,13 +202,24 @@ const TaskForm = () => {
     getPriority(setPriority, priorityReqBody);
   }, []);
 
+  const projectOps = projectOptions.map((a) => ({
+    id: a.id,
+    fullName: a.fullName,
+    code: a.code || null,
+  }));
+
+  const priorityOps = priority.map((a) => ({
+    id: a.id,
+    name: a.name,
+    $version: 0,
+  }));
+
   const { id } = useParams();
   useEffect(() => {
     if (id) {
       getTicket(id, setFormData);
     }
   }, [id]);
-  console.log(formData?.project?.fullName);
 
   const handleChange = (e) => {
     const { name, value } = e.target || {};
@@ -225,18 +236,16 @@ const TaskForm = () => {
     if (Object.keys(errors)?.length === 0) {
       setVerify(true);
     }
-    console.log(errors);
   };
 
   const handleClose = () => {
     setOpen(false);
-    navigate("/projects");
   };
   const handleSave = () => {
     setOpen(false);
     saveTask(formData);
     console.log(formData);
-    // navigate("/tasks");
+    navigate("/tasks");
   };
 
   const validateForm = () => {
@@ -314,10 +323,10 @@ const TaskForm = () => {
                   fullWidth
                   id="project"
                   name="project"
-                  value={formData?.project}
-                  options={projectOptions}
+                  value={formData?.project || null}
+                  options={projectOps}
                   getOptionLabel={(option) => {
-                    return option.name || "";
+                    return option.name;
                   }}
                   isOptionEqualToValue={(option, value) =>
                     option.fullName === value.fullName
@@ -358,10 +367,10 @@ const TaskForm = () => {
                   fullWidth
                   id="priority"
                   name="priority"
-                  value={formData?.priority}
-                  options={priority}
+                  value={formData?.priority || null}
+                  options={priorityOps}
                   getOptionLabel={(option) => {
-                    return option.name || "";
+                    return option.name;
                   }}
                   isOptionEqualToValue={(option, value) =>
                     option.name === value.name

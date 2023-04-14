@@ -41,7 +41,6 @@ const Form = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [verify, setVerify] = useState(false);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -75,21 +74,22 @@ const Form = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors(validateForm(formData));
+    const errors = validateForm(formData);
+    setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
-      setVerify(true);
+      handleClickOpen();
     }
   };
+
   const handleClose = () => {
     setOpen(false);
-    navigate("/projects");
   };
   const handleSave = () => {
     setOpen(false);
     saveProject(formData);
     navigate("/projects");
   };
-  const validateForm = () => {
+  const validateForm = (formData) => {
     const error = {};
 
     if (!formData.name) {
@@ -207,7 +207,7 @@ const Form = () => {
                     color="success"
                     type="submit"
                     style={{ margin: "0 10px" }}
-                    onClick={verify ? handleClickOpen : handleSubmit}
+                    onClick={handleSubmit}
                   >
                     {id ? "Update" : "Add"}
                   </Button>
@@ -247,7 +247,7 @@ const Form = () => {
             Cancel
           </Button>
           <Button onClick={handleSave} variant="contained" color="secondary">
-            {id ? "Update" : "Add"}
+            {id ? "Update" : "Save"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -14,6 +14,7 @@ const LIMIT = 5;
 const timeout = 500;
 
 export function Projects() {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,7 +22,6 @@ export function Projects() {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setSearch(event.target.value);

@@ -41,17 +41,16 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function valuetext(value) {
-  return `${value}°C`;
+  return `${value}`;
 }
 
 const TicketForm = () => {
   const [formData, setFormData] = useState(initialValues);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [projectOptions, setProjectOptions] = useState([]);
   const [priority, setPriority] = useState([]);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [verify, setVerify] = useState(false);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -206,13 +205,25 @@ const TicketForm = () => {
     getPriority(setPriority, priorityReqBody);
   }, []);
 
+  const projectOps = projectOptions.map((a) => ({
+    id: a.id,
+    fullName: a.fullName,
+    code: a.code || null,
+  }));
+
+  const priorityOps = priority.map((a) => ({
+    id: a.id,
+    name: a.name,
+    $version: 0,
+  }));
+
   const { id } = useParams();
   useEffect(() => {
     if (id) {
       getTicket(id, setFormData);
     }
+    setLoading(false);
   }, [id]);
-  console.log(formData);
 
   const handleChange = (e) => {
     const { name, value } = e.target || {};
@@ -225,24 +236,21 @@ const TicketForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors(validateForm(formData));
+    const errors = validateForm(formData);
+    setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
-      setVerify(true);
+      handleClickOpen();
     }
-    console.log(errors);
   };
-
-  console.log(verify);
 
   const handleClose = () => {
     setOpen(false);
-    navigate("/projects");
   };
   const handleSave = () => {
     setOpen(false);
     saveTicket(formData);
     console.log(formData);
-    // navigate("/tickets");
+    navigate("/tickets");
   };
 
   const validateForm = () => {
@@ -321,10 +329,13 @@ const TicketForm = () => {
                   fullWidth
                   id="project"
                   name="project"
-                  value={formData.project}
-                  options={projectOptions}
+                  value={formData.project || null}
+                  options={projectOps}
+                  isOptionEqualToValue={(option, value) =>
+                    option.fullName === value.fullName
+                  }
                   getOptionLabel={(option) => {
-                    return option.fullName || "";
+                    return option.fullName;
                   }}
                   onChange={(e, newValue) => {
                     setFormData({
@@ -362,11 +373,14 @@ const TicketForm = () => {
                   fullWidth
                   id="priority"
                   name="priority"
-                  value={formData.priority}
-                  options={priority}
+                  value={formData.priority || null}
+                  options={priorityOps}
                   getOptionLabel={(option) => {
-                    return option.name || "";
+                    return option.name;
                   }}
+                  isOptionEqualToValue={(option, value) =>
+                    option.fullName === value.fullName
+                  }
                   onChange={(e, newValue) => {
                     setFormData({
                       ...formData,
@@ -431,7 +445,8 @@ const TicketForm = () => {
                   variant="contained"
                   color="success"
                   type="submit"
-                  onClick={verify ? handleClickOpen : handleSubmit}
+                  disabled={!errors ? true : false}
+                  onClick={handleSubmit}
                   style={{ margin: "0 10px" }}
                 >
                   {id ? "Update" : "Add"}

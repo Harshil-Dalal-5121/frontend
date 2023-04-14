@@ -31,7 +31,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ProjectTableContent = ({ data, setData, search }) => {
+const ProjectTableContent = ({ data, setData }) => {
   const [open, setOpen] = useState(false);
 
   const [deleteProject, setDeleteProject] = useState({
@@ -68,6 +68,20 @@ const ProjectTableContent = ({ data, setData, search }) => {
     setOpen(false);
   };
 
+  console.log(data);
+
+  const getDate = (val) => {
+    var date = new Date(val); // M-D-YYYY
+
+    var d = date.getDate();
+    var m = date.getMonth() + 1;
+    var y = date.getFullYear();
+
+    var dateString =
+      (d <= 9 ? "0" + d : d) + "-" + (m <= 9 ? "0" + m : m) + "-" + y;
+    return dateString;
+  };
+
   return (
     <>
       {data ? (
@@ -96,10 +110,10 @@ const ProjectTableContent = ({ data, setData, search }) => {
                 {project.assignedTo?.fullName || "-"}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
-                {project.fromDate?.slice(0, 10) || "-"}
+                {!project?.fromDate ? "-" : getDate(project?.fromDate)}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
-                {project.toDate?.slice(0, 10) || "-"}
+                {!project?.toDate ? "-" : getDate(project?.toDate)}
               </TableCell>
               <TableCell align="center" style={{ cellWidth_5 }}>
                 {project.imputable === true ? <Check /> : <XCircle />}
@@ -136,7 +150,6 @@ const ProjectTableContent = ({ data, setData, search }) => {
       ) : (
         <Container>No Records</Container>
       )}
-
       <Dialog
         open={open}
         fullScreen={fullScreen}
