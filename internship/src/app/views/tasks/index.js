@@ -3,17 +3,18 @@ import Typography from "@mui/material/Typography";
 import { Add, Search } from "@mui/icons-material";
 import {
   taskTableFields,
-  handleTaskSearch,
-  getTasks,
+  fetchData,
+  model,
+  handleSearch,
 } from "app/services/services";
 import { useTranslation } from "app/services/translate";
 import { useNavigate } from "react-router";
 import TasksTable from "./table/TasksTable";
 import { useSearchParams } from "react-router-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
+import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
 
 const LIMIT = 5;
-const timeout = 500;
 
 export function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -21,7 +22,6 @@ export function Tasks() {
   const [search, setSearch] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -29,43 +29,7 @@ export function Tasks() {
     setSearch(event.target.value);
   };
 
-  const initialized = useRef();
   const offset = (page - 1) * LIMIT;
-
-  const handleSearchSubmit = useCallback(async () => {
-    if (search) {
-      const reqBody = {
-        data: {
-          criteria: [
-            {
-              fieldName: "name",
-              operator: "like",
-              value: search,
-            },
-          ],
-          operator: "or",
-          _domain: "self.typeSelect = :_typeSelect",
-          _domainContext: {
-            _typeSelect: "task",
-            _model: "com.axelor.apps.project.db.ProjectTask",
-          },
-          _typeSelect: "task",
-          _domains: [],
-          _searchText: search,
-        },
-        fields: taskTableFields,
-        offset,
-        limit: LIMIT,
-        sortBy: ["id"],
-      };
-
-      const data = await handleTaskSearch(reqBody);
-
-      setTasks(data?.data?.data);
-      setTotal(data?.data?.total);
-      setLoading(false);
-    }
-  }, [offset, search]);
 
   const Tasks = useCallback(async () => {
     const reqBody = {
@@ -87,31 +51,40 @@ export function Tasks() {
       _typeSelect: "task",
     };
 
-    const response = await getTasks(reqBody);
+    const response = await fetchData(` ${model}Task/search`, reqBody);
     if (response) {
       setTasks(response?.data?.data);
       setTotal(response?.data?.total);
-      setLoading(false);
     }
   }, [offset]);
 
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-    }
-
-    if (!search || search === "") {
-      setLoading(true);
-      Tasks();
-    } else {
-      const timer = setTimeout(() => {
-        handleSearchSubmit();
-      }, timeout);
-      return () => {
-        clearTimeout(timer);
+  const handleSearchSubmit = useCallback(async () => {
+    if (search) {
+      const reqBody = {
+        data: {
+          criteria: [
+            {
+              fieldName: "name",
+              operator: "like",
+              value: search,
+            },
+          ],
+          operator: "or",
+        },
+        fields: taskTableFields,
+        offset,
+        limit: LIMIT,
+        sortBy: ["id"],
       };
+
+      const data = await handleSearch(`${model}Task/search`, reqBody);
+
+      setTasks(data?.data?.data);
+      setTotal(data?.data?.total);
     }
-  }, [Tasks, handleSearchSubmit, search]);
+  }, [offset, search]);
+
+  const { loading } = useHandleSubmit(Tasks, handleSearchSubmit, search);
 
   return (
     <>
@@ -158,7 +131,6 @@ export function Tasks() {
         search={search}
         tasks={tasks}
         loading={loading}
-        setLoading={setLoading}
         setSearch={setSearch}
         total={total}
         setTotal={setTotal}

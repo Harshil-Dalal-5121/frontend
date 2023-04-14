@@ -1,28 +1,29 @@
 import { Add } from "@mui/icons-material";
 import { Button, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
 import {
-  getTickets,
-  handleTicketSearch,
+  fetchData,
+  handleSearch,
+  model,
   ticketTableFields,
 } from "app/services/services";
 
 import { useTranslation } from "app/services/translate";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { Search } from "react-bootstrap-icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import TicketTable from "./table/TicketTable";
 
 const LIMIT = 5;
-const timeout = 500;
 
 export function Tickets() {
   const [tickets, setTickets] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const [loading, setLoading] = useState(false);
+
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -33,7 +34,6 @@ export function Tickets() {
     setSearch(event.target.value);
   };
 
-  const initialized = useRef();
   const Tickets = useCallback(async () => {
     const req = {
       data: {
@@ -51,11 +51,10 @@ export function Tickets() {
       limit: LIMIT,
     };
 
-    const data = await getTickets(req);
+    const data = await fetchData(` ${model}Task/search`, req);
     if (data) {
       setTickets(data?.data?.data);
       setTotal(data?.data?.total);
-      setLoading(false);
     }
   }, [offset]);
 
@@ -87,40 +86,16 @@ export function Tickets() {
         offset: offset,
         sortBy: ["id"],
       };
-      const data = await handleTicketSearch(reqBody);
+      const data = await handleSearch(`${model}Task/search`, reqBody);
       console.log(data.data);
       if (data.data.status === 0) {
         setTickets(data?.data?.data);
       }
       setTotal(data?.data?.total);
-      setLoading(false);
     }
   }, [offset, search]);
 
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-    }
-    if (!search && search === "") {
-      setLoading(true);
-      Tickets();
-    } else {
-      const timer = setTimeout(() => {
-        handleSearchSubmit();
-      }, timeout);
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [
-    Tickets,
-    handleSearchSubmit,
-    page,
-    search,
-    setLoading,
-    setTickets,
-    setTotal,
-  ]);
+  const { loading } = useHandleSubmit(Tickets, handleSearchSubmit, search);
 
   return (
     <>
@@ -166,7 +141,6 @@ export function Tickets() {
         search={search}
         tickets={tickets}
         loading={loading}
-        setLoading={setLoading}
         setSearch={setSearch}
         total={total}
         setTotal={setTotal}

@@ -75,6 +75,7 @@ const TicketTableContent = ({ data, setData }) => {
   const handleCancel = () => {
     setOpen(false);
   };
+
   return (
     <>
       {data ? (
@@ -98,7 +99,7 @@ const TicketTableContent = ({ data, setData }) => {
                 {ticket?.project?.fullName || "-"}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
-                {ticket.ticketDate?.slice(0, 10) || "-"}
+                {ticket.taskDate?.slice(0, 10) || "-"}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
                 {ticket?.status?.name || "-"}
@@ -113,7 +114,33 @@ const TicketTableContent = ({ data, setData }) => {
                 {ticket?.targetVersion || "-"}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
-                {ticket?.progressSelect || "0"}%
+                <div
+                  class="progress"
+                  role="progressbar"
+                  aria-label="Animated striped example"
+                  aria-valuenow="75"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class={
+                      ticket?.progressSelect <= 30
+                        ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
+                        : ticket?.progressSelect > 30 &&
+                          ticket?.progressSelect <= 50
+                        ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                        : ticket?.progressSelect > 50 &&
+                          ticket?.progressSelect <= 80
+                        ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
+                        : "progress-bar progress-bar-striped progress-bar-animated bg-success"
+                    }
+                    style={{ width: `${ticket?.progressSelect || "0"}% ` }}
+                  ></div>
+                  {ticket?.progressSelect || "0"}%
+                </div>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {ticket.taskEndDate?.slice(0, 10) || "-"}
               </TableCell>
               <TableCell align="center">
                 <Link to={`${ticket.id}`}>

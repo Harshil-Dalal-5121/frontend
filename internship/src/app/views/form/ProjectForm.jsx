@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useState } from "react";
 
 import { useTheme } from "@emotion/react";
 import {
@@ -18,8 +18,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getProject, saveProject } from "app/services/services";
+import { getProject, model, saveData } from "app/services/services";
 import { useNavigate, useParams } from "react-router";
+import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 
 const initialValues = {
   name: "",
@@ -38,7 +39,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 const Form = () => {
   const [formData, setFormData] = useState(initialValues);
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -56,13 +56,7 @@ const Form = () => {
   };
 
   const { id } = useParams();
-  useEffect(() => {
-    setLoading(true);
-    if (id) {
-      getProject(id, setFormData);
-    }
-    setLoading(false);
-  }, [id]);
+  const { loading } = useFetchRecord(id, getProject, setFormData);
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target || {};
@@ -86,7 +80,7 @@ const Form = () => {
   };
   const handleSave = () => {
     setOpen(false);
-    saveProject(formData);
+    saveData(`${model}`, formData);
     navigate("/projects");
   };
   const validateForm = (formData) => {

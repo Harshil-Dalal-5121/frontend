@@ -1,17 +1,22 @@
 import { Add, Search } from "@mui/icons-material";
 import { Button, TextField, Typography } from "@mui/material";
-import { tableFields, handleSearch, getProjects } from "app/services/services";
+import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
+import {
+  tableFields,
+  handleSearch,
+  fetchData,
+  model,
+} from "app/services/services";
 
 import { useTranslation } from "app/services/translate";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 
 import ProjectTable from "./table/ProjectTable";
 
 const LIMIT = 5;
-const timeout = 500;
 
 export function Projects() {
   const navigate = useNavigate();
@@ -19,15 +24,30 @@ export function Projects() {
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const [loading, setLoading] = useState(false);
+
   const [search, setSearch] = useState("");
   const { t } = useTranslation();
 
   const handleChange = (event) => {
     setSearch(event.target.value);
   };
-  const initialized = useRef();
+
   const offset = (page - 1) * LIMIT;
+
+  const Projects = useCallback(async () => {
+    const reqBody = {
+      fields: tableFields,
+      offset,
+      limit: LIMIT,
+      sortBy: ["id"],
+    };
+
+    const response = await fetchData(` ${model}/search`, reqBody);
+    if (response) {
+      setProjects(response?.data?.data);
+      setTotal(response?.data?.total);
+    }
+  }, [offset]);
 
   const handleSearchSubmit = useCallback(async () => {
     if (search) {
@@ -42,56 +62,14 @@ export function Projects() {
         sortBy: ["id"],
       };
 
-      const data = await handleSearch(reqBody);
+      const data = await handleSearch(`${model}/search`, reqBody);
 
       setProjects(data?.data?.data);
       setTotal(data?.data?.total);
-      setLoading(false);
     }
   }, [offset, search]);
 
-  const Projects = useCallback(async () => {
-    const offset = (page - 1) * LIMIT;
-    const reqBody = {
-      fields: tableFields,
-      offset,
-      limit: LIMIT,
-      sortBy: ["id"],
-    };
-
-    const response = await getProjects(reqBody);
-    if (response) {
-      setProjects(response?.data?.data);
-      setTotal(response?.data?.total);
-      setLoading(false);
-    }
-  }, [page]);
-
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-    }
-
-    if (!search || search === "") {
-      setLoading(true);
-      Projects();
-    } else {
-      const timer = setTimeout(() => {
-        handleSearchSubmit();
-      }, timeout);
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [
-    Projects,
-    handleSearchSubmit,
-    page,
-    search,
-    setLoading,
-    setProjects,
-    setTotal,
-  ]);
+  const { loading } = useHandleSubmit(Projects, handleSearchSubmit, search);
 
   return (
     <>

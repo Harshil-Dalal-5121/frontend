@@ -44,38 +44,29 @@ const ticketTableFields = [
   "priority",
   "projectTaskCategory",
   "targetVersion",
-  "taskEndDate",
   "progressSelect",
+  "taskEndDate",
 ];
 const navigate = (path) => {
   return <Navigate replace to={path} />;
 };
 
-const getTasks = async (reqBody) => {
-  try {
-    const response = await rest.post(` ${model}Task/search`, reqBody);
-    if (response && response.data.status !== -1) {
-      return response;
+const saveData = (api, data) => {
+  rest.post(
+    api,
+    { data },
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     }
-  } catch (error) {
-    return error;
-  }
-};
-
-const getTickets = async (reqBody) => {
-  try {
-    const response = await rest.post(`${model}Task/search`, reqBody);
-    if (response) {
-      return response;
-    }
-  } catch (error) {
-    console.error(error);
-  }
+  );
 };
 
 const saveProject = (data) => {
   rest.post(
-    `${model}`,
+    // `${model}`,
     { data },
     {
       headers: {
@@ -112,16 +103,53 @@ const saveTask = (data) => {
   );
 };
 
-const getProject = (id, setData) => {
-  rest
-    .post(`${model}/${id}/fetch`, { fields: tableFields })
-    .then(({ data }) => setData(data?.data[0]));
+const getProject = async (id) => {
+  try {
+    const response = await rest.post(`${model}/${id}/fetch`, {
+      fields: tableFields,
+    });
+
+    return response;
+  } catch (error) {
+    return error;
+  }
 };
 
-const getTicket = (id, setData) => {
-  rest
-    .post(`${model}Task/${id}/fetch`, { fields: ticketTableFields })
-    .then(({ data }) => setData(data?.data[0]));
+const getTicket = (id) => {
+  try {
+    const response = rest.post(`${model}Task/${id}/fetch`, {
+      fields: ticketTableFields,
+    });
+    if (response && response.data.status !== -1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
+const fetchData = async (api, reqBody) => {
+  try {
+    const response = await rest.post(api, reqBody);
+    if (response && response.data.status !== -1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
+const getTask = (id) => {
+  try {
+    const response = rest.post(`${model}Task/${id}/fetch`, {
+      fields: ticketTableFields,
+    });
+    if (response && response.data.status !== -1) {
+      return response;
+    }
+  } catch (error) {
+    return error;
+  }
 };
 
 const deleteData = (id, version, name, setData) => {
@@ -134,6 +162,13 @@ const deleteData = (id, version, name, setData) => {
     });
 };
 
+const fetchOptions = async (getter, setter, reqBoy) => {
+  const projectOps = await getter(reqBoy);
+
+  if (projectOps && projectOps?.data?.status !== 1) {
+    setter(projectOps?.data?.data);
+  }
+};
 const getProjects = async (reqBody) => {
   try {
     const response = await rest.post(` ${model}/search`, reqBody);
@@ -145,31 +180,31 @@ const getProjects = async (reqBody) => {
   }
 };
 
-const getPriority = async (setData, reqBody) => {
+const getPriority = async (reqBody) => {
   try {
     const response = await rest.post(` ${model}Priority/search`, reqBody);
     if (response && response.data.status !== -1) {
-      setData(response?.data?.data);
+      return response;
     }
   } catch (error) {
     return console.log(error);
   }
 };
 
-const getOptions = async (setData, reqBody) => {
+const getOptions = async (reqBody) => {
   try {
     const response = await rest.post(` ${model}/search`, reqBody);
     if (response && response.data.status !== -1) {
-      setData(response?.data?.data);
+      return response;
     }
   } catch (error) {
     return console.log(error);
   }
 };
 
-const handleSearch = async (data) => {
+const handleSearch = async (api, data) => {
   try {
-    const response = await rest.post(`${model}/search`, data);
+    const response = await rest.post(api, data);
     if (response && response.data.status !== 1) {
       return response;
     }
@@ -194,31 +229,10 @@ const deleteTicket = async (reqBody) => {
   }
 };
 
-const handleTicketSearch = async (data) => {
-  try {
-    const response = await rest.post(`${model}Task/search`, data);
-    if (response && response.data.status !== 1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
-const handleTaskSearch = async (data) => {
-  try {
-    const response = await rest.post(`${model}Task/search`, data);
-    if (response && response.data.status !== 1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
-
 export {
   rest,
   model,
+  saveData,
   tableFields,
   saveProject,
   deleteData,
@@ -226,15 +240,14 @@ export {
   handleSearch,
   navigate,
   getProject,
-  getTasks,
+  getTask,
   taskTableFields,
-  getTickets,
+  fetchData,
   ticketTableFields,
   deleteTask,
+  fetchOptions,
   saveTicket,
   deleteTicket,
-  handleTaskSearch,
-  handleTicketSearch,
   getOptions,
   getPriority,
   getTicket,

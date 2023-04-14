@@ -1,9 +1,10 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import {
-  getTicket,
+  getTask,
   getOptions,
   getPriority,
   saveTask,
+  fetchOptions,
 } from "app/services/services";
 
 import {
@@ -25,6 +26,7 @@ import { useNavigate, useParams } from "react-router";
 import { useTheme } from "@emotion/react";
 import { Slider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
+import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 
 const initialValues = {
   name: "",
@@ -36,157 +38,38 @@ const initialValues = {
   progressSelect: 0,
 };
 
+const optionReqBody = {
+  data: {
+    _domain: "self.projectStatus.isCompleted = false",
+  },
+  fields: ["id", "fullName", "name", "code"],
+  limit: 10,
+};
+
+const priorityReqBody = {
+  data: {
+    criteria: [],
+    operator: "and",
+    _domain: "self.id IN (1,2,3,4)",
+    fields: ["name", "technicalTypeSelect"],
+    limit: 40,
+  },
+};
+
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
-  const [loading, setLoading] = useState(false);
-  const [projectOptions, setProjectOptions] = useState([]);
-  const [priority, setPriority] = useState([]);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [verify, setVerify] = useState(false);
+
+  const [projectOptions, setProjectOptions] = useState([]);
+  const [priority, setPriority] = useState([]);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
-  const optionReqBody = {
-    data: {
-      _domain: "self.projectStatus.isCompleted = false",
-      _domainContext: {
-        _project: null,
-        _projectIds: [0],
-        _typeSelect: "task",
-        toInvoice: false,
-        hasDateOrFrequencyChanged: false,
-        "project.isShowStatus": true,
-        discountAmount: "0",
-        typeSelect: "task",
-        isFirst: true,
-        progressSelect: 0,
-        unitPrice: "0",
-        plannedProgress: "0",
-        invoiced: false,
-        isTaskRefused: false,
-        isPaid: false,
-        "project.isShowTimeSpent": false,
-        totalRealHrs: "0",
-        "project.isShowFrequency": false,
-        "project.isShowTaskCategory": true,
-        isPrivate: false,
-        doApplyToAllNextTasks: false,
-        discountTypeSelect: 3,
-        "project.isShowProgress": true,
-        "project.invoicingSequenceSelect": 0,
-        isOrderAccepted: false,
-        quantity: "0",
-        assignment: 2,
-        "project.isShowPlanning": true,
-        isOrderProposed: false,
-        exTaxTotal: "0",
-        totalPlannedHrs: "0",
-        invoicingType: "",
-        "project.isShowSection": true,
-        priceDiscounted: "0",
-        budgetedTime: "0",
-        "project.isShowPriority": true,
-        taskDate: "2023-04-12",
-        project: null,
-        assignedTo: {
-          code: "admin",
-          fullName: "Admin",
-          id: "1",
-        },
-        attrs: "{}",
-        _model: "com.axelor.apps.project.db.ProjectTask",
-      },
-    },
-    fields: ["id", "fullName", "name", "code"],
-    limit: 10,
-  };
-
-  const priorityReqBody = {
-    data: {
-      criteria: [],
-      operator: "and",
-      _domain: "self.id IN (1,2,3,4)",
-      _domainContext: {
-        _project: null,
-        _projectIds: [0],
-        _typeSelect: "task",
-        toInvoice: false,
-        hasDateOrFrequencyChanged: false,
-        "project.isShowStatus": true,
-        discountAmount: "0",
-        typeSelect: "task",
-        isFirst: true,
-        progressSelect: 70,
-        unitPrice: "0",
-        plannedProgress: "70",
-        invoiced: false,
-        isTaskRefused: false,
-        isPaid: false,
-        "project.isShowTimeSpent": false,
-        totalRealHrs: "0",
-        "project.isShowFrequency": false,
-        "project.isShowTaskCategory": true,
-        isPrivate: false,
-        doApplyToAllNextTasks: false,
-        discountTypeSelect: 3,
-        "project.isShowProgress": true,
-        "project.invoicingSequenceSelect": 0,
-        isOrderAccepted: false,
-        quantity: "0",
-        assignment: 2,
-        "project.isShowPlanning": true,
-        isOrderProposed: false,
-        exTaxTotal: "0.00",
-        totalPlannedHrs: "0",
-        invoicingType: 3,
-        "project.isShowSection": true,
-        priceDiscounted: "0",
-        budgetedTime: "0",
-        "project.isShowPriority": true,
-        taskDate: "2023-04-13",
-        project: {
-          id: 2,
-          isShowTaskCategory: true,
-          invoicingSequenceSelect: 0,
-          isShowPlanning: true,
-          isShowStatus: true,
-          fullName: "SO0011-123 Services_project",
-          isShowFrequency: false,
-          isShowTimeSpent: false,
-          isShowPriority: true,
-          isShowSection: true,
-          isShowProgress: true,
-        },
-        assignedTo: {
-          code: "admin",
-          fullName: "Admin",
-          id: 1,
-        },
-        name: "Test 7",
-        membersUserSet: null,
-        projectTaskCategory: null,
-        priority: {
-          name: "Normal",
-          id: 2,
-        },
-        status: {
-          name: "New",
-          id: 5,
-        },
-        taskEndDate: "2023-04-14",
-        attrs: "{}",
-        _model: "com.axelor.apps.project.db.ProjectTask",
-      },
-      fields: ["name", "technicalTypeSelect"],
-      limit: 40,
-    },
-  };
 
   const navigate = useNavigate();
   const handleClickOpen = () => {
@@ -198,13 +81,14 @@ const TaskForm = () => {
   };
 
   useEffect(() => {
-    getOptions(setProjectOptions, optionReqBody);
-    getPriority(setPriority, priorityReqBody);
+    fetchOptions(getOptions, setProjectOptions, optionReqBody);
+    fetchOptions(getPriority, setPriority, priorityReqBody);
   }, []);
 
   const projectOps = projectOptions.map((a) => ({
     id: a.id,
     fullName: a.fullName,
+    name: a.name,
     code: a.code || null,
   }));
 
@@ -214,16 +98,8 @@ const TaskForm = () => {
     $version: 0,
   }));
 
-  const { id } = useParams();
-  useEffect(() => {
-    if (id) {
-      getTicket(id, setFormData);
-    }
-  }, [id]);
-
   const handleChange = (e) => {
     const { name, value } = e.target || {};
-
     setFormData({
       ...formData,
       [name]: value,
@@ -232,12 +108,12 @@ const TaskForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrors(validateForm(formData));
+    const errors = validateForm(formData);
+    setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
-      setVerify(true);
+      handleClickOpen();
     }
   };
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -271,7 +147,8 @@ const TaskForm = () => {
     }
     return error;
   };
-
+  const { id } = useParams();
+  const { loading } = useFetchRecord(id, getTask, setFormData);
   return (
     <>
       {loading ? (
@@ -439,7 +316,7 @@ const TaskForm = () => {
                   variant="contained"
                   color="success"
                   type="submit"
-                  onClick={verify ? handleClickOpen : handleSubmit}
+                  onClick={handleSubmit}
                   style={{ margin: "0 10px" }}
                 >
                   {id ? "Update" : "Add"}
