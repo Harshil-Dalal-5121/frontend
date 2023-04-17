@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import { Delete, Edit } from "@mui/icons-material";
-import { deleteTask } from "app/services/services";
+import { deleteData, model } from "app/services/services";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Container } from "@mui/system";
@@ -46,7 +46,7 @@ const TaskTableContent = ({ data, setData }) => {
       records: [{ id: id, version: version, name: name }],
     };
 
-    await deleteTask(reqBody);
+    await deleteData(`${model}Task/removeAll`, reqBody);
 
     setData((prev) => prev.filter((task) => task.id !== id));
   };

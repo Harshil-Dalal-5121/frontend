@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Check, XCircle } from "react-bootstrap-icons";
 import { Delete, Edit } from "@mui/icons-material";
-import { deleteData } from "app/services/services";
+import { deleteData, model } from "app/services/services";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Container } from "@mui/system";
@@ -55,9 +55,15 @@ const ProjectTableContent = ({ data, setData }) => {
     setOpen(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const { name, id, version, setData } = deleteProject;
-    deleteData(id, version, name, setData);
+    const reqBody = {
+      records: [{ id: id, version: version, name: name }],
+    };
+
+    await deleteData(`${model}/removeAll`, reqBody);
+    setData((prev) => prev.filter((task) => task.id !== id));
+
     setOpen(false);
   };
 

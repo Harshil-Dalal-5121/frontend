@@ -87,52 +87,22 @@ const getData = async (api, fields) => {
   }
 };
 
-// const getProject = async (id) => {
-//   try {
-//     const response = await rest.post(`${model}/${id}/fetch`, {
-//       fields: tableFields,
+// const deleteData = (id, version, name, setData) => {
+//   rest
+//     .post(`${model}/removeAll`, {
+//       records: [{ id: id, version: version, name: name }],
+//     })
+//     .then(() => {
+//       setData((prev) => prev.filter((project) => project.id !== id));
 //     });
-
-//     return response;
-//   } catch (error) {
-//     return error;
-//   }
 // };
 
-// const getTicket = async (id) => {
-//   try {
-//     const response = await rest.post(`${model}Task/${id}/fetch`, {
-//       fields: ticketTableFields,
-//     });
-//     if (response && response.data.status !== -1) {
-//       return response;
-//     }
-//   } catch (error) {
-//     return error;
-//   }
-// };
+const deleteData = async (api, reqBody) => {
+  const response = await rest.post(api, reqBody);
 
-// const getTask = async (id) => {
-//   try {
-//     const response = await rest.post(`${model}Task/${id}/fetch`, {
-//       fields: ticketTableFields,
-//     });
-//     if (response && response.data.status !== -1) {
-//       return response;
-//     }
-//   } catch (error) {
-//     return error;
-//   }
-// };
-
-const deleteData = (id, version, name, setData) => {
-  rest
-    .post(`${model}/removeAll`, {
-      records: [{ id: id, version: version, name: name }],
-    })
-    .then(() => {
-      setData((prev) => prev.filter((project) => project.id !== id));
-    });
+  if (response && response.data.status !== -1) {
+    return response;
+  }
 };
 
 const fetchOptions = async (getter, setter, reqBoy) => {
@@ -140,16 +110,6 @@ const fetchOptions = async (getter, setter, reqBoy) => {
 
   if (projectOps && projectOps?.data?.status !== 1) {
     setter(projectOps?.data?.data);
-  }
-};
-const getProjects = async (reqBody) => {
-  try {
-    const response = await rest.post(` ${model}/search`, reqBody);
-    if (response && response.data.status !== -1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
   }
 };
 
@@ -209,11 +169,8 @@ export {
   getData,
   tableFields,
   deleteData,
-  getProjects,
   handleSearch,
   navigate,
-  // getProject,
-  // getTask,
   taskTableFields,
   fetchData,
   ticketTableFields,
@@ -222,5 +179,4 @@ export {
   deleteTicket,
   getOptions,
   getPriority,
-  // getTicket,
 };

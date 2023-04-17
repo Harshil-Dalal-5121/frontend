@@ -14,7 +14,7 @@ import {
   TableRow,
   useMediaQuery,
 } from "@mui/material";
-import { deleteTicket } from "app/services/services";
+import { deleteData, model } from "app/services/services";
 import { forwardRef, useState } from "react";
 
 import { Link } from "react-router-dom";
@@ -46,7 +46,7 @@ const TicketTableContent = ({ data, setData }) => {
       records: [{ id: id, version: version, name: name }],
     };
 
-    await deleteTicket(reqBody);
+    await deleteData(`${model}Task/removeAll`, reqBody);
     setData((prev) => prev.filter((ticket) => ticket.id !== id));
   };
 
