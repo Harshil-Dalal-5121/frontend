@@ -104,7 +104,12 @@ export function Tickets() {
   return (
     <>
       <legend>
-        <Typography>{t("Tickets")}</Typography>
+        <Typography
+          variant={"h3"}
+          style={{ margin: "0 auto ", textAlign: "center" }}
+        >
+          {t("Tickets")}
+        </Typography>
       </legend>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button

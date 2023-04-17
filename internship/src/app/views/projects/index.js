@@ -88,10 +88,22 @@ export function Projects() {
   return (
     <>
       <legend>
-        <Typography>{t("Projects")}</Typography>
+        <Typography
+          variant={"h3"}
+          style={{ margin: "0 auto ", textAlign: "center" }}
+        >
+          {t("Projects")}
+        </Typography>
       </legend>
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: "70px",
+        }}
+      >
         <Button
           variant="contained"
           color="success"
@@ -102,9 +114,16 @@ export function Projects() {
         >
           <Add /> Create new project
         </Button>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
           <TextField
-            style={{ margin: "1em" }}
+            style={{ margin: "10px" }}
             id="search"
             onChange={handleChange}
             name="search"
@@ -117,12 +136,11 @@ export function Projects() {
               }
             }}
           />
-          <Button onClick={handleSearchSubmit}>
-            <Search
-              style={{ margin: "1em 1em 1em 0" }}
-              variant="contained"
-              color="success"
-            />
+          <Button
+            onClick={handleSearchSubmit}
+            sx={{ heigth: "10px", margin: "1em 0" }}
+          >
+            <Search variant="contained" color="success" />
           </Button>
         </div>
       </div>

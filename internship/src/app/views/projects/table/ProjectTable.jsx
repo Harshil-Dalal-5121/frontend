@@ -30,8 +30,6 @@ const ProjectTable = ({
     setSearchParams({ page, limit: LIMIT });
   }, [page, setSearchParams]);
 
-  console.log("loading >>>", loading);
-
   return (
     <>
       {loading ? (
@@ -50,7 +48,7 @@ const ProjectTable = ({
           style={{ padding: "15px", height: "450px" }}
           component={Paper}
         >
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 650 }} aria-label="customized table">
             <ProjectTableHeader />
             <ProjectTableContent
               data={projects}
@@ -60,10 +58,11 @@ const ProjectTable = ({
           </Table>
         </TableContainer>
       )}
-      <div>
+      <div style={{ display: "inline !important " }}>
         <p>Total Items: {total}</p>
         <p>Page: {page}</p>
         <Pagination
+          shape="rounded"
           count={Math.ceil(total / LIMIT)}
           page={page}
           onChange={handleChange}

@@ -9,8 +9,10 @@ import {
   DialogContentText,
   DialogTitle,
   Slide,
+  styled,
   TableBody,
   TableCell,
+  tableCellClasses,
   TableRow,
   useMediaQuery,
 } from "@mui/material";
@@ -26,6 +28,26 @@ const cellWidth_5 = {
 const cellWidth_10 = {
   width: "15vw",
 };
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -93,39 +115,39 @@ const TicketTableContent = ({ data, setData }) => {
       {data ? (
         <TableBody>
           {data?.map((ticket, i) => (
-            <TableRow
+            <StyledTableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               style={{ height: "70px" }}
             >
-              <TableCell align="center" style={cellWidth_5}>
+              <StyledTableCell align="center" style={cellWidth_5}>
                 {ticket?.id || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_5}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_5}>
                 {ticket?.ticketNumber || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {ticket?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {ticket?.project?.fullName || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {!ticket?.taskDate ? "-" : getDate(ticket?.taskDate)}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {ticket?.status?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {ticket?.priority?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {ticket?.projectTaskCategory || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {ticket?.targetVersion || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 <div
                   className="progress"
                   role="progressbar"
@@ -150,18 +172,18 @@ const TicketTableContent = ({ data, setData }) => {
                   ></div>
                   {ticket?.progressSelect || "0"}%
                 </div>
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {!ticket?.taskEndDate ? "-" : getDate(ticket?.taskEndDate)}
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Link to={`${ticket.id}`}>
                   <Button variant="contained" color="success">
                     <Edit />
                   </Button>
                 </Link>
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Button
                   variant="contained"
                   onClick={() =>
@@ -176,8 +198,8 @@ const TicketTableContent = ({ data, setData }) => {
                 >
                   <Delete />
                 </Button>
-              </TableCell>
-            </TableRow>
+              </StyledTableCell>
+            </StyledTableRow>
           ))}
         </TableBody>
       ) : (

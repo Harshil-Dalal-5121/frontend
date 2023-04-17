@@ -11,6 +11,7 @@ import {
   DialogTitle,
   Slide,
   useMediaQuery,
+  tableCellClasses,
 } from "@mui/material";
 
 import { Delete, Edit } from "@mui/icons-material";
@@ -18,6 +19,7 @@ import { deleteData, model } from "app/services/services";
 import { Link } from "react-router-dom";
 import { useTheme } from "@emotion/react";
 import { Container } from "@mui/system";
+import styled from "@emotion/styled";
 
 const cellWidth_5 = {
   width: "10vw",
@@ -30,6 +32,26 @@ const cellWidth_10 = {
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 const TaskTableContent = ({ data, setData }) => {
   const [open, setOpen] = useState(false);
@@ -93,39 +115,39 @@ const TaskTableContent = ({ data, setData }) => {
       {data ? (
         <TableBody>
           {data?.map((task, i) => (
-            <TableRow
+            <StyledTableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               style={{ height: "70px" }}
             >
-              <TableCell align="center" style={cellWidth_5}>
+              <StyledTableCell align="center" style={cellWidth_5}>
                 {task?.id || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_5}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_5}>
                 {task?.ticketNumber || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {task?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {task?.project?.fullName || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {!task?.taskDate ? "-" : getDate(task?.taskDate)}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {task?.status?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {task?.priority?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {task?.projectTaskCategory || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {task?.targetVersion || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 <div
                   className="progress"
                   role="progressbar"
@@ -150,18 +172,18 @@ const TaskTableContent = ({ data, setData }) => {
                   ></div>
                   {task?.progressSelect || "0"}%
                 </div>
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center" style={cellWidth_10}>
                 {!task?.taskEndDate ? "-" : getDate(task?.taskEndDate)}
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Link to={`${task.id}`}>
                   <Button variant="contained" color="success">
                     <Edit />
                   </Button>
                 </Link>
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Button
                   variant="contained"
                   onClick={() =>
@@ -171,8 +193,8 @@ const TaskTableContent = ({ data, setData }) => {
                 >
                   <Delete />
                 </Button>
-              </TableCell>
-            </TableRow>
+              </StyledTableCell>
+            </StyledTableRow>
           ))}
         </TableBody>
       ) : (

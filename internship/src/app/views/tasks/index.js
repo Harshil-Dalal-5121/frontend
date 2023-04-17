@@ -93,7 +93,12 @@ export function Tasks() {
   return (
     <>
       <legend>
-        <Typography>{t("Tasks")}</Typography>
+        <Typography
+          variant={"h3"}
+          style={{ margin: "0 auto ", textAlign: "center" }}
+        >
+          {t("Tasks")}
+        </Typography>
       </legend>
 
       <div style={{ display: "flex", justifyContent: "space-between" }}>
