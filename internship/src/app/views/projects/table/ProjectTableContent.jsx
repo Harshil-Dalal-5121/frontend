@@ -74,8 +74,6 @@ const ProjectTableContent = ({ data, setData }) => {
     setOpen(false);
   };
 
-  console.log(data);
-
   const getDate = (val) => {
     var date = new Date(val); // M-D-YYYY
 

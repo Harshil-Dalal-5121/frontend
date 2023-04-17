@@ -18,13 +18,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import {
-  getData,
-  // getProject,
-  model,
-  saveData,
-  tableFields,
-} from "app/services/services";
+import { getData, model, saveData, tableFields } from "app/services/services";
 import { useNavigate, useParams } from "react-router";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 
@@ -93,7 +87,7 @@ const Form = () => {
   const handleSave = () => {
     setOpen(false);
     saveData(`${model}`, formData);
-    navigate("/projects");
+    navigate(-1);
   };
   const validateForm = (formData) => {
     const error = {};
@@ -242,7 +236,7 @@ const Form = () => {
                     variant="contained"
                     color="success"
                     onClick={() => {
-                      navigate("/projects");
+                      navigate(-1);
                     }}
                   >
                     Back

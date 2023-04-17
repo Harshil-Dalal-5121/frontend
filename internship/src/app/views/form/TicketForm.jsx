@@ -36,7 +36,7 @@ const initialValues = {
   taskEndDate: "",
   project: "",
   priority: "",
-  typeSelect: "task",
+  typeSelect: "ticket",
   progressSelect: 0,
 };
 
@@ -133,20 +133,20 @@ const TicketForm = () => {
   const handleSave = () => {
     setOpen(false);
     saveData(`${model}Task`, formData);
-    navigate("/tickets");
+    navigate(-1);
   };
 
   const validateForm = () => {
     const error = {};
 
     if (!formData.name) {
-      error.name = `Task Name is required`;
+      error.name = `Ticket Name is required`;
     }
     if (!formData.project) {
       error.project = `Project  is required`;
     }
     if (!formData.priority) {
-      error.priority = `priority  is required`;
+      error.priority = `Priority  is required`;
     }
     if (!formData.taskDate) {
       error.taskDate = `Start Date is required`;
@@ -367,7 +367,7 @@ const TicketForm = () => {
                     variant="contained"
                     color="success"
                     onClick={() => {
-                      navigate("/tickets");
+                      navigate(-1);
                     }}
                   >
                     Back

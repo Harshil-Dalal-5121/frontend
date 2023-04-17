@@ -122,7 +122,7 @@ const TaskForm = () => {
   const handleSave = () => {
     setOpen(false);
     saveData(`${model}Task`, formData);
-    navigate("/tasks");
+    navigate(-1);
   };
 
   const validateForm = () => {
@@ -363,7 +363,7 @@ const TaskForm = () => {
                     variant="contained"
                     color="success"
                     onClick={() => {
-                      navigate("/tasks");
+                      navigate(-1);
                     }}
                   >
                     Back
