@@ -35,7 +35,7 @@ const ProjectTable = ({
       {loading ? (
         <Container
           style={{
-            height: "450px",
+            height: "50vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -45,7 +45,7 @@ const ProjectTable = ({
         </Container>
       ) : (
         <TableContainer
-          style={{ padding: "15px", height: "450px" }}
+          style={{ padding: "15px", height: "50vh" }}
           component={Paper}
         >
           <Table sx={{ minWidth: 650 }} aria-label="customized table">

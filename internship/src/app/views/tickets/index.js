@@ -1,4 +1,4 @@
-import { Add } from "@mui/icons-material";
+import { Add, Search } from "@mui/icons-material";
 import { Button, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
@@ -11,7 +11,6 @@ import {
 
 import { useTranslation } from "app/services/translate";
 import { useCallback, useState } from "react";
-import { Search } from "react-bootstrap-icons";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import TicketTable from "./table/TicketTable";
@@ -111,7 +110,14 @@ export function Tickets() {
           {t("Tickets")}
         </Typography>
       </legend>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: "70px",
+        }}
+      >
         <Button
           variant="contained"
           color="success"
@@ -122,7 +128,14 @@ export function Tickets() {
         >
           <Add /> Create new ticket
         </Button>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
           <TextField
             style={{ margin: "1em" }}
             id="search"
@@ -137,7 +150,10 @@ export function Tickets() {
               }
             }}
           />
-          <Button onClick={handleSearchSubmit}>
+          <Button
+            sx={{ heigth: "10px", margin: "1em 0" }}
+            onClick={handleSearchSubmit}
+          >
             <Search
               style={{ margin: "1em 1em 1em 0" }}
               variant="contained"

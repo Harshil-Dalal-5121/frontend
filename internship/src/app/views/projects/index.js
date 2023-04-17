@@ -123,7 +123,7 @@ export function Projects() {
           }}
         >
           <TextField
-            style={{ margin: "10px" }}
+            style={{ margin: "1em" }}
             id="search"
             onChange={handleChange}
             name="search"
@@ -140,7 +140,11 @@ export function Projects() {
             onClick={handleSearchSubmit}
             sx={{ heigth: "10px", margin: "1em 0" }}
           >
-            <Search variant="contained" color="success" />
+            <Search
+              variant="contained"
+              style={{ margin: "1em 1em 1em 0" }}
+              color="success"
+            />
           </Button>
         </div>
       </div>
