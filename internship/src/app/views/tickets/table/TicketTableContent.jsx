@@ -64,6 +64,18 @@ const TicketTableContent = ({ data, setData }) => {
     setOpen(true);
   };
 
+  const getDate = (val) => {
+    var date = new Date(val); // M-D-YYYY
+
+    var d = date.getDate();
+    var m = date.getMonth() + 1;
+    var y = date.getFullYear();
+
+    var dateString =
+      (d <= 9 ? "0" + d : d) + "-" + (m <= 9 ? "0" + m : m) + "-" + y;
+    return dateString;
+  };
+
   const handleDelete = () => {
     handleDeleteTask();
     setOpen(false);
@@ -99,7 +111,7 @@ const TicketTableContent = ({ data, setData }) => {
                 {ticket?.project?.fullName || "-"}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
-                {ticket.taskDate?.slice(0, 10) || "-"}
+                {!ticket?.taskDate ? "-" : getDate(ticket?.taskDate)}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
                 {ticket?.status?.name || "-"}
@@ -115,7 +127,7 @@ const TicketTableContent = ({ data, setData }) => {
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
                 <div
-                  class="progress"
+                  className="progress"
                   role="progressbar"
                   aria-label="Animated striped example"
                   aria-valuenow="75"
@@ -123,7 +135,7 @@ const TicketTableContent = ({ data, setData }) => {
                   aria-valuemax="100"
                 >
                   <div
-                    class={
+                    className={
                       ticket?.progressSelect <= 30
                         ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
                         : ticket?.progressSelect > 30 &&
@@ -140,7 +152,7 @@ const TicketTableContent = ({ data, setData }) => {
                 </div>
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
-                {ticket.taskEndDate?.slice(0, 10) || "-"}
+                {!ticket?.taskEndDate ? "-" : getDate(ticket?.taskEndDate)}
               </TableCell>
               <TableCell align="center">
                 <Link to={`${ticket.id}`}>

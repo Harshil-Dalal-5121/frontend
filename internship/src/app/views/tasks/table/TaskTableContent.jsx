@@ -65,6 +65,18 @@ const TaskTableContent = ({ data, setData }) => {
     setOpen(true);
   };
 
+  const getDate = (val) => {
+    var date = new Date(val);
+
+    var d = date.getDate();
+    var m = date.getMonth() + 1;
+    var y = date.getFullYear();
+
+    var dateString =
+      (d <= 9 ? "0" + d : d) + "-" + (m <= 9 ? "0" + m : m) + "-" + y;
+    return dateString;
+  };
+
   const handleDelete = () => {
     handleDeleteTask();
     setOpen(false);
@@ -99,7 +111,7 @@ const TaskTableContent = ({ data, setData }) => {
                 {task?.project?.fullName || "-"}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
-                {task.taskDate?.slice(0, 10) || "-"}
+                {!task?.taskDate ? "-" : getDate(task?.taskDate)}
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
                 {task?.status?.name || "-"}
@@ -112,6 +124,35 @@ const TaskTableContent = ({ data, setData }) => {
               </TableCell>
               <TableCell align="center" style={cellWidth_10}>
                 {task?.targetVersion || "-"}
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                <div
+                  className="progress"
+                  role="progressbar"
+                  aria-label="Animated striped example"
+                  aria-valuenow="75"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    className={
+                      task?.progressSelect <= 30
+                        ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
+                        : task?.progressSelect > 30 &&
+                          task?.progressSelect <= 50
+                        ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                        : task?.progressSelect > 50 &&
+                          task?.progressSelect <= 80
+                        ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
+                        : "progress-bar progress-bar-striped progress-bar-animated bg-success"
+                    }
+                    style={{ width: `${task?.progressSelect || "0"}% ` }}
+                  ></div>
+                  {task?.progressSelect || "0"}%
+                </div>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
+                {!task?.taskEndDate ? "-" : getDate(task?.taskEndDate)}
               </TableCell>
               <TableCell align="center">
                 <Link to={`${task.id}`}>

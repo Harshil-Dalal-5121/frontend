@@ -6,7 +6,6 @@ import {
   Table,
   TableContainer,
 } from "@mui/material";
-
 import React, { useEffect } from "react";
 
 import TicketTableContent from "./TicketTableContent";
@@ -30,6 +29,8 @@ const TicketTable = ({
   useEffect(() => {
     setSearchParams({ page, limit: LIMIT });
   }, [page, setSearchParams]);
+
+  console.log("loading >>>", loading);
 
   return (
     <>

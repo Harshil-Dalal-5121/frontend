@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
-import { Container, Paper, Table, TableContainer } from "@mui/material";
-import Pagination from "@mui/material/Pagination";
-import CircularProgress from "@mui/material/CircularProgress";
+import {
+  Container,
+  Paper,
+  Table,
+  TableContainer,
+  Pagination,
+  CircularProgress,
+} from "@mui/material";
 
 import ProjectTableHeader from "./ProjectTableHeader";
 import ProjectTableContent from "./ProjectTableContent";
@@ -9,7 +14,6 @@ import ProjectTableContent from "./ProjectTableContent";
 const LIMIT = 5;
 
 const ProjectTable = ({
-  search,
   setProjects,
   projects,
   loading,
@@ -25,6 +29,8 @@ const ProjectTable = ({
   useEffect(() => {
     setSearchParams({ page, limit: LIMIT });
   }, [page, setSearchParams]);
+
+  console.log("loading >>>", loading);
 
   return (
     <>
@@ -47,7 +53,6 @@ const ProjectTable = ({
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <ProjectTableHeader />
             <ProjectTableContent
-              search={search}
               data={projects}
               setData={setProjects}
               style={{ height: "50vh" }}

@@ -19,13 +19,14 @@ import ProjectTable from "./table/ProjectTable";
 const LIMIT = 5;
 
 export function Projects() {
-  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-
-  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const handleChange = (event) => {
@@ -36,13 +37,20 @@ export function Projects() {
 
   const Projects = useCallback(async () => {
     const reqBody = {
+      data: {
+        criteria: [],
+        operator: "and",
+        _domain: null,
+        domainContext: { _model: "com.axelor.apps.project.db.Project" },
+      },
       fields: tableFields,
       offset,
       limit: LIMIT,
       sortBy: ["id"],
     };
-
+    setLoading(true);
     const response = await fetchData(` ${model}/search`, reqBody);
+    setLoading(false);
     if (response) {
       setProjects(response?.data?.data);
       setTotal(response?.data?.total);
@@ -53,7 +61,13 @@ export function Projects() {
     if (search) {
       const reqBody = {
         data: {
-          criteria: [{ fieldName: "name", operator: "like", value: search }],
+          criteria: [
+            {
+              fieldName: "name",
+              operator: "like",
+              value: search,
+            },
+          ],
           operator: "or",
         },
         fields: tableFields,
@@ -61,15 +75,15 @@ export function Projects() {
         limit: LIMIT,
         sortBy: ["id"],
       };
-
+      setLoading(true);
       const data = await handleSearch(`${model}/search`, reqBody);
-
+      setLoading(false);
       setProjects(data?.data?.data);
       setTotal(data?.data?.total);
     }
   }, [offset, search]);
 
-  const { loading } = useHandleSubmit(Projects, handleSearchSubmit, search);
+  useHandleSubmit(Projects, handleSearchSubmit, search);
 
   return (
     <>

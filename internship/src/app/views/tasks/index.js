@@ -23,6 +23,8 @@ export function Tasks() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const { t } = useTranslation();
 
   const handleChange = (event) => {
@@ -51,7 +53,9 @@ export function Tasks() {
       _typeSelect: "task",
     };
 
+    setLoading(true);
     const response = await fetchData(` ${model}Task/search`, reqBody);
+    setLoading(false);
     if (response) {
       setTasks(response?.data?.data);
       setTotal(response?.data?.total);
@@ -76,15 +80,15 @@ export function Tasks() {
         limit: LIMIT,
         sortBy: ["id"],
       };
-
+      setLoading(true);
       const data = await handleSearch(`${model}Task/search`, reqBody);
-
+      setLoading(false);
       setTasks(data?.data?.data);
       setTotal(data?.data?.total);
     }
   }, [offset, search]);
 
-  const { loading } = useHandleSubmit(Tasks, handleSearchSubmit, search);
+  useHandleSubmit(Tasks, handleSearchSubmit, search);
 
   return (
     <>

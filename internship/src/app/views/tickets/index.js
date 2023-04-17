@@ -23,6 +23,7 @@ export function Tickets() {
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
+  const [loading, setLoading] = useState(false);
 
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
@@ -51,7 +52,9 @@ export function Tickets() {
       limit: LIMIT,
     };
 
+    setLoading(true);
     const data = await fetchData(` ${model}Task/search`, req);
+    setLoading(false);
     if (data) {
       setTickets(data?.data?.data);
       setTotal(data?.data?.total);
@@ -86,8 +89,9 @@ export function Tickets() {
         offset: offset,
         sortBy: ["id"],
       };
+      setLoading(true);
       const data = await handleSearch(`${model}Task/search`, reqBody);
-      console.log(data.data);
+      setLoading(false);
       if (data.data.status === 0) {
         setTickets(data?.data?.data);
       }
@@ -95,7 +99,7 @@ export function Tickets() {
     }
   }, [offset, search]);
 
-  const { loading } = useHandleSubmit(Tickets, handleSearchSubmit, search);
+  useHandleSubmit(Tickets, handleSearchSubmit, search);
 
   return (
     <>

@@ -119,7 +119,14 @@ const Form = () => {
   return (
     <>
       {loading ? (
-        <Container>
+        <Container
+          style={{
+            height: "50vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <CircularProgress
             style={{
               margin: "auto",
@@ -128,10 +135,24 @@ const Form = () => {
         </Container>
       ) : (
         <>
-          <Container>
-            <Typography component="h3" variant="h3" align="center">
-              {id ? "Update Project Data" : "Add a new Project"}
-            </Typography>
+          <Typography
+            component="h3"
+            variant="h3"
+            style={{
+              margin: "5vh auto",
+            }}
+            align="center"
+          >
+            {id ? "Update Project Data" : "Add a new Project"}
+          </Typography>
+          <Container
+            style={{
+              height: "100vh",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <form id="form" onSubmit={handleSubmit}>
               <Grid
                 container

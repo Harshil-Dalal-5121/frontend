@@ -1,6 +1,5 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import {
-  // getTicket,
   getOptions,
   getPriority,
   fetchOptions,
@@ -164,189 +163,220 @@ const TicketForm = () => {
   return (
     <>
       {loading ? (
-        <CircularProgress />
-      ) : (
-        <Container>
-          <Typography component="h3" variant="h3" align="center">
-            {id ? "Update ticket" : "Add new ticket"}
-          </Typography>
-          <form id="form" onSubmit={handleSubmit}>
-            <Grid
-              container
-              spacing={2}
-              id="form"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Grid item xs={12} sm={8}>
-                <TextField
-                  value={formData?.name || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  error={errors?.name ? true : false}
-                  helperText={errors?.name ? `${errors.name}` : ""}
-                  id="name"
-                  name="name"
-                  label="Add Name"
-                />
-              </Grid>
-              <Grid item xs={12} sm={8}>
-                <Typography>Progress :</Typography>
-                <Slider
-                  value={formData?.progressSelect || 0}
-                  id="progressSelect"
-                  name="progressSelect"
-                  onChange={handleChange}
-                  sx={{ width: 300 }}
-                  aria-label="Temperature"
-                  defaultValue={0}
-                  valueLabelDisplay="auto"
-                  step={10}
-                  color="secondary"
-                  min={0}
-                  max={100}
-                />
-              </Grid>
-              <Grid item xs={12} sm={8}>
-                <Autocomplete
-                  fullWidth
-                  id="project"
-                  name="project"
-                  value={formData?.project || null}
-                  options={projectOps}
-                  getOptionLabel={(option) => {
-                    return option.fullName;
-                  }}
-                  isOptionEqualToValue={(option, value) =>
-                    option.fullName === value.fullName
-                  }
-                  onChange={(e, newValue) => {
-                    setFormData({
-                      ...formData,
-                      project: {
-                        id: newValue.id,
-                        fullName: newValue.fullName,
-                        code: newValue.code || null,
-                      },
-                    });
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Project"
-                      error={errors?.project ? true : false}
-                      helperText={errors?.project ? `${errors.project}` : ""}
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <>
-                            {loading ? (
-                              <CircularProgress color="inherit" size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={8}>
-                <Autocomplete
-                  fullWidth
-                  id="priority"
-                  name="priority"
-                  value={formData?.priority || null}
-                  options={priorityOps}
-                  getOptionLabel={(option) => {
-                    return option.name;
-                  }}
-                  isOptionEqualToValue={(option, value) =>
-                    option.name === value.name
-                  }
-                  onChange={(e, newValue) => {
-                    setFormData({
-                      ...formData,
-                      priority: {
-                        id: newValue.id,
-                        name: newValue.name,
-                        $version: 0,
-                      },
-                    });
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Priority"
-                      error={errors?.priority ? true : false}
-                      helperText={errors?.priority ? `${errors.priority}` : ""}
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <>
-                            {loading ? (
-                              <CircularProgress color="inherit" size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={8}>
-                <TextField
-                  fullWidth
-                  onChange={handleChange}
-                  value={formData?.taskDate || ""}
-                  error={errors?.taskDate ? true : false}
-                  helperText={errors?.taskDate ? `${errors.taskDate}` : ""}
-                  id="taskDate"
-                  name="taskDate"
-                  type="date"
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={12} sm={8}>
-                <TextField
-                  fullWidth
-                  onChange={handleChange}
-                  value={formData?.taskEndDate || ""}
-                  error={errors?.taskEndDate ? true : false}
-                  helperText={
-                    errors?.taskEndDate ? `${errors.taskEndDate}` : ""
-                  }
-                  id="taskEndDate"
-                  name="taskEndDate"
-                  type="date"
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={12} sm={8}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  type="submit"
-                  onClick={handleSubmit}
-                  style={{ margin: "0 10px" }}
-                >
-                  {id ? "Update" : "Add"}
-                </Button>
-
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={() => {
-                    navigate("/tickets");
-                  }}
-                >
-                  Back
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
+        <Container
+          style={{
+            height: "50vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress
+            style={{
+              margin: "auto",
+            }}
+          />
         </Container>
+      ) : (
+        <>
+          <Typography
+            component="h3"
+            variant="h3"
+            style={{
+              margin: "5vh auto",
+            }}
+            align="center"
+          >
+            {id ? "Update Ticket Data" : "Add a new Ticket"}
+          </Typography>
+          <Container
+            style={{
+              height: "100vh",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <form id="form" onSubmit={handleSubmit}>
+              <Grid
+                container
+                spacing={2}
+                id="form"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Grid item xs={12} sm={8}>
+                  <TextField
+                    value={formData?.name || ""}
+                    onChange={handleChange}
+                    fullWidth
+                    error={errors?.name ? true : false}
+                    helperText={errors?.name ? `${errors.name}` : ""}
+                    id="name"
+                    name="name"
+                    label="Add Name"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <Typography>Progress :</Typography>
+                  <Slider
+                    value={formData?.progressSelect || 0}
+                    id="progressSelect"
+                    name="progressSelect"
+                    onChange={handleChange}
+                    sx={{ width: 300 }}
+                    aria-label="Temperature"
+                    defaultValue={0}
+                    valueLabelDisplay="auto"
+                    step={10}
+                    color="secondary"
+                    min={0}
+                    max={100}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <Autocomplete
+                    fullWidth
+                    id="project"
+                    name="project"
+                    value={formData?.project || null}
+                    options={projectOps}
+                    getOptionLabel={(option) => {
+                      return option.fullName;
+                    }}
+                    isOptionEqualToValue={(option, value) =>
+                      option.fullName === value.fullName
+                    }
+                    onChange={(e, newValue) => {
+                      setFormData({
+                        ...formData,
+                        project: {
+                          id: newValue.id,
+                          fullName: newValue.fullName,
+                          code: newValue.code || null,
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Project"
+                        error={errors?.project ? true : false}
+                        helperText={errors?.project ? `${errors.project}` : ""}
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <Autocomplete
+                    fullWidth
+                    id="priority"
+                    name="priority"
+                    value={formData?.priority || null}
+                    options={priorityOps}
+                    getOptionLabel={(option) => {
+                      return option.name;
+                    }}
+                    isOptionEqualToValue={(option, value) =>
+                      option.name === value.name
+                    }
+                    onChange={(e, newValue) => {
+                      setFormData({
+                        ...formData,
+                        priority: {
+                          id: newValue.id,
+                          name: newValue.name,
+                          $version: 0,
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Priority"
+                        error={errors?.priority ? true : false}
+                        helperText={
+                          errors?.priority ? `${errors.priority}` : ""
+                        }
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <TextField
+                    fullWidth
+                    onChange={handleChange}
+                    value={formData?.taskDate || ""}
+                    error={errors?.taskDate ? true : false}
+                    helperText={errors?.taskDate ? `${errors.taskDate}` : ""}
+                    id="taskDate"
+                    name="taskDate"
+                    type="date"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <TextField
+                    fullWidth
+                    onChange={handleChange}
+                    value={formData?.taskEndDate || ""}
+                    error={errors?.taskEndDate ? true : false}
+                    helperText={
+                      errors?.taskEndDate ? `${errors.taskEndDate}` : ""
+                    }
+                    id="taskEndDate"
+                    name="taskEndDate"
+                    type="date"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    onClick={handleSubmit}
+                    style={{ margin: "0 10px" }}
+                  >
+                    {id ? "Update" : "Add"}
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={() => {
+                      navigate("/tickets");
+                    }}
+                  >
+                    Back
+                  </Button>
+                </Grid>
+              </Grid>
+            </form>
+          </Container>
+        </>
       )}
       <Dialog
         open={open}

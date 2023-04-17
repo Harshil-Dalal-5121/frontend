@@ -28,11 +28,11 @@ const taskTableFields = [
   "project",
   "taskDate",
   "status",
-  "taskEndDate",
-  "progressSelect",
   "priority",
   "projectTaskCategory",
   "targetVersion",
+  "progressSelect",
+  "taskEndDate",
 ];
 
 const ticketTableFields = [
@@ -87,16 +87,6 @@ const getData = async (api, fields) => {
   }
 };
 
-// const deleteData = (id, version, name, setData) => {
-//   rest
-//     .post(`${model}/removeAll`, {
-//       records: [{ id: id, version: version, name: name }],
-//     })
-//     .then(() => {
-//       setData((prev) => prev.filter((project) => project.id !== id));
-//     });
-// };
-
 const deleteData = async (api, reqBody) => {
   const response = await rest.post(api, reqBody);
 
@@ -146,37 +136,19 @@ const handleSearch = async (api, data) => {
   }
 };
 
-const deleteTask = async (reqBody) => {
-  const response = await rest.post(`${model}Task/removeAll`, reqBody);
-
-  if (response && response.data.status !== -1) {
-    return response;
-  }
-};
-
-const deleteTicket = async (reqBody) => {
-  const response = await rest.post(`${model}Task/removeAll`, reqBody);
-
-  if (response && response.data.status !== -1) {
-    return response;
-  }
-};
-
 export {
   rest,
   model,
+  tableFields,
+  taskTableFields,
+  ticketTableFields,
+  navigate,
+  fetchData,
   saveData,
   getData,
-  tableFields,
   deleteData,
-  handleSearch,
-  navigate,
-  taskTableFields,
-  fetchData,
-  ticketTableFields,
-  deleteTask,
   fetchOptions,
-  deleteTicket,
   getOptions,
   getPriority,
+  handleSearch,
 };
