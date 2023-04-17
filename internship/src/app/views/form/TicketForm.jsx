@@ -1,11 +1,13 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import {
-  getTicket,
+  // getTicket,
   getOptions,
   getPriority,
   fetchOptions,
   saveData,
   model,
+  getData,
+  ticketTableFields,
 } from "app/services/services";
 
 import {
@@ -73,7 +75,13 @@ const TicketForm = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const { id } = useParams();
-  const { loading } = useFetchRecord(id, getTicket, setFormData);
+  const { loading } = useFetchRecord(
+    id,
+    getData,
+    setFormData,
+    `${model}Task/${id}/fetch`,
+    ticketTableFields
+  );
 
   const navigate = useNavigate();
   const handleClickOpen = () => {
@@ -207,7 +215,7 @@ const TicketForm = () => {
                   value={formData?.project || null}
                   options={projectOps}
                   getOptionLabel={(option) => {
-                    return option.name;
+                    return option.fullName;
                   }}
                   isOptionEqualToValue={(option, value) =>
                     option.fullName === value.fullName

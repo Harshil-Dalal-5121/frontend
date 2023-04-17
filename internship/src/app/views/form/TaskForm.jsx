@@ -1,11 +1,13 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import {
-  getTask,
+  // getTask,
   getOptions,
   getPriority,
   fetchOptions,
   saveData,
   model,
+  getData,
+  taskTableFields,
 } from "app/services/services";
 
 import {
@@ -148,7 +150,13 @@ const TaskForm = () => {
     return error;
   };
   const { id } = useParams();
-  const { loading } = useFetchRecord(id, getTask, setFormData);
+  const { loading } = useFetchRecord(
+    id,
+    getData,
+    setFormData,
+    `${model}Task/${id}/fetch`,
+    taskTableFields
+  );
   return (
     <>
       {loading ? (
@@ -203,7 +211,7 @@ const TaskForm = () => {
                   value={formData?.project || null}
                   options={projectOps}
                   getOptionLabel={(option) => {
-                    return option.name;
+                    return option.fullName;
                   }}
                   isOptionEqualToValue={(option, value) =>
                     option.fullName === value.fullName

@@ -76,56 +76,54 @@ const saveData = (api, data) => {
   );
 };
 
-const getProject = async (id) => {
+const getData = async (api, fields) => {
   try {
-    const response = await rest.post(`${model}/${id}/fetch`, {
-      fields: tableFields,
-    });
-
-    return response;
-  } catch (error) {
-    return error;
-  }
-};
-
-const getData = (api) => {
-  try {
-    const response = rest.post(api, {
-      fields: ticketTableFields,
-    });
-    if (response && response.data.status !== -1) {
+    const response = await rest.post(api, { fields: fields });
+    if (response) {
       return response;
     }
   } catch (error) {
-    return error;
+    console.log(error);
   }
 };
 
-const getTicket = (id) => {
-  try {
-    const response = rest.post(`${model}Task/${id}/fetch`, {
-      fields: ticketTableFields,
-    });
-    if (response && response.data.status !== -1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
+// const getProject = async (id) => {
+//   try {
+//     const response = await rest.post(`${model}/${id}/fetch`, {
+//       fields: tableFields,
+//     });
 
-const getTask = (id) => {
-  try {
-    const response = rest.post(`${model}Task/${id}/fetch`, {
-      fields: ticketTableFields,
-    });
-    if (response && response.data.status !== -1) {
-      return response;
-    }
-  } catch (error) {
-    return error;
-  }
-};
+//     return response;
+//   } catch (error) {
+//     return error;
+//   }
+// };
+
+// const getTicket = async (id) => {
+//   try {
+//     const response = await rest.post(`${model}Task/${id}/fetch`, {
+//       fields: ticketTableFields,
+//     });
+//     if (response && response.data.status !== -1) {
+//       return response;
+//     }
+//   } catch (error) {
+//     return error;
+//   }
+// };
+
+// const getTask = async (id) => {
+//   try {
+//     const response = await rest.post(`${model}Task/${id}/fetch`, {
+//       fields: ticketTableFields,
+//     });
+//     if (response && response.data.status !== -1) {
+//       return response;
+//     }
+//   } catch (error) {
+//     return error;
+//   }
+// };
 
 const deleteData = (id, version, name, setData) => {
   rest
@@ -214,8 +212,8 @@ export {
   getProjects,
   handleSearch,
   navigate,
-  getProject,
-  getTask,
+  // getProject,
+  // getTask,
   taskTableFields,
   fetchData,
   ticketTableFields,
@@ -224,5 +222,5 @@ export {
   deleteTicket,
   getOptions,
   getPriority,
-  getTicket,
+  // getTicket,
 };

@@ -18,7 +18,13 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getProject, model, saveData } from "app/services/services";
+import {
+  getData,
+  // getProject,
+  model,
+  saveData,
+  tableFields,
+} from "app/services/services";
 import { useNavigate, useParams } from "react-router";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 
@@ -56,7 +62,13 @@ const Form = () => {
   };
 
   const { id } = useParams();
-  const { loading } = useFetchRecord(id, getProject, setFormData);
+  const { loading } = useFetchRecord(
+    id,
+    getData,
+    setFormData,
+    `${model}/${id}/fetch`,
+    tableFields
+  );
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target || {};
