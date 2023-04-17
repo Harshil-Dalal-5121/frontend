@@ -30,6 +30,8 @@ const ProjectTable = ({
     setSearchParams({ page, limit: LIMIT });
   }, [page, setSearchParams]);
 
+  console.log("loading >>>", loading);
+
   return (
     <>
       {loading ? (

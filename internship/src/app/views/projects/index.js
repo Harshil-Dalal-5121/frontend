@@ -25,7 +25,7 @@ export function Projects() {
   const [loading, setLoading] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(searchParams.get("page") || 1);
+  const [page, setPage] = useState(Number(searchParams.get("page") || 1));
   const navigate = useNavigate();
   const { t } = useTranslation();
 

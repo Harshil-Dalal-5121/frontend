@@ -140,13 +140,13 @@ const TicketForm = () => {
     const error = {};
 
     if (!formData.name) {
-      error.name = `Ticket Name is required`;
+      error.name = `Task Name is required`;
     }
     if (!formData.project) {
       error.project = `Project  is required`;
     }
     if (!formData.priority) {
-      error.priority = `Priority  is required`;
+      error.priority = `priority  is required`;
     }
     if (!formData.taskDate) {
       error.taskDate = `Start Date is required`;
