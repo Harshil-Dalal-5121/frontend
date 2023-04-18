@@ -4,12 +4,10 @@ import Typography from "@mui/material/Typography";
 import {
   Grid,
   IconButton,
-  Box,
   Card,
   CardActions,
   CardContent,
 } from "@mui/material";
-// import { fetchData, model, tableFields } from "app/services/services";
 import { Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
@@ -18,12 +16,12 @@ import { Pagination } from "@mui/material";
 
 const LIMIT = 5;
 
-const card = (project, i) => {
+const card = (project) => {
   return (
     <>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          #{i + 1}
+          #{project?.id}
         </Typography>
         <Typography variant="h5" component="div">
           {project?.name || "-"}
@@ -31,10 +29,7 @@ const card = (project, i) => {
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           {project?.code || "-"}
         </Typography>
-        <Typography variant="body2">
-          {project?.assignedTo?.fullName || "-"}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }}>
+        <Typography>
           Parent- <b>{project?.clientPartner?.fullName || "-"}</b>
         </Typography>
         <Typography variant="body2">{project?.projectStatus?.name}</Typography>
@@ -53,33 +48,44 @@ const card = (project, i) => {
   );
 };
 
-export default function CardList({ projects, loading, page, setPage, total }) {
+export default function CardList({
+  projects,
+  loading,
+  page,
+  setPage,
+  total,
+  setSearchParams,
+}) {
   const handleChange = (event, value) => {
     setPage(value);
   };
 
+  React.useEffect(() => {
+    setSearchParams({ page, limit: LIMIT });
+  }, [page, setSearchParams]);
+
   return (
     <>
       {!loading ? (
-        <Grid container spacing={3}>
-          {projects?.map((project, i) => {
-            return (
-              <>
-                <Grid item xs={12} sm={4} key={i}>
-                  <Box sx={{ minWidth: 275 }} key={i}>
-                    <Card variant="outlined" key={i}>
+        <div style={{ padding: "15px", height: "52vh" }}>
+          <Grid container spacing={3}>
+            {projects?.map((project, i) => {
+              return (
+                <>
+                  <Grid item xs={12} sm={4} key={i}>
+                    <Card sx={{ height: "23vh" }} variant="outlined" key={i}>
                       {card(project, i)}
                     </Card>
-                  </Box>
-                </Grid>
-              </>
-            );
-          })}
-        </Grid>
+                  </Grid>
+                </>
+              );
+            })}
+          </Grid>
+        </div>
       ) : (
         <Container
           style={{
-            height: "50vh",
+            height: "52vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

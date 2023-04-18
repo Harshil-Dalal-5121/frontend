@@ -35,7 +35,7 @@ const ProjectTable = ({
       {loading ? (
         <Container
           style={{
-            height: "50vh",
+            height: "52vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -45,7 +45,7 @@ const ProjectTable = ({
         </Container>
       ) : (
         <TableContainer
-          style={{ padding: "15px", height: "50vh" }}
+          style={{ padding: "0 15px", height: "52vh" }}
           component={Paper}
         >
           <Table sx={{ minWidth: 650 }} aria-label="customized table">
@@ -53,21 +53,19 @@ const ProjectTable = ({
             <ProjectTableContent
               data={projects}
               setData={setProjects}
-              style={{ height: "50vh" }}
+              style={{ height: "52vh" }}
             />
           </Table>
         </TableContainer>
       )}
-      <div style={{ display: "inline !important " }}>
-        <p>Total Items: {total}</p>
-        <p>Page: {page}</p>
-        <Pagination
-          shape="rounded"
-          count={Math.ceil(total / LIMIT)}
-          page={page}
-          onChange={handleChange}
-        />
-      </div>
+      <p>Total Items: {total}</p>
+      <p>Page: {page}</p>
+      <Pagination
+        shape="rounded"
+        count={Math.ceil(total / LIMIT)}
+        page={page}
+        onChange={handleChange}
+      />
     </>
   );
 };

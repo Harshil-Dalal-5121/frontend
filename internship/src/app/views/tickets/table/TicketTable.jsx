@@ -35,7 +35,7 @@ const TicketTable = ({
       {loading ? (
         <Container
           style={{
-            height: "50vh",
+            height: "52vh",
             width: "100vw",
             display: "flex",
             justifyContent: "center",
@@ -47,7 +47,7 @@ const TicketTable = ({
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "50vh" }}
+            style={{ padding: "15px", height: "52vh" }}
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -55,7 +55,7 @@ const TicketTable = ({
               <TicketTableContent
                 data={tickets}
                 setData={setTickets}
-                style={{ height: "50vh" }}
+                style={{ height: "52vh" }}
               />
             </Table>
           </TableContainer>

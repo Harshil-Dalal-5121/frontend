@@ -35,7 +35,7 @@ const TasksTable = ({
       {loading ? (
         <Container
           style={{
-            height: "50vh",
+            height: "52vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -46,15 +46,15 @@ const TasksTable = ({
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "50vh" }}
+            style={{ padding: "0 15px", height: "52vh" }}
             component={Paper}
           >
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table sx={{ minWidth: 650 }} aria-label="customized table">
               <TaskTableHeader />
               <TaskTableContent
                 data={tasks}
                 setData={setTasks}
-                style={{ height: "50vh" }}
+                style={{ height: "52vh" }}
               />
             </Table>
           </TableContainer>

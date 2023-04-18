@@ -14,9 +14,70 @@ import { useSearchParams } from "react-router-dom";
 import { useCallback, useState } from "react";
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
 
-const LIMIT = 5;
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ViewListIcon from "@mui/icons-material/ViewList";
+
+import CardList from "./card/CardList";
+
+const LIMIT = 6;
+
+const View = {
+  table: "table",
+  card: "card",
+};
+
+const ViewComponent = {
+  table: TasksTable,
+  card: CardList,
+};
+
+function Toolbar({ setView }) {
+  return (
+    <>
+      <Button
+        variant="outlined"
+        style={{ marginRight: "10px" }}
+        onClick={() => setView(View.table)}
+      >
+        Table
+        <ViewListIcon />
+      </Button>
+
+      <Button variant="outlined" onClick={() => setView(View.card)}>
+        Card
+        <DashboardIcon />
+      </Button>
+    </>
+  );
+}
+
+function List({
+  view,
+  setTasks,
+  tasks,
+  loading,
+  page,
+  setPage,
+  total,
+  setSearchParams,
+}) {
+  const ListComponent = ViewComponent[view];
+
+  return (
+    <ListComponent
+      tasks={tasks}
+      loading={loading}
+      total={total}
+      page={page}
+      setTasks={setTasks}
+      setPage={setPage}
+      setSearchParams={setSearchParams}
+    />
+  );
+}
 
 export function Tasks() {
+  const [view, setView] = useState(View.table); // grid | card
   const [tasks, setTasks] = useState([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
@@ -119,6 +180,9 @@ export function Tasks() {
         >
           <Add /> Create new task
         </Button>
+        <div>
+          <Toolbar setView={setView} />
+        </div>
         <div
           style={{
             display: "flex",
@@ -153,13 +217,12 @@ export function Tasks() {
           </Button>
         </div>
       </div>
-      <TasksTable
+      <List
+        view={view}
         search={search}
         tasks={tasks}
         loading={loading}
-        setSearch={setSearch}
         total={total}
-        setTotal={setTotal}
         page={page}
         searchParams={searchParams}
         setTasks={setTasks}
