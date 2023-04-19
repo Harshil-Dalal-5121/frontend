@@ -1,7 +1,10 @@
 import { Add, Search } from "@mui/icons-material";
 import { Button, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ViewListIcon from "@mui/icons-material/ViewList";
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
+import CardList from "./card/CardList";
 import {
   fetchData,
   handleSearch,
@@ -14,10 +17,68 @@ import { useCallback, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import TicketTable from "./table/TicketTable";
+import { Grid } from "@mui/material";
 
-const LIMIT = 5;
+const LIMIT = 6;
+
+const View = {
+  table: "table",
+  card: "card",
+};
+
+const ViewComponent = {
+  table: TicketTable,
+  card: CardList,
+};
+
+function Toolbar({ setView }) {
+  return (
+    <>
+      <Button
+        variant="outlined"
+        style={{ marginRight: "10px" }}
+        onClick={() => setView(View.table)}
+      >
+        Table
+        <ViewListIcon />
+      </Button>
+
+      <Button variant="outlined" onClick={() => setView(View.card)}>
+        Card
+        <DashboardIcon />
+      </Button>
+    </>
+  );
+}
+
+function List({
+  view,
+  setTickets,
+  tickets,
+  loading,
+  page,
+  setPage,
+  total,
+  setSearchParams,
+}) {
+  const ListComponent = ViewComponent[view];
+
+  return (
+    <ListComponent
+      tickets={tickets}
+      loading={loading}
+      total={total}
+      page={page}
+      setTickets={setTickets}
+      setPage={setPage}
+      setSearchParams={setSearchParams}
+    />
+  );
+}
 
 export function Tickets() {
+  const [view, setView] = useState(View.table); // grid | card
+
   const [tickets, setTickets] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -110,7 +171,7 @@ export function Tickets() {
           {t("Tickets")}
         </Typography>
       </legend>
-      <div
+      {/* <div
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -161,14 +222,107 @@ export function Tickets() {
             />
           </Button>
         </div>
-      </div>
-      <TicketTable
+      </div> */}
+
+      <Grid container spacing={3}>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            // justifyContent: "flex-start",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              navigate("/projects/new");
+            }}
+            style={{ textTransform: "capitalize", margin: "1em" }}
+          >
+            <Add /> Create new project
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          <Toolbar setView={setView} />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          {" "}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              height: "70px",
+            }}
+          >
+            <TextField
+              style={{ margin: "1em" }}
+              id="search"
+              onChange={handleChange}
+              name="search"
+              value={search}
+              label="Search Project"
+              variant="outlined"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleSearchSubmit();
+                }
+              }}
+            />
+
+            <Search
+              onClick={handleSearchSubmit}
+              variant="contained"
+              style={{ margin: "1em 1em 1em 0" }}
+              color="success"
+            />
+          </div>
+        </Grid>
+      </Grid>
+      {/* <TicketTable
         search={search}
         tickets={tickets}
         loading={loading}
         setSearch={setSearch}
         total={total}
         setTotal={setTotal}
+        page={page}
+        searchParams={searchParams}
+        setTickets={setTickets}
+        setPage={setPage}
+        setSearchParams={setSearchParams}
+      /> */}
+      <List
+        view={view}
+        search={search}
+        tickets={tickets}
+        loading={loading}
+        total={total}
         page={page}
         searchParams={searchParams}
         setTickets={setTickets}

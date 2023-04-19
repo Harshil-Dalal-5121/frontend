@@ -18,6 +18,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ViewListIcon from "@mui/icons-material/ViewList";
 
 import CardList from "./card/CardList";
+import { Grid } from "@mui/material";
 
 const LIMIT = 6;
 
@@ -162,7 +163,7 @@ export function Tasks() {
         </Typography>
       </legend>
 
-      <div
+      {/* <div
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -170,17 +171,33 @@ export function Tasks() {
           height: "70px",
         }}
       >
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {
-            navigate("/tasks/new");
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "70px",
+            minWidth: "20vw",
           }}
-          style={{ textTransform: "capitalize", margin: "1em" }}
         >
-          <Add /> Create new task
-        </Button>
-        <div>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              navigate("/projects/new");
+            }}
+            style={{ textTransform: "capitalize", margin: "1em" }}
+          >
+            <Add /> Create new Task
+          </Button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Toolbar setView={setView} />
         </div>
         <div
@@ -216,7 +233,88 @@ export function Tasks() {
             />
           </Button>
         </div>
-      </div>
+      </div> */}
+
+      <Grid container spacing={3}>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              navigate("/projects/new");
+            }}
+            style={{ textTransform: "capitalize", margin: "1em" }}
+          >
+            <Add /> Create new Task
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          <Toolbar setView={setView} />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          {" "}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              height: "70px",
+            }}
+          >
+            <TextField
+              style={{ margin: "1em" }}
+              id="search"
+              onChange={handleChange}
+              name="search"
+              value={search}
+              label="Search Project"
+              variant="outlined"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleSearchSubmit();
+                }
+              }}
+            />
+
+            <Search
+              onClick={handleSearchSubmit}
+              variant="contained"
+              style={{ margin: "1em 1em 1em 0" }}
+              color="success"
+            />
+          </div>
+        </Grid>
+      </Grid>
       <List
         view={view}
         search={search}

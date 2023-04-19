@@ -20,46 +20,67 @@ import { DialogContentText } from "@mui/material";
 import { DialogActions } from "@mui/material";
 import { Button } from "@mui/material";
 import { Slide } from "@mui/material";
-import { deleteData, model } from "app/services/services";
-import { useTheme } from "@emotion/react";
 import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import { deleteData, model } from "app/services/services";
 
-const LIMIT = 5;
+const LIMIT = 6;
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const card = (project, handleClickOpen, setData) => {
+const card = (ticket, handleClickOpen, setData, i) => {
   return (
     <>
-      <CardContent>
+      <CardContent key={i}>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          #{project?.id}
+          #{ticket?.id}
         </Typography>
         <Typography variant="h5" component="div">
-          {project?.name || "-"}
+          {ticket?.name || "-"}
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {project?.code || "-"}
+        <Typography sx={{ mb: 1.5, width: "30%" }} color="text.secondary">
+          <div
+            className="progress"
+            role="progressbar"
+            aria-label="Animated striped example"
+            aria-valuenow="75"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <div
+              className={
+                ticket?.progressSelect <= 30
+                  ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
+                  : ticket?.progressSelect > 30 && ticket?.progressSelect <= 50
+                  ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                  : ticket?.progressSelect > 50 && ticket?.progressSelect <= 80
+                  ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
+                  : "progress-bar progress-bar-striped progress-bar-animated bg-success"
+              }
+              style={{ width: `${ticket?.progressSelect || "0"}% ` }}
+            ></div>
+            {ticket?.progressSelect || "0"}%
+          </div>
         </Typography>
         <Typography>
-          Parent- <b>{project?.clientPartner?.fullName || "-"}</b>
+          Priority- <b>{ticket?.priority?.name || "-"}</b>
         </Typography>
-        <Typography variant="body2">{project?.projectStatus?.name}</Typography>
+        <Typography variant="body2">{ticket?.projectStatus?.name}</Typography>
       </CardContent>
       <CardActions>
-        <Link to={`${project.id}`}>
+        <Link to={`${ticket.id}`}>
           <IconButton variant="contained" color="success">
             <Edit />
           </IconButton>
         </Link>
         <IconButton
           onClick={() =>
-            handleClickOpen(project.id, project.version, project.name, setData)
+            handleClickOpen(ticket.id, ticket.version, ticket.name, setData)
           }
-          variant="contained"
           color="success"
+          variant="contained"
         >
           <Delete />
         </IconButton>
@@ -69,10 +90,10 @@ const card = (project, handleClickOpen, setData) => {
 };
 
 export default function CardList({
-  projects,
+  tickets,
   loading,
   page,
-  setProjects,
+  setTasks,
   setPage,
   total,
   setSearchParams,
@@ -134,12 +155,12 @@ export default function CardList({
       {!loading ? (
         <div style={{ padding: "15px", height: "52vh" }}>
           <Grid container spacing={3}>
-            {projects?.map((project, i) => {
+            {tickets?.map((ticket, i) => {
               return (
                 <>
                   <Grid item xs={12} sm={4} key={i}>
                     <Card sx={{ height: "23vh" }} variant="outlined" key={i}>
-                      {card(project, handleClickOpen, setProjects, i)}
+                      {card(ticket, handleClickOpen, setTasks, i)}
                     </Card>
                   </Grid>
                 </>

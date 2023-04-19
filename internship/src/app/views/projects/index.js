@@ -19,6 +19,7 @@ import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 
 import ProjectTable from "./table/ProjectTable";
+import { Grid } from "@mui/material";
 
 const LIMIT = 6;
 
@@ -155,7 +156,7 @@ export function Projects() {
         </Typography>
       </legend>
 
-      <div
+      {/* <div
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -163,16 +164,26 @@ export function Projects() {
           height: "70px",
         }}
       >
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {
-            navigate("/projects/new");
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "70px",
+            minWidth: "20vw",
           }}
-          style={{ textTransform: "capitalize", margin: "1em" }}
         >
-          <Add /> Create new project
-        </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              navigate("/projects/new");
+            }}
+            style={{ textTransform: "capitalize", margin: "1em" }}
+          >
+            <Add /> Create new project
+          </Button>
+        </div>
         <div>
           <Toolbar setView={setView} />
         </div>
@@ -206,7 +217,88 @@ export function Projects() {
             color="success"
           />
         </div>
-      </div>
+      </div> */}
+
+      <Grid container spacing={3}>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            // justifyContent: "flex-start",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              navigate("/projects/new");
+            }}
+            style={{ textTransform: "capitalize", margin: "1em" }}
+          >
+            <Add /> Create new project
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          <Toolbar setView={setView} />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            height: "70px",
+          }}
+        >
+          {" "}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              height: "70px",
+            }}
+          >
+            <TextField
+              style={{ margin: "1em" }}
+              id="search"
+              onChange={handleChange}
+              name="search"
+              value={search}
+              label="Search Project"
+              variant="outlined"
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleSearchSubmit();
+                }
+              }}
+            />
+
+            <Search
+              onClick={handleSearchSubmit}
+              variant="contained"
+              style={{ margin: "1em 1em 1em 0" }}
+              color="success"
+            />
+          </div>
+        </Grid>
+      </Grid>
 
       <List
         view={view}
