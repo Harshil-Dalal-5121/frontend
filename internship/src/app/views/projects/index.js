@@ -33,7 +33,7 @@ const ViewComponent = {
   card: CardList,
 };
 
-function Toolbar({ setView }) {
+function Toolbar({ setView, setSearchParams, searchParams }) {
   return (
     <>
       <Button
@@ -45,7 +45,14 @@ function Toolbar({ setView }) {
         <ViewListIcon />
       </Button>
 
-      <Button variant="outlined" onClick={() => setView(View.card)}>
+      <Button
+        variant="outlined"
+        onClick={() => {
+          setSearchParams({ page: 1, limit: LIMIT });
+
+          return setView(View.card);
+        }}
+      >
         Card
         <DashboardIcon />
       </Button>
@@ -79,12 +86,14 @@ function List({
 }
 
 export function Projects() {
-  const [view, setView] = useState(View.table); // grid | card
+  const [view, setView] = useState(View.table);
+
   const [projects, setProjects] = useState([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -195,7 +204,7 @@ export function Projects() {
             height: "70px",
           }}
         >
-          <Toolbar setView={setView} />
+          <Toolbar setView={setView} setSearchParams={setSearchParams} />
         </Grid>
         <Grid
           item

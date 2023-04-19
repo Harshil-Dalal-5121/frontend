@@ -34,6 +34,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const getTasks = async (loader, setter, reqBody) => {
+  loader(true);
+  const response = await fetchData(`${model}Task/search`, reqBody);
+  loader(false);
+  if (response) {
+    setter(response?.data?.data);
+  }
+};
+
 const ProjectTaskTable = ({ id }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,19 +65,9 @@ const ProjectTaskTable = ({ id }) => {
     sortBy: ["taskDate"],
   };
 
-  const getTasks = async () => {
-    setLoading(true);
-    const response = await fetchData(`${model}Task/search`, reqBody);
-    setLoading(false);
-    if (response) {
-      setTasks(response?.data?.data);
-    }
-  };
-
   useEffect(() => {
-    getTasks();
+    getTasks(setLoading, setTasks, reqBody);
   }, []);
-  console.log(tasks);
 
   const getDate = (val) => {
     var date = new Date(val);
@@ -104,55 +103,61 @@ const ProjectTaskTable = ({ id }) => {
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 500 }} aria-label="customized table">
               <TableHead>
-                <StyledTableCell>Project</StyledTableCell>
-                <StyledTableCell>Start Date</StyledTableCell>
-                <StyledTableCell>Assigned To</StyledTableCell>
-                <StyledTableCell>Progress</StyledTableCell>
+                <StyledTableRow>
+                  <StyledTableCell>Project</StyledTableCell>
+                  <StyledTableCell>Start Date</StyledTableCell>
+                  <StyledTableCell>Assigned To</StyledTableCell>
+                  <StyledTableCell>Progress</StyledTableCell>
+                </StyledTableRow>
               </TableHead>
-              <TableBody>
-                {tasks?.map((task, i) => {
-                  return (
-                    <StyledTableRow>
-                      <StyledTableCell>{task?.name}</StyledTableCell>
-                      <StyledTableCell>
-                        {" "}
-                        {!task?.taskDate ? "-" : getDate(task?.taskDate)}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {task?.assignedTo?.fullName}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <div
-                          className="progress"
-                          role="progressbar"
-                          aria-label="Animated striped example"
-                          aria-valuenow="75"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        >
+              {tasks ? (
+                <TableBody>
+                  {tasks?.map((task, i) => {
+                    return (
+                      <StyledTableRow key={i}>
+                        <StyledTableCell>{task?.name}</StyledTableCell>
+                        <StyledTableCell>
+                          {" "}
+                          {!task?.taskDate ? "-" : getDate(task?.taskDate)}
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          {task?.assignedTo?.fullName}
+                        </StyledTableCell>
+                        <StyledTableCell>
                           <div
-                            className={
-                              task?.progressSelect <= 30
-                                ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
-                                : task?.progressSelect > 30 &&
-                                  task?.progressSelect <= 50
-                                ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
-                                : task?.progressSelect > 50 &&
-                                  task?.progressSelect <= 80
-                                ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
-                                : "progress-bar progress-bar-striped progress-bar-animated bg-success"
-                            }
-                            style={{
-                              width: `${task?.progressSelect || "0"}% `,
-                            }}
-                          ></div>
-                          {task?.progressSelect || "0"}%
-                        </div>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })}
-              </TableBody>
+                            className="progress"
+                            role="progressbar"
+                            aria-label="Animated striped example"
+                            aria-valuenow="75"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                          >
+                            <div
+                              className={
+                                task?.progressSelect <= 30
+                                  ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
+                                  : task?.progressSelect > 30 &&
+                                    task?.progressSelect <= 50
+                                  ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                                  : task?.progressSelect > 50 &&
+                                    task?.progressSelect <= 80
+                                  ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
+                                  : "progress-bar progress-bar-striped progress-bar-animated bg-success"
+                              }
+                              style={{
+                                width: `${task?.progressSelect || "0"}% `,
+                              }}
+                            ></div>
+                            {task?.progressSelect || "0"}%
+                          </div>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
+              ) : (
+                <Container>No Records</Container>
+              )}
             </Table>
           </TableContainer>
         </>

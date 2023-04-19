@@ -405,4 +405,81 @@ const TaskForm = () => {
   );
 };
 
+// import { Autocomplete, TextField } from "@mui/material";
+// import React, { useState } from "react";
+// import axios from "axios";
+
+// const rest = axios.create({
+//   headers: {
+//     Authorization: "Basic YWRtaW46YWRtaW4=",
+//   },
+// });
+
+// const TaskForm = () => {
+//   const [inputValue, setInputValue] = useState("");
+//   const [options, setOptions] = useState([]);
+
+//   const opsReqBody = {
+//     data: {
+//       code: inputValue,
+//       fullName: inputValue,
+
+//       _domainContext: {},
+//     },
+//     fields: ["id", "fullName", "code"],
+//   };
+
+//   const fetchOptions = async (reqBody) => {
+//     try {
+//       const response = await rest.post(
+//         `/ws/rest/com.axelor.apps.project.db.Project/search`,
+//         reqBody
+//       );
+//       if (response && response.data.status !== -1) {
+//         setOptions(response?.data?.data);
+//       }
+//     } catch (error) {
+//       return console.log(error);
+//     }
+//   };
+
+//   const handleInputChange = (event, newInputValue) => {
+//     setInputValue(newInputValue);
+//     fetchOptions(opsReqBody);
+//   };
+
+//   const projectOps = options.map((a) => ({
+//     id: a.id,
+//     fullName: a.fullName,
+//     name: a.name,
+//     code: a.code || null,
+//   }));
+
+//   console.log(projectOps);
+
+//   return (
+//     <Autocomplete
+//       options={projectOps}
+//       getOptionLabel={(option) => {
+//         return option.fullName;
+//       }}
+//       noOptionsText="Add Project"
+//       isOptionEqualToValue={(option, value) =>
+//         option.fullName === value.fullName
+//       }
+//       onInputChange={handleInputChange}
+//       renderInput={(params) => (
+//         <TextField
+//           {...params}
+//           label="Search"
+//           margin="normal"
+//           variant="outlined"
+//         />
+//       )}
+//     />
+//   );
+// };
+
+// export default TaskForm;
+
 export default TaskForm;

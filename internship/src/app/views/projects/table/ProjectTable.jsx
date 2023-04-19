@@ -11,7 +11,7 @@ import {
 import ProjectTableHeader from "./ProjectTableHeader";
 import ProjectTableContent from "./ProjectTableContent";
 
-const LIMIT = 5;
+const LIMIT = 6;
 
 const ProjectTable = ({
   setProjects,

@@ -126,7 +126,7 @@ export default function CardList({
   };
 
   React.useEffect(() => {
-    setSearchParams({ page, limit: LIMIT });
+    setSearchParams({ page: 1, limit: LIMIT });
   }, [page, setSearchParams]);
 
   return (
