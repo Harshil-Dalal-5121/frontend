@@ -156,77 +156,19 @@ export function Projects() {
         </Typography>
       </legend>
 
-      {/* <div
+      <Grid
+        container
+        spacing={3}
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "70px",
+          height: "100px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: "70px",
-            minWidth: "20vw",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              navigate("/projects/new");
-            }}
-            style={{ textTransform: "capitalize", margin: "1em" }}
-          >
-            <Add /> Create new project
-          </Button>
-        </div>
-        <div>
-          <Toolbar setView={setView} />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          <TextField
-            style={{ margin: "1em" }}
-            id="search"
-            onChange={handleChange}
-            name="search"
-            value={search}
-            label="Search Project"
-            variant="outlined"
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSearchSubmit();
-              }
-            }}
-          />
-
-          <Search
-            onClick={handleSearchSubmit}
-            variant="contained"
-            style={{ margin: "1em 1em 1em 0" }}
-            color="success"
-          />
-        </div>
-      </div> */}
-
-      <Grid container spacing={3}>
         <Grid
           item
           xs={12}
           sm={4}
           style={{
             display: "flex",
-            // justifyContent: "flex-start",
             alignItems: "center",
             height: "70px",
           }}
@@ -293,7 +235,7 @@ export function Projects() {
             <Search
               onClick={handleSearchSubmit}
               variant="contained"
-              style={{ margin: "1em 1em 1em 0" }}
+              style={{ margin: "1em " }}
               color="success"
             />
           </div>

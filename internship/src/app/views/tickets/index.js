@@ -171,67 +171,20 @@ export function Tickets() {
           {t("Tickets")}
         </Typography>
       </legend>
-      {/* <div
+
+      <Grid
+        container
+        spacing={3}
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "70px",
+          height: "100px",
         }}
       >
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {
-            navigate("/tickets/new");
-          }}
-          style={{ textTransform: "capitalize", margin: "1em" }}
-        >
-          <Add /> Create new ticket
-        </Button>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          <TextField
-            style={{ margin: "1em" }}
-            id="search"
-            onChange={handleChange}
-            name="search"
-            value={search}
-            label="Search Ticket"
-            variant="outlined"
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSearchSubmit();
-              }
-            }}
-          />
-          <Button
-            sx={{ heigth: "10px", margin: "1em 0" }}
-            onClick={handleSearchSubmit}
-          >
-            <Search
-              style={{ margin: "1em 1em 1em 0" }}
-              variant="contained"
-              color="success"
-            />
-          </Button>
-        </div>
-      </div> */}
-
-      <Grid container spacing={3}>
         <Grid
           item
           xs={12}
           sm={4}
           style={{
             display: "flex",
-            // justifyContent: "flex-start",
             alignItems: "center",
             height: "70px",
           }}
@@ -240,11 +193,11 @@ export function Tickets() {
             variant="contained"
             color="success"
             onClick={() => {
-              navigate("/projects/new");
+              navigate("/tickets/new");
             }}
             style={{ textTransform: "capitalize", margin: "1em" }}
           >
-            <Add /> Create new project
+            <Add /> Create Ticket
           </Button>
         </Grid>
         <Grid
@@ -271,7 +224,6 @@ export function Tickets() {
             height: "70px",
           }}
         >
-          {" "}
           <div
             style={{
               display: "flex",
@@ -286,7 +238,7 @@ export function Tickets() {
               onChange={handleChange}
               name="search"
               value={search}
-              label="Search Project"
+              label="Search Ticket"
               variant="outlined"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {

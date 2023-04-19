@@ -102,7 +102,7 @@ export function Tasks() {
         _domain: "self.typeSelect = :_typeSelect",
         _domainContext: {
           _typeSelect: "task",
-          _model: "com.axelor.apps.project.db.ProjectTask",
+          _model: "com.axelor.apps.Task.db.ProjectTask",
           operator: "and",
         },
       },
@@ -163,79 +163,13 @@ export function Tasks() {
         </Typography>
       </legend>
 
-      {/* <div
+      <Grid
+        container
+        spacing={3}
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "70px",
+          height: "100px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: "70px",
-            minWidth: "20vw",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              navigate("/projects/new");
-            }}
-            style={{ textTransform: "capitalize", margin: "1em" }}
-          >
-            <Add /> Create new Task
-          </Button>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Toolbar setView={setView} />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          <TextField
-            style={{ margin: "1em" }}
-            id="search"
-            onChange={handleChange}
-            name="search"
-            value={search}
-            label="Search Task"
-            variant="outlined"
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSearchSubmit();
-              }
-            }}
-          />
-          <Button
-            sx={{ heigth: "10px", margin: "1em 0" }}
-            onClick={handleSearchSubmit}
-          >
-            <Search
-              style={{ margin: "1em 1em 1em 0" }}
-              variant="contained"
-              color="success"
-            />
-          </Button>
-        </div>
-      </div> */}
-
-      <Grid container spacing={3}>
         <Grid
           item
           xs={12}
@@ -251,7 +185,7 @@ export function Tasks() {
             variant="contained"
             color="success"
             onClick={() => {
-              navigate("/projects/new");
+              navigate("/tasks/new");
             }}
             style={{ textTransform: "capitalize", margin: "1em" }}
           >
@@ -297,7 +231,7 @@ export function Tasks() {
               onChange={handleChange}
               name="search"
               value={search}
-              label="Search Project"
+              label="Search Task"
               variant="outlined"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
