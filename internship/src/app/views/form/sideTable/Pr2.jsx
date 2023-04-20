@@ -11,8 +11,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import PaginationComponent from "app/components/PaginationComponent";
 import { fetchData, model } from "app/services/services";
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,40 +36,59 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const getTasks = async (loader, setter, reqBody) => {
-  loader(true);
-  const response = await fetchData(`${model}Task/search`, reqBody);
-  loader(false);
-  if (response) {
-    setter(response?.data?.data);
-  }
-};
+const LIMIT = 3;
 
 const ProjectTaskTable = ({ id }) => {
   const [tasks, setTasks] = useState([]);
+  const [total, setTotal] = useState(0);
+
   const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = useState(Number(searchParams.get("page") || 1));
+  const limit = +searchParams.get("limit") || LIMIT;
 
-  const reqBody = {
-    data: {
-      _domain:
-        "(self.project.id = :_id AND self.parentTask = null) AND (self.project.id = :_id)",
+  const offset = (page - 1) * limit;
 
-      _domainAction: "action-view-show-project-task-tree",
-      _domainContext: {
-        id: id,
-        _model: "com.axelor.apps.project.db.Project",
-        _countOn: "parentTask",
+  const getTasks = async () => {
+    const reqBody = {
+      data: {
+        _domain:
+          "(self.project.id = :_id AND self.parentTask = null) AND (self.project.id = :_id)",
+
+        _domainAction: "action-view-show-project-task-tree",
+        _domainContext: {
+          id: id,
+          _model: "com.axelor.apps.project.db.Project",
+          _countOn: "parentTask",
+        },
       },
-    },
-    fields: ["name", "taskDate", "assignedTo", "progressSelect"],
-    limit: 40,
+      fields: ["name", "taskDate", "assignedTo", "progressSelect"],
+      limit: limit,
+      offset,
+      sortBy: ["taskDate"],
+    };
+    setLoading(true);
+    const data = await fetchData(`${model}Task/search`, reqBody);
+    setLoading(false);
+    if (data) {
+      setTasks(data?.data?.data);
+      setTotal(data?.data?.total);
+    }
+  };
 
-    sortBy: ["taskDate"],
+  const handleChange = (event, value) => {
+    setPage(value);
   };
 
   useEffect(() => {
-    getTasks(setLoading, setTasks, reqBody);
+    getTasks();
   }, []);
+
+  console.log(tasks);
+
+  useEffect(() => {
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
 
   const getDate = (val) => {
     var date = new Date(val);
@@ -163,6 +184,12 @@ const ProjectTaskTable = ({ id }) => {
               )}
             </Table>
           </TableContainer>
+          <PaginationComponent
+            total={total}
+            limit={limit}
+            page={page}
+            handleChange={handleChange}
+          />
         </>
       )}
     </>
