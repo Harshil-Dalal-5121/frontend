@@ -86,7 +86,7 @@ const ProjectTaskTable = ({ id }) => {
       {loading ? (
         <Container
           style={{
-            height: "10vh",
+            height: "26vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -100,8 +100,11 @@ const ProjectTaskTable = ({ id }) => {
         </Container>
       ) : (
         <>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 500 }} aria-label="customized table">
+          <TableContainer
+            sx={{ minWidth: 500, height: "26vh", overflowX: "hidden" }}
+            component={Paper}
+          >
+            <Table sx={{ minWidth: 550 }} aria-label="customized table">
               <TableHead>
                 <StyledTableRow>
                   <StyledTableCell>Project</StyledTableCell>
@@ -111,7 +114,7 @@ const ProjectTaskTable = ({ id }) => {
                 </StyledTableRow>
               </TableHead>
               {tasks ? (
-                <TableBody>
+                <TableBody style={{ height: "20vh", overflow: "scroll" }}>
                   {tasks?.map((task, i) => {
                     return (
                       <StyledTableRow key={i}>

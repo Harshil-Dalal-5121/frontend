@@ -116,7 +116,7 @@ const Form = () => {
       {loading ? (
         <Container
           style={{
-            height: "52vh",
+            height: "50vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -130,137 +130,132 @@ const Form = () => {
         </Container>
       ) : (
         <>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          <Typography
+            component="h3"
+            variant="h3"
+            style={{
+              margin: "5vh auto",
+            }}
+            align="center"
           >
-            <Grid item xs={id ? 8 : 12}>
-              <Typography
-                component="h3"
-                variant="h3"
-                style={{
-                  margin: "5vh auto",
-                }}
-                align="center"
+            {id ? "Update Project Data" : "Add a new Project"}
+          </Typography>
+          <Container
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <form id="form" onSubmit={handleSubmit}>
+              <Grid
+                container
+                spacing={2}
+                id="form"
+                onSubmit={handleSubmit}
+                justifyContent="center"
+                alignItems="center"
               >
-                {id ? "Update Project Data" : "Add a new Project"}
-              </Typography>
-              <Container
-                style={{
-                  height: "100vh",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <form id="form" onSubmit={handleSubmit}>
-                  <Grid
-                    container
-                    spacing={2}
-                    id="form"
-                    onSubmit={handleSubmit}
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        fullWidth
-                        id="name"
-                        name="name"
-                        error={errors?.name ? true : false}
-                        helperText={errors?.name ? `${errors.name}` : ""}
-                        value={formData.name || ""}
-                        onChange={handleChange}
-                        label="Add Name"
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        fullWidth
-                        id="code"
-                        name="code"
-                        error={errors?.code ? true : false}
-                        helperText={errors?.code ? `${errors.code}` : ""}
-                        onChange={handleChange}
-                        value={formData.code || ""}
-                        label="Add Code"
-                        variant="outlined"
-                      />
-                    </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    id="name"
+                    name="name"
+                    error={errors?.name ? true : false}
+                    helperText={errors?.name ? `${errors.name}` : ""}
+                    value={formData.name || ""}
+                    onChange={handleChange}
+                    label="Add Name"
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    id="code"
+                    name="code"
+                    error={errors?.code ? true : false}
+                    helperText={errors?.code ? `${errors.code}` : ""}
+                    onChange={handleChange}
+                    value={formData.code || ""}
+                    label="Add Code"
+                    variant="outlined"
+                  />
+                </Grid>
 
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        fullWidth
-                        id="fromDate"
-                        name="fromDate"
-                        error={errors?.fromDate ? true : false}
-                        helperText={
-                          errors?.fromDate ? `${errors.fromDate}` : ""
-                        }
-                        onChange={handleChange}
-                        type="date"
-                        variant="outlined"
-                        value={formData.fromDate?.slice(0, 10) || ""}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <TextField
-                        fullWidth
-                        id="toDate"
-                        name="toDate"
-                        error={errors?.toDate ? true : false}
-                        helperText={errors?.toDate ? `${errors.toDate}` : ""}
-                        onChange={handleChange}
-                        type="date"
-                        variant="outlined"
-                        value={formData.toDate?.slice(0, 10) || ""}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <Typography style={{ margin: "10px" }}>
-                        Imputable :
+                <Grid item xs={12} sm={8}>
+                  <TextField
+                    fullWidth
+                    id="fromDate"
+                    name="fromDate"
+                    error={errors?.fromDate ? true : false}
+                    helperText={errors?.fromDate ? `${errors.fromDate}` : ""}
+                    onChange={handleChange}
+                    type="date"
+                    variant="outlined"
+                    value={formData.fromDate?.slice(0, 10) || ""}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <TextField
+                    fullWidth
+                    id="toDate"
+                    name="toDate"
+                    error={errors?.toDate ? true : false}
+                    helperText={errors?.toDate ? `${errors.toDate}` : ""}
+                    onChange={handleChange}
+                    type="date"
+                    variant="outlined"
+                    value={formData.toDate?.slice(0, 10) || ""}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <Typography style={{ margin: "10px" }}>
+                    Imputable :
+                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Switch
+                      onClick={handleChange}
+                      checked={formData?.imputable}
+                      color="success"
+                      name="imputable"
+                    />
+                  </Stack>
+                </Grid>
+
+                {id ? (
+                  <>
+                    <Grid item xs={8}>
+                      <Typography component="h6" variant="h6">
+                        Task Tree
                       </Typography>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Switch
-                          onClick={handleChange}
-                          checked={formData?.imputable}
-                          color="success"
-                          name="imputable"
-                        />
-                      </Stack>
+                      <ProjectTaskTable id={id} />
                     </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        type="submit"
-                        style={{ margin: "0 10px" }}
-                        onClick={handleSubmit}
-                      >
-                        {id ? "Update" : "Add"}
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => {
-                          navigate(-1);
-                        }}
-                      >
-                        Back
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </form>
-              </Container>
-            </Grid>
-            {id ? (
-              <Grid item xs={4}>
-                <ProjectTaskTable id={id} />
+                  </>
+                ) : null}
+                <Grid item xs={12} sm={8}>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    style={{ margin: "0 10px" }}
+                    onClick={handleSubmit}
+                  >
+                    {id ? "Update" : "Add"}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={() => {
+                      navigate(-1);
+                    }}
+                  >
+                    Back
+                  </Button>
+                </Grid>
               </Grid>
-            ) : null}
-          </Grid>
+            </form>
+          </Container>
         </>
       )}
       <Dialog
