@@ -1,7 +1,3 @@
-import { Add, Search } from "@mui/icons-material";
-import { Button, TextField, Typography } from "@mui/material";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ViewListIcon from "@mui/icons-material/ViewList";
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
 import {
   tableFields,
@@ -14,12 +10,15 @@ import { useTranslation } from "app/services/translate";
 
 import CardList from "./card/CardList";
 
-import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useCallback, useEffect, useState } from "react";
+
 import { useSearchParams } from "react-router-dom";
 
 import ProjectTable from "./table/ProjectTable";
-import { Grid } from "@mui/material";
+
+import { List } from "app/components/ListComponent";
+import NavBar from "app/components/NavBar";
+import { Typography } from "@mui/material";
 
 const LIMIT = 6;
 
@@ -33,58 +32,6 @@ const ViewComponent = {
   card: CardList,
 };
 
-function Toolbar({ setView, setSearchParams, searchParams }) {
-  return (
-    <>
-      <Button
-        variant="outlined"
-        style={{ marginRight: "10px" }}
-        onClick={() => setView(View.table)}
-      >
-        Table
-        <ViewListIcon />
-      </Button>
-
-      <Button
-        variant="outlined"
-        onClick={() => {
-          setSearchParams({ page: 1, limit: LIMIT });
-
-          return setView(View.card);
-        }}
-      >
-        Card
-        <DashboardIcon />
-      </Button>
-    </>
-  );
-}
-
-function List({
-  view,
-  setProjects,
-  projects,
-  loading,
-  page,
-  setPage,
-  total,
-  setSearchParams,
-}) {
-  const ListComponent = ViewComponent[view];
-
-  return (
-    <ListComponent
-      projects={projects}
-      loading={loading}
-      total={total}
-      page={page}
-      setProjects={setProjects}
-      setPage={setPage}
-      setSearchParams={setSearchParams}
-    />
-  );
-}
-
 export function Projects() {
   const [view, setView] = useState(View.table);
 
@@ -93,16 +40,16 @@ export function Projects() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const navigate = useNavigate();
+  const limit = +searchParams.get("limit") || LIMIT;
+
   const { t } = useTranslation();
 
   const handleChange = (event) => {
     setSearch(event.target.value);
   };
 
-  const offset = (page - 1) * LIMIT;
+  const offset = (page - 1) * limit;
 
   const Projects = useCallback(async () => {
     const reqBody = {
@@ -114,17 +61,17 @@ export function Projects() {
       },
       fields: tableFields,
       offset,
-      limit: LIMIT,
+      limit: limit,
       sortBy: ["id"],
     };
     setLoading(true);
     const response = await fetchData(` ${model}/search`, reqBody);
     setLoading(false);
-    if (response) {
+    if (response && response.data.status !== -1) {
       setProjects(response?.data?.data);
       setTotal(response?.data?.total);
     }
-  }, [offset]);
+  }, [limit, offset]);
 
   const handleSearchSubmit = useCallback(async () => {
     if (search) {
@@ -141,18 +88,24 @@ export function Projects() {
         },
         fields: tableFields,
         offset,
-        limit: LIMIT,
+        limit: limit,
         sortBy: ["id"],
       };
       setLoading(true);
       const data = await handleSearch(`${model}/search`, reqBody);
       setLoading(false);
-      setProjects(data?.data?.data);
-      setTotal(data?.data?.total);
+      if (data && data.data.status !== -1) {
+        setProjects(data?.data?.data);
+        setTotal(data?.data?.total);
+      }
     }
-  }, [offset, search]);
+  }, [offset, limit, search]);
 
   useHandleSubmit(Projects, handleSearchSubmit, search);
+
+  useEffect(() => {
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
 
   return (
     <>
@@ -165,101 +118,27 @@ export function Projects() {
         </Typography>
       </legend>
 
-      <Grid
-        container
-        spacing={3}
-        style={{
-          height: "100px",
-        }}
-      >
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              navigate("/projects/new");
-            }}
-            style={{ textTransform: "capitalize", margin: "1em" }}
-          >
-            <Add /> Create new project
-          </Button>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          <Toolbar setView={setView} setSearchParams={setSearchParams} />
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          {" "}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              height: "70px",
-            }}
-          >
-            <TextField
-              style={{ margin: "1em" }}
-              id="search"
-              onChange={handleChange}
-              name="search"
-              value={search}
-              label="Search Project"
-              variant="outlined"
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  handleSearchSubmit();
-                }
-              }}
-            />
-
-            <Search
-              onClick={handleSearchSubmit}
-              variant="contained"
-              style={{ margin: "1em " }}
-              color="success"
-            />
-          </div>
-        </Grid>
-      </Grid>
+      <NavBar
+        title="Project"
+        View={View}
+        setView={setView}
+        setPage={setPage}
+        handleChange={handleChange}
+        search={search}
+        handleSearchSubmit={handleSearchSubmit}
+      />
 
       <List
+        ViewComponent={ViewComponent}
         view={view}
         search={search}
-        projects={projects}
+        data={projects}
         loading={loading}
         total={total}
         page={page}
+        limit={limit}
         searchParams={searchParams}
-        setProjects={setProjects}
+        setData={setProjects}
         setPage={setPage}
         setSearchParams={setSearchParams}
       />

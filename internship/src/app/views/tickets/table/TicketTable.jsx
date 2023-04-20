@@ -1,34 +1,28 @@
 import {
   CircularProgress,
   Container,
-  Pagination,
   Paper,
   Table,
   TableContainer,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import PaginationComponent from "app/components/PaginationComponent";
+import React from "react";
 
 import TicketTableContent from "./TicketTableContent";
 import TicketTableHeader from "./TicketTableHeader";
 
-const LIMIT = 5;
-
 const TicketTable = ({
-  tickets,
+  data,
   loading,
   total,
-  setTickets,
+  limit,
+  setData,
   page,
   setPage,
-  setSearchParams,
 }) => {
   const handleChange = (event, value) => {
     setPage(value);
   };
-
-  useEffect(() => {
-    setSearchParams({ page, limit: LIMIT });
-  }, [page, setSearchParams]);
 
   return (
     <>
@@ -53,8 +47,8 @@ const TicketTable = ({
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TicketTableHeader />
               <TicketTableContent
-                data={tickets}
-                setData={setTickets}
+                data={data}
+                setData={setData}
                 style={{ height: "52vh" }}
               />
             </Table>
@@ -64,10 +58,11 @@ const TicketTable = ({
       <div>
         <p>Total Items: {total}</p>
         <p>Page: {page}</p>
-        <Pagination
-          count={Math.ceil(total / LIMIT)}
+        <PaginationComponent
+          total={total}
+          limit={limit}
           page={page}
-          onChange={handleChange}
+          handleChange={handleChange}
         />
       </div>
     </>

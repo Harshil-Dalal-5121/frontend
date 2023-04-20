@@ -1,34 +1,28 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Container,
   Paper,
   Table,
   TableContainer,
-  Pagination,
   CircularProgress,
 } from "@mui/material";
 
 import ProjectTableHeader from "./ProjectTableHeader";
 import ProjectTableContent from "./ProjectTableContent";
-
-const LIMIT = 6;
+import PaginationComponent from "app/components/PaginationComponent";
 
 const ProjectTable = ({
-  setProjects,
-  projects,
+  setData,
+  data,
   loading,
+  limit,
   page,
   setPage,
   total,
-  setSearchParams,
 }) => {
-  const handleChange = (event, value) => {
+  const handleChange = (value) => {
     setPage(value);
   };
-
-  useEffect(() => {
-    setSearchParams({ page, limit: LIMIT });
-  }, [page, setSearchParams]);
 
   return (
     <>
@@ -51,8 +45,8 @@ const ProjectTable = ({
           <Table sx={{ minWidth: 650 }} aria-label="customized table">
             <ProjectTableHeader />
             <ProjectTableContent
-              data={projects}
-              setData={setProjects}
+              data={data}
+              setData={setData}
               style={{ height: "52vh" }}
             />
           </Table>
@@ -60,11 +54,11 @@ const ProjectTable = ({
       )}
       <p>Total Items: {total}</p>
       <p>Page: {page}</p>
-      <Pagination
-        shape="rounded"
-        count={Math.ceil(total / LIMIT)}
+      <PaginationComponent
+        total={total}
+        limit={limit}
         page={page}
-        onChange={handleChange}
+        handleChange={handleChange}
       />
     </>
   );

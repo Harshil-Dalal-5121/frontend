@@ -1,22 +1,21 @@
 import {
   CircularProgress,
   Container,
-  Pagination,
   Paper,
   Table,
   TableContainer,
 } from "@mui/material";
+import PaginationComponent from "app/components/PaginationComponent";
 import React, { useEffect } from "react";
 
 import TaskTableContent from "./TaskTableContent";
 import TaskTableHeader from "./TaskTableHeader";
 
-const LIMIT = 5;
-
 const TasksTable = ({
-  tasks,
-  setTasks,
+  data,
+  setData,
   page,
+  limit,
   setPage,
   setSearchParams,
   loading,
@@ -27,8 +26,8 @@ const TasksTable = ({
   };
 
   useEffect(() => {
-    setSearchParams({ page, limit: LIMIT });
-  }, [page, setSearchParams]);
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
 
   return (
     <>
@@ -52,8 +51,8 @@ const TasksTable = ({
             <Table sx={{ minWidth: 650 }} aria-label="customized table">
               <TaskTableHeader />
               <TaskTableContent
-                data={tasks}
-                setData={setTasks}
+                data={data}
+                setData={setData}
                 style={{ height: "52vh" }}
               />
             </Table>
@@ -63,10 +62,11 @@ const TasksTable = ({
       <div>
         <p>Total Items: {total}</p>
         <p>Page: {page}</p>
-        <Pagination
-          count={Math.ceil(total / LIMIT)}
+        <PaginationComponent
+          total={total}
+          limit={limit}
           page={page}
-          onChange={handleChange}
+          handleChange={handleChange}
         />
       </div>
     </>

@@ -1,6 +1,5 @@
-import { Button, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { Add, Search } from "@mui/icons-material";
+
 import {
   taskTableFields,
   fetchData,
@@ -8,17 +7,16 @@ import {
   handleSearch,
 } from "app/services/services";
 import { useTranslation } from "app/services/translate";
-import { useNavigate } from "react-router";
+
 import TasksTable from "./table/TasksTable";
 import { useSearchParams } from "react-router-dom";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
-
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ViewListIcon from "@mui/icons-material/ViewList";
+import { List } from "app/components/ListComponent";
 
 import CardList from "./card/CardList";
-import { Grid } from "@mui/material";
+
+import NavBar from "app/components/NavBar";
 
 const LIMIT = 6;
 
@@ -32,51 +30,6 @@ const ViewComponent = {
   card: CardList,
 };
 
-function Toolbar({ setView }) {
-  return (
-    <>
-      <Button
-        variant="outlined"
-        style={{ marginRight: "10px" }}
-        onClick={() => setView(View.table)}
-      >
-        Table
-        <ViewListIcon />
-      </Button>
-
-      <Button variant="outlined" onClick={() => setView(View.card)}>
-        Card
-        <DashboardIcon />
-      </Button>
-    </>
-  );
-}
-
-function List({
-  view,
-  setTasks,
-  tasks,
-  loading,
-  page,
-  setPage,
-  total,
-  setSearchParams,
-}) {
-  const ListComponent = ViewComponent[view];
-
-  return (
-    <ListComponent
-      tasks={tasks}
-      loading={loading}
-      total={total}
-      page={page}
-      setTasks={setTasks}
-      setPage={setPage}
-      setSearchParams={setSearchParams}
-    />
-  );
-}
-
 export function Tasks() {
   const [view, setView] = useState(View.table); // grid | card
   const [tasks, setTasks] = useState([]);
@@ -84,7 +37,8 @@ export function Tasks() {
   const [search, setSearch] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const navigate = useNavigate();
+
+  const limit = +searchParams.get("limit") || LIMIT;
   const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
@@ -93,7 +47,7 @@ export function Tasks() {
     setSearch(event.target.value);
   };
 
-  const offset = (page - 1) * LIMIT;
+  const offset = (page - 1) * limit;
 
   const Tasks = useCallback(async () => {
     const reqBody = {
@@ -109,7 +63,7 @@ export function Tasks() {
       fields: taskTableFields,
       offset,
 
-      limit: LIMIT,
+      limit: limit,
       sortBy: ["id"],
       model: "com.axelor.apps.project.db.ProjectTask",
       _typeSelect: "task",
@@ -122,7 +76,7 @@ export function Tasks() {
       setTasks(response?.data?.data);
       setTotal(response?.data?.total);
     }
-  }, [offset]);
+  }, [offset, limit]);
 
   const handleSearchSubmit = useCallback(async () => {
     if (search) {
@@ -139,7 +93,7 @@ export function Tasks() {
         },
         fields: taskTableFields,
         offset,
-        limit: LIMIT,
+        limit: limit,
         sortBy: ["id"],
       };
       setLoading(true);
@@ -148,9 +102,13 @@ export function Tasks() {
       setTasks(data?.data?.data);
       setTotal(data?.data?.total);
     }
-  }, [offset, search]);
+  }, [offset, limit, search]);
 
   useHandleSubmit(Tasks, handleSearchSubmit, search);
+
+  useEffect(() => {
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
 
   return (
     <>
@@ -163,101 +121,26 @@ export function Tasks() {
         </Typography>
       </legend>
 
-      <Grid
-        container
-        spacing={3}
-        style={{
-          height: "100px",
-        }}
-      >
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          style={{
-            display: "flex",
-
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              navigate("/tasks/new");
-            }}
-            style={{ textTransform: "capitalize", margin: "1em" }}
-          >
-            <Add /> Create new Task
-          </Button>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          <Toolbar setView={setView} />
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={4}
-          style={{
-            display: "flex",
-            justifyContent: "end",
-            alignItems: "center",
-            height: "70px",
-          }}
-        >
-          {" "}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              height: "70px",
-            }}
-          >
-            <TextField
-              style={{ margin: "1em" }}
-              id="search"
-              onChange={handleChange}
-              name="search"
-              value={search}
-              label="Search Task"
-              variant="outlined"
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  handleSearchSubmit();
-                }
-              }}
-            />
-
-            <Search
-              onClick={handleSearchSubmit}
-              variant="contained"
-              style={{ margin: "1em 1em 1em 0" }}
-              color="success"
-            />
-          </div>
-        </Grid>
-      </Grid>
+      <NavBar
+        title="Task"
+        View={View}
+        setView={setView}
+        setPage={setPage}
+        handleChange={handleChange}
+        search={search}
+        handleSearchSubmit={handleSearchSubmit}
+      />
       <List
+        ViewComponent={ViewComponent}
         view={view}
         search={search}
-        tasks={tasks}
+        data={tasks}
         loading={loading}
         total={total}
         page={page}
+        limit={limit}
         searchParams={searchParams}
-        setTasks={setTasks}
+        setData={setTasks}
         setPage={setPage}
         setSearchParams={setSearchParams}
       />

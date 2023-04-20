@@ -12,7 +12,6 @@ import { Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { CircularProgress } from "@mui/material";
-import { Pagination } from "@mui/material";
 import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
 import { DialogContent } from "@mui/material";
@@ -23,8 +22,7 @@ import { Slide } from "@mui/material";
 import { deleteData, model } from "app/services/services";
 import { useTheme } from "@emotion/react";
 import { useMediaQuery } from "@mui/material";
-
-const LIMIT = 5;
+import PaginationComponent from "app/components/PaginationComponent";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -69,13 +67,13 @@ const card = (project, handleClickOpen, setData) => {
 };
 
 export default function CardList({
-  projects,
+  data,
   loading,
   page,
-  setProjects,
+  limit,
+  setData,
   setPage,
   total,
-  setSearchParams,
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -125,21 +123,17 @@ export default function CardList({
     setOpen(false);
   };
 
-  React.useEffect(() => {
-    setSearchParams({ page: 1, limit: LIMIT });
-  }, [page, setSearchParams]);
-
   return (
     <>
       {!loading ? (
         <div style={{ padding: "15px", height: "52vh" }}>
           <Grid container spacing={3}>
-            {projects?.map((project, i) => {
+            {data?.map((project, i) => {
               return (
                 <>
                   <Grid item xs={12} sm={4} key={i}>
                     <Card sx={{ height: "23vh" }} variant="outlined" key={i}>
-                      {card(project, handleClickOpen, setProjects, i)}
+                      {card(project, handleClickOpen, setData, i)}
                     </Card>
                   </Grid>
                 </>
@@ -161,11 +155,11 @@ export default function CardList({
       )}
       <p>Total Items: {total}</p>
       <p>Page: {page}</p>
-      <Pagination
-        shape="rounded"
-        count={Math.ceil(total / LIMIT)}
+      <PaginationComponent
+        total={total}
+        limit={limit}
         page={page}
-        onChange={handleChange}
+        handleChange={handleChange}
       />
       <Dialog
         open={open}
