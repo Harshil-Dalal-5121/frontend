@@ -1,27 +1,20 @@
-import React, { forwardRef, useState } from "react";
+import React, { useState } from "react";
 
-import { useTheme } from "@emotion/react";
 import {
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
-  Slide,
   Stack,
   Switch,
   TextField,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getData, model, saveData, tableFields } from "app/services/services";
 import { useNavigate, useParams } from "react-router";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
+import DialogBoxComponent from "app/components/DialogBoxComponent";
 
 const initialValues = {
   name: "",
@@ -34,17 +27,10 @@ const initialValues = {
   code: "",
 };
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 const Form = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,30 +72,11 @@ const Form = () => {
     setOpen(false);
   };
   const handleSave = () => {
-    setOpen(false);
     saveData(`${model}`, formData);
-    navigate(-1);
+    navigate("/projects");
+    setOpen(false);
   };
-  // const validateForm = (formData) => {
-  //   const error = {};
 
-  //   if (!formData.name) {
-  //     error.name = `Project Name is required`;
-  //   }
-  //   if (!formData.code) {
-  //     error.code = `Project Code is required`;
-  //   }
-  //   if (!formData.fromDate) {
-  //     error.fromDate = `Start Date is required`;
-  //   }
-  //   if (!formData.toDate) {
-  //     error.toDate = `End Date is required`;
-  //   }
-  //   if (formData.fromDate > formData.toDate) {
-  //     error.toDate = `End Date is invalid`;
-  //   }
-  //   return error;
-  // };
   const validateForm = () => {
     const error = {};
     const errorMessages = {
@@ -268,7 +235,7 @@ const Form = () => {
                     variant="contained"
                     color="success"
                     onClick={() => {
-                      navigate(-1);
+                      navigate("/projects");
                     }}
                   >
                     Back
@@ -279,7 +246,7 @@ const Form = () => {
           </Container>
         </>
       )}
-      <Dialog
+      {/* <Dialog
         open={open}
         fullScreen={fullScreen}
         TransitionComponent={Transition}
@@ -303,7 +270,15 @@ const Form = () => {
             {id ? "Update" : "Save"}
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <DialogBoxComponent
+        type="Save"
+        id={id}
+        open={open}
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleSave}
+      />
     </>
   );
 };

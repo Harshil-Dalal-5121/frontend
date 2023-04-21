@@ -37,7 +37,7 @@ const NavBar = ({
       >
         <Button
           variant="contained"
-          color="success"
+          color="info"
           onClick={() => {
             navigate(`${path}`);
           }}

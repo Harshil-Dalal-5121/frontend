@@ -1,25 +1,18 @@
-import React, { forwardRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   TableBody,
   TableCell,
   TableRow,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
-  useMediaQuery,
   tableCellClasses,
 } from "@mui/material";
 
 import { Delete, Edit } from "@mui/icons-material";
 import { deleteData, model } from "app/services/services";
 import { Link } from "react-router-dom";
-import { useTheme } from "@emotion/react";
 import { Container } from "@mui/system";
 import styled from "@emotion/styled";
+import DialogBoxComponent from "app/components/DialogBoxComponent";
 
 const cellWidth_5 = {
   width: "10vw",
@@ -28,10 +21,6 @@ const cellWidth_5 = {
 const cellWidth_10 = {
   width: "15vw",
 };
-
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -72,9 +61,6 @@ const TaskTableContent = ({ data, setData }) => {
 
     setData((prev) => prev.filter((task) => task.id !== id));
   };
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClickOpen = (id, version, name, setData) => {
     setDeleteProject({
@@ -189,7 +175,7 @@ const TaskTableContent = ({ data, setData }) => {
                   onClick={() =>
                     handleClickOpen(task.id, task.version, task.name, setData)
                   }
-                  color="success"
+                  color="error"
                 >
                   <Delete />
                 </Button>
@@ -201,7 +187,7 @@ const TaskTableContent = ({ data, setData }) => {
         <Container>No Records</Container>
       )}
 
-      <Dialog
+      {/* <Dialog
         open={open}
         fullScreen={fullScreen}
         TransitionComponent={Transition}
@@ -225,7 +211,14 @@ const TaskTableContent = ({ data, setData }) => {
             Delete
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <DialogBoxComponent
+        type="Delete"
+        open={open}
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleDelete}
+      />
     </>
   );
 };

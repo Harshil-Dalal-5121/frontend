@@ -113,7 +113,7 @@ const ProjectTaskTable = ({ id }) => {
       {loading ? (
         <Container
           style={{
-            height: "26.5vh",
+            height: "26.25vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

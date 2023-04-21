@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from "react";
+import React, { useState } from "react";
 import {
   saveData,
   model,
@@ -6,26 +6,13 @@ import {
   taskTableFields,
 } from "app/services/services";
 
-import {
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Slide,
-  TextField,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
-import { useTheme } from "@emotion/react";
 import { Slider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import AutoCompleteCompenent from "app/components/AutoCompleteCompenent";
+import DialogBoxComponent from "app/components/DialogBoxComponent";
 
 const initialValues = {
   name: "",
@@ -37,17 +24,10 @@ const initialValues = {
   progressSelect: 0,
 };
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const { id } = useParams();
   const { loading } = useFetchRecord(
@@ -113,30 +93,6 @@ const TaskForm = () => {
     saveData(`${model}Task`, formData);
     navigate(-1);
   };
-
-  // const validateForm = () => {
-  //   const error = {};
-
-  //   if (!formData.name) {
-  //     error.name = `Task Name is required`;
-  //   }
-  //   if (!formData.project) {
-  //     error.project = `Project  is required`;
-  //   }
-  //   if (!formData.priority) {
-  //     error.priority = `priority  is required`;
-  //   }
-  //   if (!formData.taskDate) {
-  //     error.taskDate = `Start Date is required`;
-  //   }
-  //   if (!formData.taskEndDate) {
-  //     error.taskEndDate = `End Date is required`;
-  //   }
-  //   if (formData.taskDate > formData.taskEndDate) {
-  //     error.taskEndDate = `End Date is invalid`;
-  //   }
-  //   return error;
-  // };
 
   const validateForm = () => {
     const error = {};
@@ -322,7 +278,7 @@ const TaskForm = () => {
           </Container>
         </>
       )}
-      <Dialog
+      {/* <Dialog
         open={open}
         fullScreen={fullScreen}
         TransitionComponent={Transition}
@@ -346,7 +302,15 @@ const TaskForm = () => {
             {id ? "Update" : "Add"}
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <DialogBoxComponent
+        type="Save"
+        id={id}
+        open={open}
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleSave}
+      />
     </>
   );
 };

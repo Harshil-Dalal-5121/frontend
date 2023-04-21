@@ -1,23 +1,16 @@
-import { useTheme } from "@emotion/react";
 import { Delete, Edit } from "@mui/icons-material";
 import {
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
   styled,
   TableBody,
   TableCell,
   tableCellClasses,
   TableRow,
-  useMediaQuery,
 } from "@mui/material";
+import DialogBoxComponent from "app/components/DialogBoxComponent";
 import { deleteData, model } from "app/services/services";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 
 import { Link } from "react-router-dom";
 
@@ -49,10 +42,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 const TicketTableContent = ({ data, setData }) => {
   const [open, setOpen] = useState(false);
 
@@ -71,9 +60,6 @@ const TicketTableContent = ({ data, setData }) => {
     await deleteData(`${model}Task/removeAll`, reqBody);
     setData((prev) => prev.filter((ticket) => ticket.id !== id));
   };
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClickOpen = (id, version, name, setData) => {
     setDeleteProject({
@@ -194,7 +180,7 @@ const TicketTableContent = ({ data, setData }) => {
                       setData
                     )
                   }
-                  color="success"
+                  color="error"
                 >
                   <Delete />
                 </Button>
@@ -206,7 +192,7 @@ const TicketTableContent = ({ data, setData }) => {
         <Container>No Records</Container>
       )}
 
-      <Dialog
+      {/* <Dialog
         open={open}
         fullScreen={fullScreen}
         TransitionComponent={Transition}
@@ -230,7 +216,14 @@ const TicketTableContent = ({ data, setData }) => {
             Delete
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <DialogBoxComponent
+        type="Delete"
+        open={open}
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleDelete}
+      />
     </>
   );
 };

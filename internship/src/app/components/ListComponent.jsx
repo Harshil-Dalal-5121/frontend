@@ -13,20 +13,22 @@ const Toolbar = ({ setView, View, setPage }) => {
           setPage(1);
           setView(View.table);
         }}
+        endIcon=<ViewListIcon />
+        color="secondary"
       >
         Table
-        <ViewListIcon />
       </Button>
 
       <Button
         variant="outlined"
+        color="warning"
         onClick={() => {
           setPage(1);
           setView(View.card);
         }}
+        endIcon=<DashboardIcon />
       >
         Card
-        <DashboardIcon />
       </Button>
     </>
   );
