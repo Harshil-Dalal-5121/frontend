@@ -12,7 +12,7 @@ import { deleteData, model } from "app/services/services";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/system";
 import styled from "@emotion/styled";
-import DialogBoxComponent from "app/components/DialogBoxComponent";
+import DialogBoxComponent from "app/components/Dialog";
 
 const cellWidth_5 = {
   width: "5vw",
@@ -162,31 +162,7 @@ const ProjectTableContent = ({ data, setData }) => {
       ) : (
         <Container>No Records</Container>
       )}
-      {/* <Dialog
-        open={open}
-        fullScreen={fullScreen}
-        TransitionComponent={Transition}
-        keepMounted
-        fullWidth
-        maxWidth="xs"
-        onClose={handleClose}
-        aria-describedby="responsive-alert-dialog-slide-description"
-      >
-        <DialogTitle>{" Question"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            This data will be deleted.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} variant="outlined">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} variant="contained" color="error">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+
       <DialogBoxComponent
         type="Delete"
         open={open}

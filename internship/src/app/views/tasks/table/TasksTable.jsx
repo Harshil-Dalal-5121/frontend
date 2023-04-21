@@ -5,7 +5,7 @@ import {
   Table,
   TableContainer,
 } from "@mui/material";
-import PaginationComponent from "app/components/PaginationComponent";
+import PaginationComponent from "app/components/Pagination";
 import React, { useEffect } from "react";
 
 import TaskTableContent from "./TaskTableContent";

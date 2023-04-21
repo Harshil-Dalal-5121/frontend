@@ -38,12 +38,13 @@ const NavBar = ({
         <Button
           variant="contained"
           color="info"
+          startIcon=<Add />
           onClick={() => {
             navigate(`${path}`);
           }}
           style={{ textTransform: "capitalize", margin: "1em" }}
         >
-          <Add /> Create {title}
+          Create {title}
         </Button>
       </Grid>
       <Grid

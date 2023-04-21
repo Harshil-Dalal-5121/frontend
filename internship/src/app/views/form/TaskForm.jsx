@@ -11,8 +11,8 @@ import { useNavigate, useParams } from "react-router";
 import { Slider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import AutoCompleteCompenent from "app/components/AutoCompleteCompenent";
-import DialogBoxComponent from "app/components/DialogBoxComponent";
+import AutoCompleteCompenent from "app/components/AutoComplete";
+import DialogBoxComponent from "app/components/Dialog";
 
 const initialValues = {
   name: "",
@@ -278,31 +278,7 @@ const TaskForm = () => {
           </Container>
         </>
       )}
-      {/* <Dialog
-        open={open}
-        fullScreen={fullScreen}
-        TransitionComponent={Transition}
-        keepMounted
-        fullWidth
-        maxWidth="xs"
-        onClose={handleClose}
-        aria-describedby="responsive-alert-dialog-slide-description"
-      >
-        <DialogTitle>{" Question"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Do you want to {id ? "update" : "save"} this data ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} variant="outlined">
-            Cancel
-          </Button>
-          <Button onClick={handleSave} variant="contained" color="secondary">
-            {id ? "Update" : "Add"}
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+
       <DialogBoxComponent
         type="Save"
         id={id}

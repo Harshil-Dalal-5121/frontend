@@ -11,7 +11,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import PaginationComponent from "app/components/PaginationComponent";
+import PaginationComponent from "app/components/Pagination";
 import { fetchData, model } from "app/services/services";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";

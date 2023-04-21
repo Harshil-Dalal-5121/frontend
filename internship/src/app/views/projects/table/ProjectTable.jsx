@@ -9,7 +9,7 @@ import {
 
 import ProjectTableHeader from "./ProjectTableHeader";
 import ProjectTableContent from "./ProjectTableContent";
-import PaginationComponent from "app/components/PaginationComponent";
+import PaginationComponent from "app/components/Pagination";
 
 const ProjectTable = ({
   setData,

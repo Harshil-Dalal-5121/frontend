@@ -5,7 +5,7 @@ import {
   Table,
   TableContainer,
 } from "@mui/material";
-import PaginationComponent from "app/components/PaginationComponent";
+import PaginationComponent from "app/components/Pagination";
 import React from "react";
 
 import TicketTableContent from "./TicketTableContent";

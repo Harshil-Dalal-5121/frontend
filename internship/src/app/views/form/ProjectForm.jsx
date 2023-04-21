@@ -14,7 +14,7 @@ import { getData, model, saveData, tableFields } from "app/services/services";
 import { useNavigate, useParams } from "react-router";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
-import DialogBoxComponent from "app/components/DialogBoxComponent";
+import DialogBoxComponent from "app/components/Dialog";
 
 const initialValues = {
   name: "",
@@ -246,31 +246,7 @@ const Form = () => {
           </Container>
         </>
       )}
-      {/* <Dialog
-        open={open}
-        fullScreen={fullScreen}
-        TransitionComponent={Transition}
-        keepMounted
-        fullWidth
-        maxWidth="xs"
-        onClose={handleClose}
-        aria-describedby="responsive-alert-dialog-slide-description"
-      >
-        <DialogTitle>{" Question"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Do you want to {id ? "update" : "save"} this data ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} variant="outlined">
-            Cancel
-          </Button>
-          <Button onClick={handleSave} variant="contained" color="secondary">
-            {id ? "Update" : "Save"}
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+
       <DialogBoxComponent
         type="Save"
         id={id}

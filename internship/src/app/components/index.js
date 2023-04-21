@@ -1,4 +1,5 @@
-export * from "./AutoCompleteCompenent";
+export * from "./AutoComplete";
 export * from "./ListComponent";
 export * from "./NavBar";
-export * from "./PaginationComponent";
+export * from "./Pagination";
+export * from "./Dialog";

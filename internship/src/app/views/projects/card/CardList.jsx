@@ -22,7 +22,7 @@ import { Slide } from "@mui/material";
 import { deleteData, model } from "app/services/services";
 import { useTheme } from "@emotion/react";
 import { useMediaQuery } from "@mui/material";
-import PaginationComponent from "app/components/PaginationComponent";
+import PaginationComponent from "app/components/Pagination";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
