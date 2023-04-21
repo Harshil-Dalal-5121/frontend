@@ -18,14 +18,6 @@ const AutoCompleteCompenent = ({
 
   const handleInputChange = async (event) => {
     const { value } = event.target;
-    // const optionReqBody = {
-    //   data: {
-    //     code: value,
-    //     fullName: value,
-    //     _domainContext: {},
-    //   },
-    //   fields: ["id", "fullName", "code"],
-    // };
 
     const projectReqBody = {
       data: {
@@ -70,63 +62,6 @@ const AutoCompleteCompenent = ({
       : { id: a.id, name: a.name }
   );
 
-  console.log("data>>>", data);
-  //   {
-  //     setData({
-  //       ...data,
-  //       project: {
-  //         id: newValue.id,
-  //         fullName: newValue.fullName,
-  //         code: newValue.code || null,
-  //       },
-  //     });
-  //   }
-
-  //   <Autocomplete
-  //                     fullWidth
-  //                     id="priority"
-  //                     name="priority"
-  //                     value={formData?.priority || null}
-  //                     options={priorityOps}
-  //                     getOptionLabel={(option) => {
-  //                       return option.name;
-  //                     }}
-  //                     isOptionEqualToValue={(option, value) =>
-  //                       option.name === value.name
-  //                     }
-  //                     onChange={(e, newValue) => {
-  //                       setFormData({
-  //                         ...formData,
-  //                         priority: {
-  //                           id: newValue.id,
-  //                           name: newValue.name,
-  //                           $version: 0,
-  //                         },
-  //                       });
-  //                     }}
-  //                     renderInput={(params) => (
-  //                       <TextField
-  //                         {...params}
-  //                         label="Priority"
-  //                         error={errors?.priority ? true : false}
-  //                         helperText={
-  //                           errors?.priority ? `${errors.priority}` : ""
-  //                         }
-  //                         InputProps={{
-  //                           ...params.InputProps,
-  //                           endAdornment: (
-  //                             <>
-  //                               {loading ? (
-  //                                 <CircularProgress color="inherit" size={20} />
-  //                               ) : null}
-  //                               {params.InputProps.endAdornment}
-  //                             </>
-  //                           ),
-  //                         }}
-  //                       />
-  //                     )}
-  //                   />
-
   return (
     <>
       <Autocomplete
@@ -136,15 +71,8 @@ const AutoCompleteCompenent = ({
         value={data?.[title] || null}
         options={Options || []}
         onInputChange={handleInputChange}
-        // getOptionLabel={(option) => {
-        //   return option.fullName;
-        // }}
         getOptionLabel={getOptionLabel}
-        // noOptionsText={title === "project" ? "No Project" : "Set Priority"}
         noOptionsText={noOptionsText}
-        // isOptionEqualToValue={(option, value) =>
-        //   option.fullName === value.fullName
-        // }
         isOptionEqualToValue={isOptionEqualToValue}
         onChange={(e, newValue) => handleChange(e, newValue)}
         renderInput={(params) => (

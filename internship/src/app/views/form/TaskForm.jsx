@@ -1,16 +1,12 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import {
-  getOptions,
-  getPriority,
-  fetchOptions,
   saveData,
   model,
   getData,
   taskTableFields,
 } from "app/services/services";
-import { debounce } from "@mui/material/utils";
+
 import {
-  Autocomplete,
   Button,
   Container,
   Dialog,
@@ -41,16 +37,6 @@ const initialValues = {
   progressSelect: 0,
 };
 
-const priorityReqBody = {
-  data: {
-    criteria: [],
-    operator: "and",
-    _domain: "self.id IN (1,2,3,4)",
-    fields: ["name", "technicalTypeSelect"],
-    limit: 40,
-  },
-};
-
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -59,9 +45,6 @@ const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [projectOptions, setProjectOptions] = useState([]);
-  const [priority, setPriority] = useState([]);
-  const [opsLoading, setOpsLoading] = useState(false);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -83,67 +66,6 @@ const TaskForm = () => {
   const handleCancel = () => {
     setOpen(false);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchOptions(getPriority, setPriority, priorityReqBody);
-    };
-
-    fetchData();
-  }, []);
-  // const optionReqBody = (value) => {
-  //   const reqBody = {
-  //     data: {
-  //       code: value,
-  //       fullName: value,
-  //       _domainContext: {},
-  //     },
-  //     fields: ["id", "fullName", "code"],
-  //   };
-
-  //   return reqBody;
-  // };
-
-  function optionReqBody(value) {
-    return {
-      data: {
-        code: value,
-        fullName: value,
-        _domainContext: {},
-      },
-      fields: ["id", "fullName", "code"],
-    };
-  }
-
-  console.log(optionReqBody);
-  const handleInputChange = async (event) => {
-    const { value } = event.target;
-    const optionReqBody = {
-      data: {
-        code: value,
-        fullName: value,
-        _domainContext: {},
-      },
-      fields: ["id", "fullName", "code"],
-    };
-    await debounce(async () => {
-      setOpsLoading(true);
-      await fetchOptions(getOptions, setProjectOptions, optionReqBody);
-      setOpsLoading(false);
-    }, 1000)();
-  };
-  const projectOps = projectOptions?.map((a) => ({
-    id: a.id,
-    fullName: a.fullName,
-    name: a.name,
-    code: a.code || null,
-  }));
-
-  const priorityOps = priority?.map((a) => ({
-    id: a.id,
-    name: a.name,
-    $version: 0,
-  }));
 
   const handleChange = (e) => {
     const { name, value } = e.target || {};
@@ -177,7 +99,6 @@ const TaskForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("FormData >>>", formData);
     const errors = validateForm(formData);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
@@ -193,27 +114,50 @@ const TaskForm = () => {
     navigate(-1);
   };
 
+  // const validateForm = () => {
+  //   const error = {};
+
+  //   if (!formData.name) {
+  //     error.name = `Task Name is required`;
+  //   }
+  //   if (!formData.project) {
+  //     error.project = `Project  is required`;
+  //   }
+  //   if (!formData.priority) {
+  //     error.priority = `priority  is required`;
+  //   }
+  //   if (!formData.taskDate) {
+  //     error.taskDate = `Start Date is required`;
+  //   }
+  //   if (!formData.taskEndDate) {
+  //     error.taskEndDate = `End Date is required`;
+  //   }
+  //   if (formData.taskDate > formData.taskEndDate) {
+  //     error.taskEndDate = `End Date is invalid`;
+  //   }
+  //   return error;
+  // };
+
   const validateForm = () => {
     const error = {};
+    const errorMessages = {
+      name: `Task Name is required`,
+      project: `Project  is required`,
+      priority: `Priority  is required`,
+      taskDate: `Start Date is required`,
+      taskEndDate: `End Date is required`,
+    };
 
-    if (!formData.name) {
-      error.name = `Task Name is required`;
-    }
-    if (!formData.project) {
-      error.project = `Project  is required`;
-    }
-    if (!formData.priority) {
-      error.priority = `priority  is required`;
-    }
-    if (!formData.taskDate) {
-      error.taskDate = `Start Date is required`;
-    }
-    if (!formData.taskEndDate) {
-      error.taskEndDate = `End Date is required`;
-    }
+    Object.keys(errorMessages).forEach((key) => {
+      if (!formData[key]) {
+        error[key] = errorMessages[key];
+      }
+    });
+
     if (formData.taskDate > formData.taskEndDate) {
       error.taskEndDate = `End Date is invalid`;
     }
+
     return error;
   };
 
@@ -293,51 +237,6 @@ const TaskForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  {/* <Autocomplete
-                    fullWidth
-                    id="project"
-                    name="project"
-                    value={formData?.project || null}
-                    options={projectOps || []}
-                    onInputChange={handleInputChange}
-                    getOptionLabel={(option) => {
-                      return option.fullName;
-                    }}
-                    noOptionsText="No Project"
-                    isOptionEqualToValue={(option, value) =>
-                      option.fullName === value.fullName
-                    }
-                    onChange={(e, newValue) => {
-                      setFormData({
-                        ...formData,
-                        project: {
-                          id: newValue.id,
-                          fullName: newValue.fullName,
-                          code: newValue.code || null,
-                        },
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Project"
-                        error={errors?.project ? true : false}
-                        helperText={errors?.project ? `${errors.project}` : ""}
-                        InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                            <>
-                              {opsLoading ? (
-                                <CircularProgress color="inherit" size={20} />
-                              ) : null}
-                              {params.InputProps.endAdornment}
-                            </>
-                          ),
-                        }}
-                      />
-                    )}
-                  /> */}
-
                   <AutoCompleteCompenent
                     data={formData}
                     setData={setFormData}
@@ -354,50 +253,6 @@ const TaskForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  {/* <Autocomplete
-                    fullWidth
-                    id="priority"
-                    name="priority"
-                    value={formData?.priority || null}
-                    options={priorityOps}
-                    getOptionLabel={(option) => {
-                      return option.name;
-                    }}
-                    isOptionEqualToValue={(option, value) =>
-                      option.name === value.name
-                    }
-                    onChange={(e, newValue) => {
-                      setFormData({
-                        ...formData,
-                        priority: {
-                          id: newValue.id,
-                          name: newValue.name,
-                          $version: 0,
-                        },
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Priority"
-                        error={errors?.priority ? true : false}
-                        helperText={
-                          errors?.priority ? `${errors.priority}` : ""
-                        }
-                        InputProps={{
-                          ...params.InputProps,
-                          endAdornment: (
-                            <>
-                              {loading ? (
-                                <CircularProgress color="inherit" size={20} />
-                              ) : null}
-                              {params.InputProps.endAdornment}
-                            </>
-                          ),
-                        }}
-                      />
-                    )}
-                  /> */}
                   <AutoCompleteCompenent
                     data={formData}
                     setData={setFormData}

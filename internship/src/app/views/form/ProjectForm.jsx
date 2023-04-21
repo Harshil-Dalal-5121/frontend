@@ -90,24 +90,45 @@ const Form = () => {
     saveData(`${model}`, formData);
     navigate(-1);
   };
-  const validateForm = (formData) => {
-    const error = {};
+  // const validateForm = (formData) => {
+  //   const error = {};
 
-    if (!formData.name) {
-      error.name = `Project Name is required`;
+  //   if (!formData.name) {
+  //     error.name = `Project Name is required`;
+  //   }
+  //   if (!formData.code) {
+  //     error.code = `Project Code is required`;
+  //   }
+  //   if (!formData.fromDate) {
+  //     error.fromDate = `Start Date is required`;
+  //   }
+  //   if (!formData.toDate) {
+  //     error.toDate = `End Date is required`;
+  //   }
+  //   if (formData.fromDate > formData.toDate) {
+  //     error.toDate = `End Date is invalid`;
+  //   }
+  //   return error;
+  // };
+  const validateForm = () => {
+    const error = {};
+    const errorMessages = {
+      name: `Task Name is required`,
+      code: `Code is required`,
+      fromDate: `Start Date is required`,
+      toDate: `End Date is required`,
+    };
+
+    Object.keys(errorMessages).forEach((key) => {
+      if (!formData[key]) {
+        error[key] = errorMessages[key];
+      }
+    });
+
+    if (formData.taskDate > formData.taskEndDate) {
+      error.taskEndDate = `End Date is invalid`;
     }
-    if (!formData.code) {
-      error.code = `Project Code is required`;
-    }
-    if (!formData.fromDate) {
-      error.fromDate = `Start Date is required`;
-    }
-    if (!formData.toDate) {
-      error.toDate = `End Date is required`;
-    }
-    if (formData.fromDate > formData.toDate) {
-      error.toDate = `End Date is invalid`;
-    }
+
     return error;
   };
 
