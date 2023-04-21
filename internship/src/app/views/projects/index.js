@@ -10,7 +10,7 @@ import { useTranslation } from "app/services/translate";
 
 import CardList from "./card/CardList";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { useSearchParams } from "react-router-dom";
 
@@ -93,6 +93,7 @@ export function Projects() {
       };
       setLoading(true);
       const data = await handleSearch(`${model}/search`, reqBody);
+
       setLoading(false);
       if (data && data.data.status !== -1) {
         setProjects(data?.data?.data);
@@ -102,10 +103,6 @@ export function Projects() {
   }, [offset, limit, search]);
 
   useHandleSubmit(Projects, handleSearchSubmit, search);
-
-  useEffect(() => {
-    setSearchParams({ page, limit: limit });
-  }, [page, limit, setSearchParams]);
 
   return (
     <>
@@ -121,7 +118,9 @@ export function Projects() {
       <NavBar
         title="Project"
         View={View}
+        loading={loading}
         setView={setView}
+        path="/projects/new"
         setPage={setPage}
         handleChange={handleChange}
         search={search}

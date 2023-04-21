@@ -134,6 +134,7 @@ export function Tickets() {
         View={View}
         setView={setView}
         setPage={setPage}
+        path="/tickets/new"
         handleChange={handleChange}
         search={search}
         handleSearchSubmit={handleSearchSubmit}

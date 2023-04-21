@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Paper,
@@ -18,11 +18,15 @@ const ProjectTable = ({
   limit,
   page,
   setPage,
+  setSearchParams,
   total,
 }) => {
-  const handleChange = (value) => {
+  const handleChange = (event, value) => {
     setPage(value);
   };
+  useEffect(() => {
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
 
   return (
     <>

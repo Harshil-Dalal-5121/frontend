@@ -8,6 +8,8 @@ import { Toolbar } from "./ListComponent";
 const NavBar = ({
   title,
   View,
+  path,
+  loading,
   setView,
   setPage,
   handleChange,
@@ -37,7 +39,7 @@ const NavBar = ({
           variant="contained"
           color="success"
           onClick={() => {
-            navigate("/tickets/new");
+            navigate(`${path}`);
           }}
           style={{ textTransform: "capitalize", margin: "1em" }}
         >
@@ -86,7 +88,9 @@ const NavBar = ({
             variant="outlined"
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                handleSearchSubmit();
+                if (loading) {
+                  handleSearchSubmit();
+                }
               }
             }}
           />

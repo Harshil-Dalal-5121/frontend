@@ -65,7 +65,7 @@ const fetchData = async (api, reqBody) => {
 //Save task and Ticket is diffrenciated by the "typeSelect" in thier intial value
 const saveData = (api, data) => {
   rest.post(
-    api,
+    // api,
     { data },
     {
       headers: {
@@ -98,8 +98,8 @@ const deleteData = async (api, reqBody) => {
 const fetchOptions = async (getter, setter, reqBoy) => {
   const projectOps = await getter(reqBoy);
 
-  if (projectOps && projectOps?.data?.status !== 1) {
-    setter(projectOps?.data?.data);
+  if (projectOps && projectOps?.data?.status !== -1) {
+    setter(projectOps?.data?.data || []);
   }
 };
 

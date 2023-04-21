@@ -11,8 +11,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import PaginationComponent from "app/components/PaginationComponent";
 import { fetchData, model } from "app/services/services";
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,24 +36,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const getTasks = async (loader, setter, reqBody) => {
-  loader(true);
-  const response = await fetchData(`${model}Task/search`, reqBody);
-  loader(false);
-  if (response) {
-    setter(response?.data?.data);
-  }
-};
+const LIMIT = 3;
 
-const ProjectTaskTable = ({ id }) => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+const getReqBody = (limit, offset, id) => {
   const reqBody = {
     data: {
       _domain:
         "(self.project.id = :_id AND self.parentTask = null) AND (self.project.id = :_id)",
-
       _domainAction: "action-view-show-project-task-tree",
       _domainContext: {
         id: id,
@@ -60,14 +51,42 @@ const ProjectTaskTable = ({ id }) => {
       },
     },
     fields: ["name", "taskDate", "assignedTo", "progressSelect"],
-    limit: 40,
-
+    limit: limit,
+    offset: offset,
     sortBy: ["taskDate"],
   };
 
-  useEffect(() => {
-    getTasks(setLoading, setTasks, reqBody);
-  }, []);
+  return reqBody;
+};
+
+const ProjectTaskTable = ({ id }) => {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = useState(Number(searchParams.get("page") || 1));
+  const limit = +searchParams.get("limit") || LIMIT;
+  const offset = (page - 1) * limit;
+
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
+  const getTasks = React.useCallback(
+    async (loader, setter, total) => {
+      loader(true);
+      let reqBody = getReqBody(limit, offset, id);
+      const response = await fetchData(`${model}Task/search`, reqBody);
+      loader(false);
+
+      if (response) {
+        setter(response?.data?.data);
+        total(response?.data?.total);
+      }
+    },
+    [id, limit, offset]
+  );
 
   const getDate = (val) => {
     var date = new Date(val);
@@ -81,12 +100,20 @@ const ProjectTaskTable = ({ id }) => {
     return dateString;
   };
 
+  useEffect(() => {
+    getTasks(setLoading, setTasks, setTotal);
+  }, [getTasks]);
+
+  useEffect(() => {
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
+
   return (
     <>
       {loading ? (
         <Container
           style={{
-            height: "25vh",
+            height: "26.5vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -101,7 +128,7 @@ const ProjectTaskTable = ({ id }) => {
       ) : (
         <>
           <TableContainer
-            sx={{ minWidth: 500, height: "25vh", overflowX: "hidden" }}
+            sx={{ minWidth: 500, height: "23vh", overflowX: "hidden" }}
             component={Paper}
           >
             <Table sx={{ minWidth: 550 }} aria-label="customized table">
@@ -114,7 +141,7 @@ const ProjectTaskTable = ({ id }) => {
                 </StyledTableRow>
               </TableHead>
               {tasks ? (
-                <TableBody style={{ height: "20vh", overflow: "scroll" }}>
+                <TableBody style={{ overflow: "scroll" }}>
                   {tasks?.map((task, i) => {
                     return (
                       <StyledTableRow key={i}>
@@ -163,6 +190,12 @@ const ProjectTaskTable = ({ id }) => {
               )}
             </Table>
           </TableContainer>
+          <PaginationComponent
+            total={total}
+            limit={limit}
+            page={page}
+            handleChange={handleChange}
+          />
         </>
       )}
     </>

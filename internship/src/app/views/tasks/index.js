@@ -126,6 +126,7 @@ export function Tasks() {
         View={View}
         setView={setView}
         setPage={setPage}
+        path="/tasks/new"
         handleChange={handleChange}
         search={search}
         handleSearchSubmit={handleSearchSubmit}

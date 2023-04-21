@@ -29,6 +29,7 @@ import { useTheme } from "@emotion/react";
 import { Slider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
+import AutoCompleteCompenent from "app/components/AutoCompleteCompenent";
 
 const initialValues = {
   name: "",
@@ -58,12 +59,21 @@ const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-
   const [projectOptions, setProjectOptions] = useState([]);
   const [priority, setPriority] = useState([]);
+  const [opsLoading, setOpsLoading] = useState(false);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const { id } = useParams();
+  const { loading } = useFetchRecord(
+    id,
+    getData,
+    setFormData,
+    `${model}Task/${id}/fetch`,
+    taskTableFields
+  );
 
   const navigate = useNavigate();
   const handleClickOpen = () => {
@@ -81,30 +91,55 @@ const TaskForm = () => {
 
     fetchData();
   }, []);
+  // const optionReqBody = (value) => {
+  //   const reqBody = {
+  //     data: {
+  //       code: value,
+  //       fullName: value,
+  //       _domainContext: {},
+  //     },
+  //     fields: ["id", "fullName", "code"],
+  //   };
 
+  //   return reqBody;
+  // };
+
+  function optionReqBody(value) {
+    return {
+      data: {
+        code: value,
+        fullName: value,
+        _domainContext: {},
+      },
+      fields: ["id", "fullName", "code"],
+    };
+  }
+
+  console.log(optionReqBody);
   const handleInputChange = async (event) => {
+    const { value } = event.target;
     const optionReqBody = {
       data: {
-        code: event.target.value,
-        fullName: event.target.value,
-
+        code: value,
+        fullName: value,
         _domainContext: {},
       },
       fields: ["id", "fullName", "code"],
     };
     await debounce(async () => {
+      setOpsLoading(true);
       await fetchOptions(getOptions, setProjectOptions, optionReqBody);
+      setOpsLoading(false);
     }, 1000)();
   };
-
-  const projectOps = projectOptions.map((a) => ({
+  const projectOps = projectOptions?.map((a) => ({
     id: a.id,
     fullName: a.fullName,
     name: a.name,
     code: a.code || null,
   }));
 
-  const priorityOps = priority.map((a) => ({
+  const priorityOps = priority?.map((a) => ({
     id: a.id,
     name: a.name,
     $version: 0,
@@ -118,8 +153,31 @@ const TaskForm = () => {
     });
   };
 
+  const handleProjectChange = (e, value) => {
+    setFormData({
+      ...formData,
+      project: {
+        id: value.id,
+        fullName: value.fullName,
+        code: value.code || null,
+      },
+    });
+  };
+
+  const handlePriorityChange = (e, value) => {
+    setFormData({
+      ...formData,
+      priority: {
+        id: value.id,
+        name: value.name,
+        $version: 0,
+      },
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("FormData >>>", formData);
     const errors = validateForm(formData);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
@@ -158,14 +216,7 @@ const TaskForm = () => {
     }
     return error;
   };
-  const { id } = useParams();
-  const { loading } = useFetchRecord(
-    id,
-    getData,
-    setFormData,
-    `${model}Task/${id}/fetch`,
-    taskTableFields
-  );
+
   return (
     <>
       {loading ? (
@@ -199,7 +250,6 @@ const TaskForm = () => {
           </Typography>
           <Container
             style={{
-              height: "100vh",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -243,17 +293,17 @@ const TaskForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <Autocomplete
+                  {/* <Autocomplete
                     fullWidth
                     id="project"
                     name="project"
                     value={formData?.project || null}
-                    options={projectOps}
+                    options={projectOps || []}
                     onInputChange={handleInputChange}
                     getOptionLabel={(option) => {
                       return option.fullName;
                     }}
-                    noOptionsText="Add Project"
+                    noOptionsText="No Project"
                     isOptionEqualToValue={(option, value) =>
                       option.fullName === value.fullName
                     }
@@ -277,7 +327,7 @@ const TaskForm = () => {
                           ...params.InputProps,
                           endAdornment: (
                             <>
-                              {loading ? (
+                              {opsLoading ? (
                                 <CircularProgress color="inherit" size={20} />
                               ) : null}
                               {params.InputProps.endAdornment}
@@ -286,10 +336,25 @@ const TaskForm = () => {
                         }}
                       />
                     )}
+                  /> */}
+
+                  <AutoCompleteCompenent
+                    data={formData}
+                    setData={setFormData}
+                    errors={errors}
+                    title="project"
+                    handleChange={handleProjectChange}
+                    noOptionsText="No Project"
+                    isOptionEqualToValue={(option, value) =>
+                      option.fullName === value.fullName
+                    }
+                    getOptionLabel={(option) => {
+                      return option.fullName;
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <Autocomplete
+                  {/* <Autocomplete
                     fullWidth
                     id="priority"
                     name="priority"
@@ -332,6 +397,20 @@ const TaskForm = () => {
                         }}
                       />
                     )}
+                  /> */}
+                  <AutoCompleteCompenent
+                    data={formData}
+                    setData={setFormData}
+                    errors={errors}
+                    title="priority"
+                    handleChange={handlePriorityChange}
+                    noOptionsText="Set Priority"
+                    isOptionEqualToValue={(option, value) =>
+                      option.name === value.name
+                    }
+                    getOptionLabel={(option) => {
+                      return option.name;
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
