@@ -98,8 +98,8 @@ const deleteData = async (api, reqBody) => {
 const fetchOptions = async (getter, setter, reqBoy) => {
   const projectOps = await getter(reqBoy);
 
-  if (projectOps && projectOps?.data?.status !== 1) {
-    setter(projectOps?.data?.data);
+  if (projectOps && projectOps?.data?.status !== -1) {
+    setter(projectOps?.data?.data || []);
   }
 };
 

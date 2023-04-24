@@ -1,35 +1,39 @@
-import { useTheme } from "@emotion/react";
-import { Delete, Edit } from "@mui/icons-material";
+import { useState } from "react";
 import {
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
+  styled,
   TableBody,
   TableCell,
+  tableCellClasses,
   TableRow,
-  useMediaQuery,
 } from "@mui/material";
-import { deleteData, model } from "app/services/services";
-import { forwardRef, useState } from "react";
-
 import { Link } from "react-router-dom";
 
-const cellWidth_5 = {
-  width: "10vw",
-};
+import DialogBoxComponent from "app/components/Dialog";
+import { deleteData, model } from "app/services/services";
 
-const cellWidth_10 = {
-  width: "15vw",
-};
+import { Delete, Edit } from "@mui/icons-material";
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 const TicketTableContent = ({ data, setData }) => {
   const [open, setOpen] = useState(false);
@@ -40,7 +44,7 @@ const TicketTableContent = ({ data, setData }) => {
     name: "",
     setData: "",
   });
-  const handleDeleteTask = async () => {
+  const handleDeleteTicket = async () => {
     const { name, id, version, setData } = deleteProject;
     const reqBody = {
       records: [{ id: id, version: version, name: name }],
@@ -49,9 +53,6 @@ const TicketTableContent = ({ data, setData }) => {
     await deleteData(`${model}Task/removeAll`, reqBody);
     setData((prev) => prev.filter((ticket) => ticket.id !== id));
   };
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClickOpen = (id, version, name, setData) => {
     setDeleteProject({
@@ -77,7 +78,7 @@ const TicketTableContent = ({ data, setData }) => {
   };
 
   const handleDelete = () => {
-    handleDeleteTask();
+    handleDeleteTicket();
     setOpen(false);
   };
 
@@ -93,39 +94,39 @@ const TicketTableContent = ({ data, setData }) => {
       {data ? (
         <TableBody>
           {data?.map((ticket, i) => (
-            <TableRow
+            <StyledTableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               style={{ height: "70px" }}
             >
-              <TableCell align="center" style={cellWidth_5}>
+              <StyledTableCell align="center">
                 {ticket?.id || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_5}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {ticket?.ticketNumber || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {ticket?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {ticket?.project?.fullName || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {!ticket?.taskDate ? "-" : getDate(ticket?.taskDate)}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {ticket?.status?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {ticket?.priority?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {ticket?.projectTaskCategory || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {ticket?.targetVersion || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <div
                   className="progress"
                   role="progressbar"
@@ -150,18 +151,18 @@ const TicketTableContent = ({ data, setData }) => {
                   ></div>
                   {ticket?.progressSelect || "0"}%
                 </div>
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {!ticket?.taskEndDate ? "-" : getDate(ticket?.taskEndDate)}
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Link to={`${ticket.id}`}>
                   <Button variant="contained" color="success">
                     <Edit />
                   </Button>
                 </Link>
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Button
                   variant="contained"
                   onClick={() =>
@@ -172,43 +173,25 @@ const TicketTableContent = ({ data, setData }) => {
                       setData
                     )
                   }
-                  color="success"
+                  color="error"
                 >
                   <Delete />
                 </Button>
-              </TableCell>
-            </TableRow>
+              </StyledTableCell>
+            </StyledTableRow>
           ))}
         </TableBody>
       ) : (
         <Container>No Records</Container>
       )}
 
-      <Dialog
+      <DialogBoxComponent
+        type="Delete"
         open={open}
-        fullScreen={fullScreen}
-        TransitionComponent={Transition}
-        keepMounted
-        fullWidth
-        maxWidth="xs"
-        onClose={handleClose}
-        aria-describedby="responsive-alert-dialog-slide-description"
-      >
-        <DialogTitle>{" Question"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            This data will be deleted.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} variant="outlined">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} variant="contained" color="error">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleDelete}
+      />
     </>
   );
 };

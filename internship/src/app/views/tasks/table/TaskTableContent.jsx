@@ -1,35 +1,39 @@
-import React, { forwardRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
+  Container,
   TableBody,
   TableCell,
   TableRow,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
-  useMediaQuery,
+  tableCellClasses,
 } from "@mui/material";
+import styled from "@emotion/styled";
+import { Link } from "react-router-dom";
+
+import { deleteData, model } from "app/services/services";
+import DialogBoxComponent from "app/components/Dialog";
 
 import { Delete, Edit } from "@mui/icons-material";
-import { deleteData, model } from "app/services/services";
-import { Link } from "react-router-dom";
-import { useTheme } from "@emotion/react";
-import { Container } from "@mui/system";
 
-const cellWidth_5 = {
-  width: "10vw",
-};
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 
-const cellWidth_10 = {
-  width: "15vw",
-};
-
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 const TaskTableContent = ({ data, setData }) => {
   const [open, setOpen] = useState(false);
@@ -50,9 +54,6 @@ const TaskTableContent = ({ data, setData }) => {
 
     setData((prev) => prev.filter((task) => task.id !== id));
   };
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClickOpen = (id, version, name, setData) => {
     setDeleteProject({
@@ -93,39 +94,39 @@ const TaskTableContent = ({ data, setData }) => {
       {data ? (
         <TableBody>
           {data?.map((task, i) => (
-            <TableRow
+            <StyledTableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               style={{ height: "70px" }}
             >
-              <TableCell align="center" style={cellWidth_5}>
+              <StyledTableCell align="center">
                 {task?.id || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_5}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {task?.ticketNumber || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {task?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {task?.project?.fullName || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {!task?.taskDate ? "-" : getDate(task?.taskDate)}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {task?.status?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {task?.priority?.name || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {task?.projectTaskCategory || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {task?.targetVersion || "-"}
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <div
                   className="progress"
                   role="progressbar"
@@ -150,60 +151,41 @@ const TaskTableContent = ({ data, setData }) => {
                   ></div>
                   {task?.progressSelect || "0"}%
                 </div>
-              </TableCell>
-              <TableCell align="center" style={cellWidth_10}>
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 {!task?.taskEndDate ? "-" : getDate(task?.taskEndDate)}
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Link to={`${task.id}`}>
                   <Button variant="contained" color="success">
                     <Edit />
                   </Button>
                 </Link>
-              </TableCell>
-              <TableCell align="center">
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Button
                   variant="contained"
                   onClick={() =>
                     handleClickOpen(task.id, task.version, task.name, setData)
                   }
-                  color="success"
+                  color="error"
                 >
                   <Delete />
                 </Button>
-              </TableCell>
-            </TableRow>
+              </StyledTableCell>
+            </StyledTableRow>
           ))}
         </TableBody>
       ) : (
         <Container>No Records</Container>
       )}
-
-      <Dialog
+      <DialogBoxComponent
+        type="Delete"
         open={open}
-        fullScreen={fullScreen}
-        TransitionComponent={Transition}
-        keepMounted
-        fullWidth
-        maxWidth="xs"
-        onClose={handleClose}
-        aria-describedby="responsive-alert-dialog-slide-description"
-      >
-        <DialogTitle>{" Question"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            This data will be deleted.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} variant="outlined">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} variant="contained" color="error">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleDelete}
+      />
     </>
   );
 };

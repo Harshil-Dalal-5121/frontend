@@ -4,71 +4,57 @@ import {
   Paper,
   Table,
   TableContainer,
-  Pagination,
   CircularProgress,
 } from "@mui/material";
 
 import ProjectTableHeader from "./ProjectTableHeader";
 import ProjectTableContent from "./ProjectTableContent";
+import PaginationComponent from "app/components/Pagination";
 
-const LIMIT = 5;
+import styles from "./ProjectTable.module.css";
 
 const ProjectTable = ({
-  setProjects,
-  projects,
+  setData,
+  data,
   loading,
+  limit,
   page,
   setPage,
-  total,
   setSearchParams,
+  total,
 }) => {
   const handleChange = (event, value) => {
     setPage(value);
   };
-
   useEffect(() => {
-    setSearchParams({ page, limit: LIMIT });
-  }, [page, setSearchParams]);
-
-  console.log("loading >>>", loading);
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
 
   return (
     <>
       {loading ? (
-        <Container
-          style={{
-            height: "450px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <Container className={styles["loading-container"]}>
           <CircularProgress />
         </Container>
       ) : (
-        <TableContainer
-          style={{ padding: "15px", height: "450px" }}
-          component={Paper}
-        >
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer className={styles["table-container"]} component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="customized table">
             <ProjectTableHeader />
             <ProjectTableContent
-              data={projects}
-              setData={setProjects}
-              style={{ height: "50vh" }}
+              data={data}
+              setData={setData}
+              className={styles["tbody"]}
             />
           </Table>
         </TableContainer>
       )}
-      <div>
-        <p>Total Items: {total}</p>
-        <p>Page: {page}</p>
-        <Pagination
-          count={Math.ceil(total / LIMIT)}
-          page={page}
-          onChange={handleChange}
-        />
-      </div>
+
+      <PaginationComponent
+        total={total}
+        limit={limit}
+        page={page}
+        handleChange={handleChange}
+      />
     </>
   );
 };

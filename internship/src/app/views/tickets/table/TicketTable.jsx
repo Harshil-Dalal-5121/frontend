@@ -1,76 +1,61 @@
 import {
   CircularProgress,
   Container,
-  Pagination,
   Paper,
   Table,
   TableContainer,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 
+import PaginationComponent from "app/components/Pagination";
 import TicketTableContent from "./TicketTableContent";
 import TicketTableHeader from "./TicketTableHeader";
 
-const LIMIT = 5;
+import styles from "./TicketTable.module.css";
 
 const TicketTable = ({
-  tickets,
+  data,
   loading,
   total,
-  setTickets,
+  limit,
+  setData,
   page,
   setPage,
-  setSearchParams,
 }) => {
   const handleChange = (event, value) => {
     setPage(value);
   };
 
-  useEffect(() => {
-    setSearchParams({ page, limit: LIMIT });
-  }, [page, setSearchParams]);
-
-  console.log("loading >>>", loading);
-
   return (
     <>
       {loading ? (
-        <Container
-          style={{
-            height: "450px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <Container className={styles["loading-container"]}>
           <CircularProgress />
         </Container>
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "450px" }}
+            className={styles["table-container"]}
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TicketTableHeader />
               <TicketTableContent
-                data={tickets}
-                setData={setTickets}
-                style={{ height: "50vh" }}
+                data={data}
+                setData={setData}
+                className={styles["tbody"]}
               />
             </Table>
           </TableContainer>
         </>
       )}
-      <div>
-        <p>Total Items: {total}</p>
-        <p>Page: {page}</p>
-        <Pagination
-          count={Math.ceil(total / LIMIT)}
-          page={page}
-          onChange={handleChange}
-        />
-      </div>
+
+      <PaginationComponent
+        total={total}
+        limit={limit}
+        page={page}
+        handleChange={handleChange}
+      />
     </>
   );
 };

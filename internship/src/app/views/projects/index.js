@@ -1,5 +1,3 @@
-import { Add, Search } from "@mui/icons-material";
-import { Button, TextField, Typography } from "@mui/material";
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
 import {
   tableFields,
@@ -10,30 +8,48 @@ import {
 
 import { useTranslation } from "app/services/translate";
 
+import CardList from "./card/ProjectCardList";
+
 import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router";
+
 import { useSearchParams } from "react-router-dom";
 
 import ProjectTable from "./table/ProjectTable";
 
-const LIMIT = 5;
+import { List } from "app/components/ListComponent";
+import NavBar from "app/components/NavBar";
+import { Typography } from "@mui/material";
+
+const LIMIT = 6;
+
+const View = {
+  table: "table",
+  card: "card",
+};
+
+const ViewComponent = {
+  table: ProjectTable,
+  card: CardList,
+};
 
 export function Projects() {
+  const [view, setView] = useState(View.table);
+
   const [projects, setProjects] = useState([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const navigate = useNavigate();
+  const limit = +searchParams.get("limit") || LIMIT;
+
   const { t } = useTranslation();
 
   const handleChange = (event) => {
     setSearch(event.target.value);
   };
 
-  const offset = (page - 1) * LIMIT;
+  const offset = (page - 1) * limit;
 
   const Projects = useCallback(async () => {
     const reqBody = {
@@ -45,17 +61,17 @@ export function Projects() {
       },
       fields: tableFields,
       offset,
-      limit: LIMIT,
+      limit: limit,
       sortBy: ["id"],
     };
     setLoading(true);
     const response = await fetchData(` ${model}/search`, reqBody);
     setLoading(false);
-    if (response) {
+    if (response && response.data.status !== -1) {
       setProjects(response?.data?.data);
       setTotal(response?.data?.total);
     }
-  }, [offset]);
+  }, [limit, offset]);
 
   const handleSearchSubmit = useCallback(async () => {
     if (search) {
@@ -72,68 +88,56 @@ export function Projects() {
         },
         fields: tableFields,
         offset,
-        limit: LIMIT,
+        limit: limit,
         sortBy: ["id"],
       };
       setLoading(true);
       const data = await handleSearch(`${model}/search`, reqBody);
+
       setLoading(false);
-      setProjects(data?.data?.data);
-      setTotal(data?.data?.total);
+      if (data && data.data.status !== -1) {
+        setProjects(data?.data?.data);
+        setTotal(data?.data?.total);
+      }
     }
-  }, [offset, search]);
+  }, [offset, limit, search]);
 
   useHandleSubmit(Projects, handleSearchSubmit, search);
 
   return (
     <>
       <legend>
-        <Typography>{t("Projects")}</Typography>
+        <Typography
+          variant={"h3"}
+          style={{ margin: "0 auto ", textAlign: "center" }}
+        >
+          {t("Projects")}
+        </Typography>
       </legend>
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {
-            navigate("/projects/new");
-          }}
-          style={{ textTransform: "capitalize", margin: "1em" }}
-        >
-          <Add /> Create new project
-        </Button>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <TextField
-            style={{ margin: "1em" }}
-            id="search"
-            onChange={handleChange}
-            name="search"
-            value={search}
-            label="Search Project"
-            variant="outlined"
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSearchSubmit();
-              }
-            }}
-          />
-          <Button onClick={handleSearchSubmit}>
-            <Search
-              style={{ margin: "1em 1em 1em 0" }}
-              variant="contained"
-              color="success"
-            />
-          </Button>
-        </div>
-      </div>
-      <ProjectTable
+      <NavBar
+        title="Project"
+        View={View}
+        loading={loading}
+        setView={setView}
+        path="/projects/new"
+        setPage={setPage}
+        handleChange={handleChange}
         search={search}
-        projects={projects}
+        handleSearchSubmit={handleSearchSubmit}
+      />
+
+      <List
+        ViewComponent={ViewComponent}
+        view={view}
+        search={search}
+        data={projects}
         loading={loading}
         total={total}
         page={page}
+        limit={limit}
         searchParams={searchParams}
-        setProjects={setProjects}
+        setData={setProjects}
         setPage={setPage}
         setSearchParams={setSearchParams}
       />

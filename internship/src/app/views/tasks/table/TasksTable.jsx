@@ -1,7 +1,6 @@
 import {
   CircularProgress,
   Container,
-  Pagination,
   Paper,
   Table,
   TableContainer,
@@ -10,13 +9,15 @@ import React, { useEffect } from "react";
 
 import TaskTableContent from "./TaskTableContent";
 import TaskTableHeader from "./TaskTableHeader";
+import PaginationComponent from "app/components/Pagination";
 
-const LIMIT = 5;
+import styles from "./TaskTable.module.css";
 
 const TasksTable = ({
-  tasks,
-  setTasks,
+  data,
+  setData,
   page,
+  limit,
   setPage,
   setSearchParams,
   loading,
@@ -27,48 +28,39 @@ const TasksTable = ({
   };
 
   useEffect(() => {
-    setSearchParams({ page, limit: LIMIT });
-  }, [page, setSearchParams]);
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
 
   return (
     <>
       {loading ? (
-        <Container
-          style={{
-            height: "450px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <Container className={styles["loading-container"]}>
           <CircularProgress />
         </Container>
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "450px" }}
+            className={styles["table-container"]}
             component={Paper}
           >
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table sx={{ minWidth: 650 }} aria-label="customized table">
               <TaskTableHeader />
               <TaskTableContent
-                data={tasks}
-                setData={setTasks}
-                style={{ height: "50vh" }}
+                data={data}
+                setData={setData}
+                className={styles["tbody"]}
               />
             </Table>
           </TableContainer>
         </>
       )}
-      <div>
-        <p>Total Items: {total}</p>
-        <p>Page: {page}</p>
-        <Pagination
-          count={Math.ceil(total / LIMIT)}
-          page={page}
-          onChange={handleChange}
-        />
-      </div>
+
+      <PaginationComponent
+        total={total}
+        limit={limit}
+        page={page}
+        handleChange={handleChange}
+      />
     </>
   );
 };
