@@ -1,0 +1,46 @@
+.grid-container {
+    height: 100px;
+
+}
+
+.grid-item-new {
+    display: flex !important;
+    align-items: center;
+    height: 70px;
+    padding: 0 1em
+}
+
+.grid-item-view {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+}
+
+.grid-item-search {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 70px;
+    padding: 0 1em
+}
+
+.grid-btn {
+    text-transform: capitalize;
+}
+
+.m1 {
+    margin: 1em !important;
+
+}
+
+.grid-container-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.btn-search {
+    margin: "1em 1em 1em 0"
+}

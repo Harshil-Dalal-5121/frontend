@@ -1,0 +1,11 @@
+.container {
+    height: 52vh;
+    padding: 15px;
+}
+
+.loading-container {
+    height: 52vh;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}

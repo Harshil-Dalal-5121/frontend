@@ -1,0 +1,155 @@
+import * as React from "react";
+
+import Typography from "@mui/material/Typography";
+import {
+  Grid,
+  IconButton,
+  Card,
+  CardActions,
+  CardContent,
+  Container,
+  CircularProgress,
+} from "@mui/material";
+import { Link } from "react-router-dom";
+
+import { deleteData, model } from "app/services/services";
+import PaginationComponent from "app/components/Pagination";
+
+import { Delete, Edit } from "@mui/icons-material";
+
+import styles from "./ProjectCardList.module.css";
+import DialogBoxComponent from "app/components/Dialog";
+
+const card = (project, handleClickOpen, setData) => {
+  return (
+    <>
+      <CardContent>
+        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          #{project?.id}
+        </Typography>
+        <Typography variant="h5" component="div">
+          {project?.name || "-"}
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          {project?.code || "-"}
+        </Typography>
+        <Typography>
+          Parent- <b>{project?.clientPartner?.fullName || "-"}</b>
+        </Typography>
+        <Typography variant="body2">{project?.projectStatus?.name}</Typography>
+      </CardContent>
+      <CardActions>
+        <Link to={`${project.id}`}>
+          <IconButton variant="contained" color="success">
+            <Edit />
+          </IconButton>
+        </Link>
+        <IconButton
+          onClick={() =>
+            handleClickOpen(project.id, project.version, project.name, setData)
+          }
+          variant="contained"
+          color="error"
+        >
+          <Delete />
+        </IconButton>
+      </CardActions>
+    </>
+  );
+};
+
+export default function CardList({
+  data,
+  loading,
+  page,
+  limit,
+  setData,
+  setPage,
+  total,
+}) {
+  const [open, setOpen] = React.useState(false);
+
+  const [deleteProject, setDeleteProject] = React.useState({
+    id: "",
+    version: "",
+    name: "",
+    setData: "",
+  });
+  const handleDeleteProject = async () => {
+    const { name, id, version, setData } = deleteProject;
+    const reqBody = {
+      records: [{ id: id, version: version, name: name }],
+    };
+
+    await deleteData(`${model}/removeAll`, reqBody);
+    setData((prev) => prev.filter((task) => task.id !== id));
+
+    setOpen(false);
+  };
+
+  const handleClickOpen = (id, version, name, setData) => {
+    setDeleteProject({
+      ...deleteProject,
+      id: id,
+      version: version,
+      name: name,
+      setData: setData,
+    });
+    setOpen(true);
+  };
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
+  const handleDelete = () => {
+    handleDeleteProject();
+    setOpen(false);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  return (
+    <>
+      {!loading ? (
+        <div className={styles.container}>
+          <Grid container spacing={3}>
+            {data?.map((project, i) => {
+              return (
+                <>
+                  <Grid item xs={12} sm={4} key={i}>
+                    <Card sx={{ height: "23vh" }} variant="outlined" key={i}>
+                      {card(project, handleClickOpen, setData, i)}
+                    </Card>
+                  </Grid>
+                </>
+              );
+            })}
+          </Grid>
+        </div>
+      ) : (
+        <Container className={styles["loading-container"]}>
+          <CircularProgress />
+        </Container>
+      )}
+
+      <PaginationComponent
+        total={total}
+        limit={limit}
+        page={page}
+        handleChange={handleChange}
+      />
+      <DialogBoxComponent
+        type="Delete"
+        open={open}
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleDelete}
+      />
+    </>
+  );
+}
