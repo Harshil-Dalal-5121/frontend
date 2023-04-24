@@ -15,7 +15,7 @@ import AutoCompleteCompenent from "app/components/AutoComplete";
 import DialogBoxComponent from "app/components/Dialog";
 
 import styles from "./Forms.module.css";
-import StatusSelect from "../projects/table/StatusSelect";
+import StatusSelect from "../../components/StatusSelect";
 
 const initialValues = {
   name: "",

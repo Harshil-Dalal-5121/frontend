@@ -19,7 +19,7 @@ const StatusSelect = ({ options, data, setData }) => {
           row
           aria-labelledby="demo-radio-buttons-group-label"
           name="project-status"
-          defaultValue={data?.status?.name || null}
+          defaultValue={data?.status?.name || "New"}
         >
           {options?.map((a, i) => {
             return (
