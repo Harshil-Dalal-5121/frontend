@@ -25,6 +25,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => {
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
     },
+    // color: "inherit",
   };
 });
 
@@ -97,7 +98,12 @@ const ProjectTableContent = ({ data, setData }) => {
           {data?.map((project, i) => (
             <StyledTableRow
               key={i}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              sx={{
+                "&:last-child td, &:last-child th": { border: 0 },
+                // color: ` ${
+                //   project?.projectStatus?.name === "New" ? "red" : "green"
+                // }`,
+              }}
             >
               <StyledTableCell align="center">{project.id}</StyledTableCell>
               <StyledTableCell align="center">

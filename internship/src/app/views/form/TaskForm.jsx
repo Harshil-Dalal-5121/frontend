@@ -15,6 +15,7 @@ import AutoCompleteCompenent from "app/components/AutoComplete";
 import DialogBoxComponent from "app/components/Dialog";
 
 import styles from "./Forms.module.css";
+import StatusSelect from "../projects/table/StatusSelect";
 
 const initialValues = {
   name: "",
@@ -22,9 +23,28 @@ const initialValues = {
   taskEndDate: "",
   project: "",
   priority: "",
+  status: "",
   typeSelect: "task",
   progressSelect: 0,
 };
+const status = [
+  {
+    name: "New",
+    id: "5",
+  },
+  {
+    name: "In progress",
+    id: "6",
+  },
+  {
+    name: "Done",
+    id: "7",
+  },
+  {
+    name: "Canceled",
+    id: "8",
+  },
+];
 
 const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
@@ -93,6 +113,7 @@ const TaskForm = () => {
   const handleSave = () => {
     setOpen(false);
     saveData(`${model}Task`, formData);
+    console.log("formData >>>", formData);
     navigate(-1);
   };
 
@@ -119,6 +140,8 @@ const TaskForm = () => {
     return error;
   };
 
+  console.log(formData);
+
   return (
     <>
       {loading ? (
@@ -135,6 +158,7 @@ const TaskForm = () => {
           >
             {id ? "Update Task Data" : "Add a new Task"}
           </Typography>
+
           <Container className={styles["form-container"]}>
             <form id="form" onSubmit={handleSubmit}>
               <Grid
@@ -144,6 +168,15 @@ const TaskForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
+                {id ? (
+                  <Grid item xs={12} sm={8}>
+                    <StatusSelect
+                      options={status}
+                      data={formData}
+                      setData={setFormData}
+                    />
+                  </Grid>
+                ) : null}
                 <Grid item xs={12} sm={8}>
                   <TextField
                     value={formData?.name || ""}

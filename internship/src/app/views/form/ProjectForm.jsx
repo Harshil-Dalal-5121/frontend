@@ -17,6 +17,7 @@ import ProjectTaskTable from "./sideTable/ProjectTaskTable";
 import DialogBoxComponent from "app/components/Dialog";
 
 import styles from "./Forms.module.css";
+import StatusSelect from "../projects/table/StatusSelect";
 
 const initialValues = {
   name: "",
@@ -28,6 +29,25 @@ const initialValues = {
   assignedTo: "",
   code: "",
 };
+
+const status = [
+  {
+    name: "New",
+    id: "5",
+  },
+  {
+    name: "In progress",
+    id: "6",
+  },
+  {
+    name: "Done",
+    id: "7",
+  },
+  {
+    name: "Canceled",
+    id: "8",
+  },
+];
 
 const Form = () => {
   const [formData, setFormData] = useState(initialValues);
@@ -127,6 +147,13 @@ const Form = () => {
                 justifyContent="center"
                 alignItems="center"
               >
+                <Grid item xs={12} sm={8}>
+                  <StatusSelect
+                    options={status}
+                    data={formData}
+                    setData={setFormData}
+                  />
+                </Grid>
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth

@@ -16,6 +16,7 @@ import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import DialogBoxComponent from "app/components/Dialog";
 
 import styles from "./Forms.module.css";
+import StatusSelect from "../projects/table/StatusSelect";
 
 const initialValues = {
   name: "",
@@ -26,6 +27,24 @@ const initialValues = {
   typeSelect: "ticket",
   progressSelect: 0,
 };
+const status = [
+  {
+    name: "New",
+    id: "5",
+  },
+  {
+    name: "In progress",
+    id: "6",
+  },
+  {
+    name: "Done",
+    id: "7",
+  },
+  {
+    name: "Canceled",
+    id: "8",
+  },
+];
 
 const TicketForm = () => {
   const [formData, setFormData] = useState(initialValues);
@@ -147,6 +166,15 @@ const TicketForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
+                {id ? (
+                  <Grid item xs={12} sm={8}>
+                    <StatusSelect
+                      options={status}
+                      data={formData}
+                      setData={setFormData}
+                    />
+                  </Grid>
+                ) : null}
                 <Grid item xs={12} sm={8}>
                   <TextField
                     value={formData?.name || ""}
