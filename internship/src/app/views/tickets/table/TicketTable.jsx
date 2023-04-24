@@ -1,36 +1,43 @@
 import {
   CircularProgress,
   Container,
+  Pagination,
   Paper,
   Table,
   TableContainer,
 } from "@mui/material";
-import PaginationComponent from "app/components/Pagination";
-import React from "react";
+import React, { useEffect } from "react";
 
 import TicketTableContent from "./TicketTableContent";
 import TicketTableHeader from "./TicketTableHeader";
 
+const LIMIT = 5;
+
 const TicketTable = ({
-  data,
+  tickets,
   loading,
   total,
-  limit,
-  setData,
+  setTickets,
   page,
   setPage,
+  setSearchParams,
 }) => {
   const handleChange = (event, value) => {
     setPage(value);
   };
+
+  useEffect(() => {
+    setSearchParams({ page, limit: LIMIT });
+  }, [page, setSearchParams]);
+
+  console.log("loading >>>", loading);
 
   return (
     <>
       {loading ? (
         <Container
           style={{
-            height: "52vh",
-            width: "100vw",
+            height: "450px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -41,15 +48,15 @@ const TicketTable = ({
       ) : (
         <>
           <TableContainer
-            style={{ padding: "15px", height: "52vh" }}
+            style={{ padding: "15px", height: "450px" }}
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TicketTableHeader />
               <TicketTableContent
-                data={data}
-                setData={setData}
-                style={{ height: "52vh" }}
+                data={tickets}
+                setData={setTickets}
+                style={{ height: "50vh" }}
               />
             </Table>
           </TableContainer>
@@ -58,11 +65,10 @@ const TicketTable = ({
       <div>
         <p>Total Items: {total}</p>
         <p>Page: {page}</p>
-        <PaginationComponent
-          total={total}
-          limit={limit}
+        <Pagination
+          count={Math.ceil(total / LIMIT)}
           page={page}
-          handleChange={handleChange}
+          onChange={handleChange}
         />
       </div>
     </>

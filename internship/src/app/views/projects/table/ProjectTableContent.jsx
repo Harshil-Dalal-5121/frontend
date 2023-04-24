@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import {
   Button,
   TableBody,
   TableCell,
   TableRow,
-  tableCellClasses,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Slide,
+  useMediaQuery,
 } from "@mui/material";
 import { Check, XCircle } from "react-bootstrap-icons";
 import { Delete, Edit } from "@mui/icons-material";
 import { deleteData, model } from "app/services/services";
 import { Link } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 import { Container } from "@mui/system";
-import styled from "@emotion/styled";
-import DialogBoxComponent from "app/components/Dialog";
 
 const cellWidth_5 = {
   width: "5vw",
@@ -22,25 +27,9 @@ const cellWidth_10 = {
   width: "10vw",
 };
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const ProjectTableContent = ({ data, setData }) => {
   const [open, setOpen] = useState(false);
@@ -51,6 +40,9 @@ const ProjectTableContent = ({ data, setData }) => {
     name: "",
     setData: "",
   });
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClickOpen = (id, version, name, setData) => {
     setDeleteProject({
@@ -82,6 +74,8 @@ const ProjectTableContent = ({ data, setData }) => {
     setOpen(false);
   };
 
+  console.log(data);
+
   const getDate = (val) => {
     var date = new Date(val); // M-D-YYYY
 
@@ -99,48 +93,48 @@ const ProjectTableContent = ({ data, setData }) => {
       {data ? (
         <TableBody>
           {data?.map((project, i) => (
-            <StyledTableRow
+            <TableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <StyledTableCell align="center" style={cellWidth_5}>
+              <TableCell align="center" style={cellWidth_5}>
                 {project.id}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={cellWidth_10}>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
                 {project.name || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={cellWidth_10}>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
                 {project.code || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={cellWidth_10}>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
                 {project.parentProject?.fullName || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={cellWidth_10}>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
                 {project.clientPartner?.fullName || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={cellWidth_10}>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
                 {project.assignedTo?.fullName || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={cellWidth_10}>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
                 {!project?.fromDate ? "-" : getDate(project?.fromDate)}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={cellWidth_10}>
+              </TableCell>
+              <TableCell align="center" style={cellWidth_10}>
                 {!project?.toDate ? "-" : getDate(project?.toDate)}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={{ cellWidth_5 }}>
+              </TableCell>
+              <TableCell align="center" style={{ cellWidth_5 }}>
                 {project.imputable === true ? <Check /> : <XCircle />}
-              </StyledTableCell>
-              <StyledTableCell align="center" style={{ cellWidth_10 }}>
+              </TableCell>
+              <TableCell align="center" style={{ cellWidth_10 }}>
                 {project.projectStatus?.name || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center">
+              </TableCell>
+              <TableCell align="center">
                 <Link to={`${project.id}`}>
                   <Button variant="contained" color="success">
                     <Edit />
                   </Button>
                 </Link>
-              </StyledTableCell>
-              <StyledTableCell align="center">
+              </TableCell>
+              <TableCell align="center">
                 <Button
                   variant="contained"
                   onClick={() =>
@@ -151,25 +145,42 @@ const ProjectTableContent = ({ data, setData }) => {
                       setData
                     )
                   }
-                  color="error"
+                  color="success"
                 >
                   <Delete />
                 </Button>
-              </StyledTableCell>
-            </StyledTableRow>
+              </TableCell>
+            </TableRow>
           ))}
         </TableBody>
       ) : (
         <Container>No Records</Container>
       )}
-
-      <DialogBoxComponent
-        type="Delete"
+      <Dialog
         open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleDelete}
-      />
+        fullScreen={fullScreen}
+        TransitionComponent={Transition}
+        keepMounted
+        fullWidth
+        maxWidth="xs"
+        onClose={handleClose}
+        aria-describedby="responsive-alert-dialog-slide-description"
+      >
+        <DialogTitle>{" Question"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            This data will be deleted.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} variant="outlined">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} variant="contained" color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

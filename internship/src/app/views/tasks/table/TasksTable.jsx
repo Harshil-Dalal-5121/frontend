@@ -1,21 +1,22 @@
 import {
   CircularProgress,
   Container,
+  Pagination,
   Paper,
   Table,
   TableContainer,
 } from "@mui/material";
-import PaginationComponent from "app/components/Pagination";
 import React, { useEffect } from "react";
 
 import TaskTableContent from "./TaskTableContent";
 import TaskTableHeader from "./TaskTableHeader";
 
+const LIMIT = 5;
+
 const TasksTable = ({
-  data,
-  setData,
+  tasks,
+  setTasks,
   page,
-  limit,
   setPage,
   setSearchParams,
   loading,
@@ -26,15 +27,15 @@ const TasksTable = ({
   };
 
   useEffect(() => {
-    setSearchParams({ page, limit: limit });
-  }, [page, limit, setSearchParams]);
+    setSearchParams({ page, limit: LIMIT });
+  }, [page, setSearchParams]);
 
   return (
     <>
       {loading ? (
         <Container
           style={{
-            height: "52vh",
+            height: "450px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -45,15 +46,15 @@ const TasksTable = ({
       ) : (
         <>
           <TableContainer
-            style={{ padding: "0 15px", height: "52vh" }}
+            style={{ padding: "15px", height: "450px" }}
             component={Paper}
           >
-            <Table sx={{ minWidth: 650 }} aria-label="customized table">
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TaskTableHeader />
               <TaskTableContent
-                data={data}
-                setData={setData}
-                style={{ height: "52vh" }}
+                data={tasks}
+                setData={setTasks}
+                style={{ height: "50vh" }}
               />
             </Table>
           </TableContainer>
@@ -62,11 +63,10 @@ const TasksTable = ({
       <div>
         <p>Total Items: {total}</p>
         <p>Page: {page}</p>
-        <PaginationComponent
-          total={total}
-          limit={limit}
+        <Pagination
+          count={Math.ceil(total / LIMIT)}
           page={page}
-          handleChange={handleChange}
+          onChange={handleChange}
         />
       </div>
     </>

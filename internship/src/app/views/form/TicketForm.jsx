@@ -1,19 +1,34 @@
-import React, { useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import {
+  getOptions,
+  getPriority,
+  fetchOptions,
   saveData,
   model,
   getData,
   ticketTableFields,
 } from "app/services/services";
-import AutoCompleteCompenent from "app/components/AutoComplete";
 
-import { Button, Container, Grid, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Slide,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router";
-
+import { useTheme } from "@emotion/react";
 import { Slider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import DialogBoxComponent from "app/components/Dialog";
 
 const initialValues = {
   name: "",
@@ -25,10 +40,38 @@ const initialValues = {
   progressSelect: 0,
 };
 
+const optionReqBody = {
+  data: {
+    _domain: "self.projectStatus.isCompleted = false",
+  },
+  fields: ["id", "fullName", "name", "code"],
+  limit: 10,
+};
+
+const priorityReqBody = {
+  data: {
+    criteria: [],
+    operator: "and",
+    _domain: "self.id IN (1,2,3,4)",
+    fields: ["name", "technicalTypeSelect"],
+    limit: 40,
+  },
+};
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const TicketForm = () => {
   const [formData, setFormData] = useState(initialValues);
+
+  const [projectOptions, setProjectOptions] = useState([]);
+  const [priority, setPriority] = useState([]);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const { id } = useParams();
   const { loading } = useFetchRecord(
@@ -48,6 +91,24 @@ const TicketForm = () => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    fetchOptions(getOptions, setProjectOptions, optionReqBody);
+    fetchOptions(getPriority, setPriority, priorityReqBody);
+  }, []);
+
+  const projectOps = projectOptions.map((a) => ({
+    id: a.id,
+    fullName: a.fullName,
+    name: a.name,
+    code: a.code || null,
+  }));
+
+  const priorityOps = priority.map((a) => ({
+    id: a.id,
+    name: a.name,
+    $version: 0,
+  }));
+
   const handleChange = (e) => {
     const { name, value } = e.target || {};
     setFormData({
@@ -66,28 +127,6 @@ const TicketForm = () => {
       handleClickOpen();
     }
   };
-
-  const handleProjectChange = (e, value) => {
-    setFormData({
-      ...formData,
-      project: {
-        id: value.id,
-        fullName: value.fullName,
-        code: value.code || null,
-      },
-    });
-  };
-
-  const handlePriorityChange = (e, value) => {
-    setFormData({
-      ...formData,
-      priority: {
-        id: value.id,
-        name: value.name,
-        $version: 0,
-      },
-    });
-  };
   const handleClose = () => {
     setOpen(false);
   };
@@ -99,24 +138,25 @@ const TicketForm = () => {
 
   const validateForm = () => {
     const error = {};
-    const errorMessages = {
-      name: `Task Name is required`,
-      project: `Project  is required`,
-      priority: `Priority  is required`,
-      taskDate: `Start Date is required`,
-      taskEndDate: `End Date is required`,
-    };
 
-    Object.keys(errorMessages).forEach((key) => {
-      if (!formData[key]) {
-        error[key] = errorMessages[key];
-      }
-    });
-
+    if (!formData.name) {
+      error.name = `Task Name is required`;
+    }
+    if (!formData.project) {
+      error.project = `Project  is required`;
+    }
+    if (!formData.priority) {
+      error.priority = `priority  is required`;
+    }
+    if (!formData.taskDate) {
+      error.taskDate = `Start Date is required`;
+    }
+    if (!formData.taskEndDate) {
+      error.taskEndDate = `End Date is required`;
+    }
     if (formData.taskDate > formData.taskEndDate) {
       error.taskEndDate = `End Date is invalid`;
     }
-
     return error;
   };
 
@@ -125,9 +165,7 @@ const TicketForm = () => {
       {loading ? (
         <Container
           style={{
-            height: "52vh",
-            width: "100vw",
-
+            height: "50vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -153,6 +191,7 @@ const TicketForm = () => {
           </Typography>
           <Container
             style={{
+              height: "100vh",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -196,35 +235,93 @@ const TicketForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <AutoCompleteCompenent
-                    data={formData}
-                    setData={setFormData}
-                    errors={errors}
-                    title="project"
-                    handleChange={handleProjectChange}
-                    noOptionsText="No Project"
-                    isOptionEqualToValue={(option, value) =>
-                      option.fullName === value.fullName
-                    }
+                  <Autocomplete
+                    fullWidth
+                    id="project"
+                    name="project"
+                    value={formData?.project || null}
+                    options={projectOps}
                     getOptionLabel={(option) => {
                       return option.fullName;
                     }}
+                    isOptionEqualToValue={(option, value) =>
+                      option.fullName === value.fullName
+                    }
+                    onChange={(e, newValue) => {
+                      setFormData({
+                        ...formData,
+                        project: {
+                          id: newValue.id,
+                          fullName: newValue.fullName,
+                          code: newValue.code || null,
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Project"
+                        error={errors?.project ? true : false}
+                        helperText={errors?.project ? `${errors.project}` : ""}
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <AutoCompleteCompenent
-                    data={formData}
-                    setData={setFormData}
-                    errors={errors}
-                    title="priority"
-                    handleChange={handlePriorityChange}
-                    noOptionsText="Set Priority"
-                    isOptionEqualToValue={(option, value) =>
-                      option.name === value.name
-                    }
+                  <Autocomplete
+                    fullWidth
+                    id="priority"
+                    name="priority"
+                    value={formData?.priority || null}
+                    options={priorityOps}
                     getOptionLabel={(option) => {
                       return option.name;
                     }}
+                    isOptionEqualToValue={(option, value) =>
+                      option.name === value.name
+                    }
+                    onChange={(e, newValue) => {
+                      setFormData({
+                        ...formData,
+                        priority: {
+                          id: newValue.id,
+                          name: newValue.name,
+                          $version: 0,
+                        },
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Priority"
+                        error={errors?.priority ? true : false}
+                        helperText={
+                          errors?.priority ? `${errors.priority}` : ""
+                        }
+                        InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </>
+                          ),
+                        }}
+                      />
+                    )}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -281,15 +378,31 @@ const TicketForm = () => {
           </Container>
         </>
       )}
-
-      <DialogBoxComponent
-        type="Save"
-        id={id}
+      <Dialog
         open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleSave}
-      />
+        fullScreen={fullScreen}
+        TransitionComponent={Transition}
+        keepMounted
+        fullWidth
+        maxWidth="xs"
+        onClose={handleClose}
+        aria-describedby="responsive-alert-dialog-slide-description"
+      >
+        <DialogTitle>{" Question"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Do you want to {id ? "update" : "save"} this data ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} variant="outlined">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} variant="contained" color="secondary">
+            {id ? "Update" : "Add"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

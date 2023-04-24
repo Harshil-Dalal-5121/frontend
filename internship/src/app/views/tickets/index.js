@@ -1,7 +1,7 @@
+import { Add } from "@mui/icons-material";
+import { Button, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
-
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
-import CardList from "./card/CardList";
 import {
   fetchData,
   handleSearch,
@@ -10,39 +10,26 @@ import {
 } from "app/services/services";
 
 import { useTranslation } from "app/services/translate";
-import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { List } from "app/components/ListComponent";
-import NavBar from "app/components/NavBar";
+import { useCallback, useState } from "react";
+import { Search } from "react-bootstrap-icons";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import TicketTable from "./table/TicketTable";
 
-const LIMIT = 6;
-
-const View = {
-  table: "table",
-  card: "card",
-};
-
-const ViewComponent = {
-  table: TicketTable,
-  card: CardList,
-};
+const LIMIT = 5;
 
 export function Tickets() {
-  const [view, setView] = useState(View.table); // grid | card
-
   const [tickets, setTickets] = useState([]);
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
   const [loading, setLoading] = useState(false);
-  const limit = +searchParams.get("limit") || LIMIT;
-  const [search, setSearch] = useState("");
 
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const offset = (page - 1) * limit;
+  const offset = (page - 1) * LIMIT;
 
   const handleChange = (event) => {
     setSearch(event.target.value);
@@ -62,7 +49,7 @@ export function Tickets() {
       },
       fields: ticketTableFields,
       offset,
-      limit: limit,
+      limit: LIMIT,
     };
 
     setLoading(true);
@@ -72,7 +59,7 @@ export function Tickets() {
       setTickets(data?.data?.data);
       setTotal(data?.data?.total);
     }
-  }, [offset, limit]);
+  }, [offset]);
 
   const handleSearchSubmit = useCallback(async () => {
     if (search) {
@@ -98,7 +85,7 @@ export function Tickets() {
           _domains: [],
         },
         fields: ticketTableFields,
-        limit: limit,
+        limit: LIMIT,
         offset: offset,
         sortBy: ["id"],
       };
@@ -110,46 +97,60 @@ export function Tickets() {
       }
       setTotal(data?.data?.total);
     }
-  }, [offset, limit, search]);
+  }, [offset, search]);
 
   useHandleSubmit(Tickets, handleSearchSubmit, search);
-
-  useEffect(() => {
-    setSearchParams({ page, limit: limit });
-  }, [page, limit, setSearchParams]);
 
   return (
     <>
       <legend>
-        <Typography
-          variant={"h3"}
-          style={{ margin: "0 auto ", textAlign: "center" }}
-        >
-          {t("Tickets")}
-        </Typography>
+        <Typography>{t("Tickets")}</Typography>
       </legend>
-
-      <NavBar
-        title="Ticket"
-        View={View}
-        setView={setView}
-        setPage={setPage}
-        path="/tickets/new"
-        handleChange={handleChange}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => {
+            navigate("/tickets/new");
+          }}
+          style={{ textTransform: "capitalize", margin: "1em" }}
+        >
+          <Add /> Create new ticket
+        </Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <TextField
+            style={{ margin: "1em" }}
+            id="search"
+            onChange={handleChange}
+            name="search"
+            value={search}
+            label="Search Ticket"
+            variant="outlined"
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleSearchSubmit();
+              }
+            }}
+          />
+          <Button onClick={handleSearchSubmit}>
+            <Search
+              style={{ margin: "1em 1em 1em 0" }}
+              variant="contained"
+              color="success"
+            />
+          </Button>
+        </div>
+      </div>
+      <TicketTable
         search={search}
-        handleSearchSubmit={handleSearchSubmit}
-      />
-      <List
-        ViewComponent={ViewComponent}
-        view={view}
-        search={search}
-        data={tickets}
+        tickets={tickets}
         loading={loading}
+        setSearch={setSearch}
         total={total}
+        setTotal={setTotal}
         page={page}
-        limit={limit}
         searchParams={searchParams}
-        setData={setTickets}
+        setTickets={setTickets}
         setPage={setPage}
         setSearchParams={setSearchParams}
       />

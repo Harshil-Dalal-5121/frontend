@@ -1,54 +1,28 @@
 import React from "react";
-import {
-  TableCell,
-  tableCellClasses,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { TableCell, TableHead, TableRow } from "@mui/material";
 
 import { tableFields } from "app/services/services";
-import styled from "@emotion/styled";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
 
 const ProjectTableHeader = () => {
   return (
     <>
       <TableHead>
-        <StyledTableRow>
+        <TableRow>
           {tableFields?.map((field, i) => {
             return (
-              <StyledTableCell
+              <TableCell
                 key={i}
                 align="center"
                 style={{ textTransform: "capitalize" }}
               >
                 {field}
-              </StyledTableCell>
+              </TableCell>
             );
           })}
-          <StyledTableCell align="center" colSpan={2}>
+          <TableCell align="center" colSpan={2}>
             Operations
-          </StyledTableCell>
-        </StyledTableRow>
+          </TableCell>
+        </TableRow>
       </TableHead>
     </>
   );

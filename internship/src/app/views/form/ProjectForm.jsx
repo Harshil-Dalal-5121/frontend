@@ -1,20 +1,32 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 
+import { useTheme } from "@emotion/react";
 import {
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
+  Slide,
   Stack,
   Switch,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { getData, model, saveData, tableFields } from "app/services/services";
+import {
+  getData,
+  // getProject,
+  model,
+  saveData,
+  tableFields,
+} from "app/services/services";
 import { useNavigate, useParams } from "react-router";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import ProjectTaskTable from "./sideTable/ProjectTaskTable";
-import DialogBoxComponent from "app/components/Dialog";
 
 const initialValues = {
   name: "",
@@ -27,10 +39,17 @@ const initialValues = {
   code: "",
 };
 
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const Form = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -72,30 +91,28 @@ const Form = () => {
     setOpen(false);
   };
   const handleSave = () => {
-    saveData(`${model}`, formData);
-    navigate("/projects");
     setOpen(false);
+    saveData(`${model}`, formData);
+    navigate(-1);
   };
-
-  const validateForm = () => {
+  const validateForm = (formData) => {
     const error = {};
-    const errorMessages = {
-      name: `Task Name is required`,
-      code: `Code is required`,
-      fromDate: `Start Date is required`,
-      toDate: `End Date is required`,
-    };
 
-    Object.keys(errorMessages).forEach((key) => {
-      if (!formData[key]) {
-        error[key] = errorMessages[key];
-      }
-    });
-
-    if (formData.taskDate > formData.taskEndDate) {
-      error.taskEndDate = `End Date is invalid`;
+    if (!formData.name) {
+      error.name = `Project Name is required`;
     }
-
+    if (!formData.code) {
+      error.code = `Project Code is required`;
+    }
+    if (!formData.fromDate) {
+      error.fromDate = `Start Date is required`;
+    }
+    if (!formData.toDate) {
+      error.toDate = `End Date is required`;
+    }
+    if (formData.fromDate > formData.toDate) {
+      error.toDate = `End Date is invalid`;
+    }
     return error;
   };
 
@@ -130,6 +147,7 @@ const Form = () => {
           </Typography>
           <Container
             style={{
+              height: "100vh",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -144,7 +162,7 @@ const Form = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={8}>
                   <TextField
                     fullWidth
                     id="name"
@@ -157,7 +175,7 @@ const Form = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={8}>
                   <TextField
                     fullWidth
                     id="code"
@@ -210,17 +228,6 @@ const Form = () => {
                     />
                   </Stack>
                 </Grid>
-
-                {id ? (
-                  <>
-                    <Grid item xs={8}>
-                      <Typography component="h6" variant="h6">
-                        Task Tree
-                      </Typography>
-                      <ProjectTaskTable id={id} />
-                    </Grid>
-                  </>
-                ) : null}
                 <Grid item xs={12} sm={8}>
                   <Button
                     variant="contained"
@@ -235,7 +242,7 @@ const Form = () => {
                     variant="contained"
                     color="success"
                     onClick={() => {
-                      navigate("/projects");
+                      navigate(-1);
                     }}
                   >
                     Back
@@ -246,15 +253,31 @@ const Form = () => {
           </Container>
         </>
       )}
-
-      <DialogBoxComponent
-        type="Save"
-        id={id}
+      <Dialog
         open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleSave}
-      />
+        fullScreen={fullScreen}
+        TransitionComponent={Transition}
+        keepMounted
+        fullWidth
+        maxWidth="xs"
+        onClose={handleClose}
+        aria-describedby="responsive-alert-dialog-slide-description"
+      >
+        <DialogTitle>{" Question"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Do you want to {id ? "update" : "save"} this data ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} variant="outlined">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} variant="contained" color="secondary">
+            {id ? "Update" : "Save"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

@@ -1,5 +1,6 @@
+import { Button, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
-
+import { Add, Search } from "@mui/icons-material";
 import {
   taskTableFields,
   fetchData,
@@ -7,38 +8,21 @@ import {
   handleSearch,
 } from "app/services/services";
 import { useTranslation } from "app/services/translate";
-
+import { useNavigate } from "react-router";
 import TasksTable from "./table/TasksTable";
 import { useSearchParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
-import { List } from "app/components/ListComponent";
 
-import CardList from "./card/CardList";
-
-import NavBar from "app/components/NavBar";
-
-const LIMIT = 6;
-
-const View = {
-  table: "table",
-  card: "card",
-};
-
-const ViewComponent = {
-  table: TasksTable,
-  card: CardList,
-};
+const LIMIT = 5;
 
 export function Tasks() {
-  const [view, setView] = useState(View.table); // grid | card
   const [tasks, setTasks] = useState([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-
-  const limit = +searchParams.get("limit") || LIMIT;
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const { t } = useTranslation();
@@ -47,7 +31,7 @@ export function Tasks() {
     setSearch(event.target.value);
   };
 
-  const offset = (page - 1) * limit;
+  const offset = (page - 1) * LIMIT;
 
   const Tasks = useCallback(async () => {
     const reqBody = {
@@ -56,14 +40,14 @@ export function Tasks() {
         _domain: "self.typeSelect = :_typeSelect",
         _domainContext: {
           _typeSelect: "task",
-          _model: "com.axelor.apps.Task.db.ProjectTask",
+          _model: "com.axelor.apps.project.db.ProjectTask",
           operator: "and",
         },
       },
       fields: taskTableFields,
       offset,
 
-      limit: limit,
+      limit: LIMIT,
       sortBy: ["id"],
       model: "com.axelor.apps.project.db.ProjectTask",
       _typeSelect: "task",
@@ -76,7 +60,7 @@ export function Tasks() {
       setTasks(response?.data?.data);
       setTotal(response?.data?.total);
     }
-  }, [offset, limit]);
+  }, [offset]);
 
   const handleSearchSubmit = useCallback(async () => {
     if (search) {
@@ -93,7 +77,7 @@ export function Tasks() {
         },
         fields: taskTableFields,
         offset,
-        limit: limit,
+        limit: LIMIT,
         sortBy: ["id"],
       };
       setLoading(true);
@@ -102,46 +86,61 @@ export function Tasks() {
       setTasks(data?.data?.data);
       setTotal(data?.data?.total);
     }
-  }, [offset, limit, search]);
+  }, [offset, search]);
 
   useHandleSubmit(Tasks, handleSearchSubmit, search);
-
-  useEffect(() => {
-    setSearchParams({ page, limit: limit });
-  }, [page, limit, setSearchParams]);
 
   return (
     <>
       <legend>
-        <Typography
-          variant={"h3"}
-          style={{ margin: "0 auto ", textAlign: "center" }}
-        >
-          {t("Tasks")}
-        </Typography>
+        <Typography>{t("Tasks")}</Typography>
       </legend>
 
-      <NavBar
-        title="Task"
-        View={View}
-        setView={setView}
-        setPage={setPage}
-        path="/tasks/new"
-        handleChange={handleChange}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => {
+            navigate("/tasks/new");
+          }}
+          style={{ textTransform: "capitalize", margin: "1em" }}
+        >
+          <Add /> Create new task
+        </Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <TextField
+            style={{ margin: "1em" }}
+            id="search"
+            onChange={handleChange}
+            name="search"
+            value={search}
+            label="Search Task"
+            variant="outlined"
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleSearchSubmit();
+              }
+            }}
+          />
+          <Button onClick={handleSearchSubmit}>
+            <Search
+              style={{ margin: "1em 1em 1em 0" }}
+              variant="contained"
+              color="success"
+            />
+          </Button>
+        </div>
+      </div>
+      <TasksTable
         search={search}
-        handleSearchSubmit={handleSearchSubmit}
-      />
-      <List
-        ViewComponent={ViewComponent}
-        view={view}
-        search={search}
-        data={tasks}
+        tasks={tasks}
         loading={loading}
+        setSearch={setSearch}
         total={total}
+        setTotal={setTotal}
         page={page}
-        limit={limit}
         searchParams={searchParams}
-        setData={setTasks}
+        setTasks={setTasks}
         setPage={setPage}
         setSearchParams={setSearchParams}
       />
