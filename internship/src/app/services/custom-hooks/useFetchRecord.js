@@ -10,7 +10,8 @@ function useFetchRecord(id, fetcher, setter, api, fields) {
         const response = await fetcher(api, fields);
 
         if (response) {
-          setter(response.data.data[0]);
+          const data = response.data.data[0];
+          setter(data);
         }
         setLoading(false);
       })();

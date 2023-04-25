@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, Container, Grid, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  debounce,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import { Slider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
@@ -9,9 +16,14 @@ import {
   model,
   getData,
   taskTableFields,
+  getOptions,
+  fetchOptions,
+  getPriority,
+  fetchParentTask,
+  fetchAssign,
 } from "app/services/services";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import AutoCompleteCompenent from "app/components/AutoComplete";
+import AutoCompleteComponent from "app/components/AutoComplete";
 import DialogBoxComponent from "app/components/Dialog";
 
 import styles from "./Forms.module.css";
@@ -25,7 +37,9 @@ const initialValues = {
   priority: "",
   status: "",
   typeSelect: "task",
+  parentTask: "",
   progressSelect: 0,
+  assignedTo: "",
 };
 const status = [
   {
@@ -50,6 +64,11 @@ const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
+  const [opsLoading, setOpsLoading] = useState(false);
+  const [projectOptions, setProjectOptions] = useState([]);
+  const [priorityOptions, setPriorityOptions] = useState([]);
+  const [parentTasks, setParentTasks] = useState([]);
+  const [assigned, setAssigned] = useState([]);
 
   const { id } = useParams();
   const { loading } = useFetchRecord(
@@ -77,7 +96,24 @@ const TaskForm = () => {
     });
   };
 
-  const handleProjectChange = (e, value) => {
+  const handleProjectInputChange = async (e, value) => {
+    const projectReqBody = {
+      data: {
+        code: value,
+        fullName: value,
+        _domainContext: {},
+      },
+      fields: ["id", "fullName", "code"],
+    };
+
+    await debounce(async () => {
+      setOpsLoading(true);
+      await fetchOptions(getOptions, setProjectOptions, projectReqBody);
+      setOpsLoading(false);
+    }, 1000)();
+  };
+
+  const handleProjectChange = async (e, value) => {
     setFormData({
       ...formData,
       project: {
@@ -86,6 +122,29 @@ const TaskForm = () => {
         code: value.code || null,
       },
     });
+
+    const domain = await fetchParentTask(value.id, id);
+    setParentTasks(domain);
+  };
+
+  const handlePriorityInputChange = async (e, value) => {
+    const priorityReqBody = {
+      data: {
+        name: value,
+        _domain: "self.id IN (1,2,3,4)",
+        _domainContext: {
+          _model: "com.axelor.apps.project.db.ProjectTask",
+          _typeSelect: "task",
+        },
+      },
+      fields: ["id", "name"],
+    };
+
+    await debounce(async () => {
+      setOpsLoading(true);
+      await fetchOptions(getPriority, setPriorityOptions, priorityReqBody);
+      setOpsLoading(false);
+    }, 1000)();
   };
 
   const handlePriorityChange = (e, value) => {
@@ -95,6 +154,76 @@ const TaskForm = () => {
         id: value.id,
         name: value.name,
         $version: 0,
+      },
+    });
+  };
+
+  const handleAssignInputChange = async () => {
+    const assignReqBody = {
+      data: {
+        _domain: "self.id IN(1)",
+        _domainContext: {
+          _typeSelect: "task",
+          _model: "com.axelor.apps.project.db.ProjectTask",
+        },
+        operator: "and",
+        criteria: [],
+      },
+      fields: [
+        "tradingName",
+        "blocked",
+        "name",
+        "activateOn",
+        "fullName",
+        "expiresOn",
+        "activeCompany",
+        "group",
+      ],
+    };
+
+    await debounce(async () => {
+      setOpsLoading(true);
+      await fetchOptions(fetchAssign, setAssigned, assignReqBody);
+      setOpsLoading(false);
+    }, 1000)();
+  };
+
+  const handleAssignChange = (e, value) => {
+    setFormData({
+      ...formData,
+      assignedTo: {
+        id: value.id,
+        fullName: value.fullName,
+      },
+    });
+  };
+
+  const handleParentTaskInputChange = async (e, value) => {
+    const parenTaskReqBody = {
+      fullName: value,
+      name: value,
+    };
+
+    await debounce(async () => {
+      setOpsLoading(true);
+      const domain = await fetchParentTask(
+        formData?.project?.id,
+        id,
+        parenTaskReqBody
+      );
+      setParentTasks(domain);
+      setOpsLoading(false);
+    }, 1000)();
+  };
+
+  const handleParentTaskChange = (e, value) => {
+    setFormData({
+      ...formData,
+      parentTask: {
+        id: value.id,
+        name: value.name,
+        fullName: value.fullName,
+        version: value.version,
       },
     });
   };
@@ -125,6 +254,8 @@ const TaskForm = () => {
       priority: `Priority  is required`,
       taskDate: `Start Date is required`,
       taskEndDate: `End Date is required`,
+      parentTask: `Parent Task is required`,
+      assignedTo: `AssignedTo is required`,
     };
 
     Object.keys(errorMessages).forEach((key) => {
@@ -139,8 +270,6 @@ const TaskForm = () => {
 
     return error;
   };
-
-  console.log(formData);
 
   return (
     <>
@@ -189,7 +318,7 @@ const TaskForm = () => {
                     label="Add Name"
                   />
                 </Grid>
-                <Grid item xs={12} sm={8}>
+                <Grid align="center" item xs="auto" sm={10}>
                   <Typography>Progress :</Typography>
                   <Slider
                     value={formData?.progressSelect || 0}
@@ -206,8 +335,8 @@ const TaskForm = () => {
                     max={100}
                   />
                 </Grid>
-                <Grid item xs={12} sm={8}>
-                  <AutoCompleteCompenent
+                <Grid item xs={12} sm={4}>
+                  <AutoCompleteComponent
                     data={formData}
                     setData={setFormData}
                     errors={errors}
@@ -220,10 +349,19 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option.fullName;
                     }}
+                    handleInputChange={handleProjectInputChange}
+                    options={projectOptions?.map((a) => {
+                      return {
+                        id: a.id || "",
+                        fullName: a.fullName || "",
+                        code: a.code || null,
+                      };
+                    })}
+                    opsLoading={opsLoading}
                   />
                 </Grid>
-                <Grid item xs={12} sm={8}>
-                  <AutoCompleteCompenent
+                <Grid item xs={12} sm={4}>
+                  <AutoCompleteComponent
                     data={formData}
                     setData={setFormData}
                     errors={errors}
@@ -236,6 +374,64 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option.name;
                     }}
+                    handleInputChange={handlePriorityInputChange}
+                    options={priorityOptions?.map((a) => {
+                      return {
+                        id: a.id || "",
+                        name: a.name || "",
+                      };
+                    })}
+                    opsLoading={opsLoading}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <AutoCompleteComponent
+                    data={formData}
+                    setData={setFormData}
+                    errors={errors}
+                    title="parentTask"
+                    handleChange={handleParentTaskChange}
+                    noOptionsText="No Tasks"
+                    isOptionEqualToValue={(option, value) =>
+                      option.fullName === value.fullName
+                    }
+                    getOptionLabel={(option) => {
+                      return option.fullName;
+                    }}
+                    handleInputChange={handleParentTaskInputChange}
+                    options={parentTasks?.map((a) => {
+                      return {
+                        id: a.id || "",
+                        name: a.name || "",
+                        fullName: a.fullName || "",
+                        version: a.version || "",
+                      };
+                    })}
+                    opsLoading={opsLoading}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <AutoCompleteComponent
+                    data={formData}
+                    setData={setFormData}
+                    errors={errors}
+                    title="assignedTo"
+                    handleChange={handleAssignChange}
+                    noOptionsText="No Data"
+                    isOptionEqualToValue={(option, value) =>
+                      option.fullName === value.fullName
+                    }
+                    getOptionLabel={(option) => {
+                      return option.fullName;
+                    }}
+                    handleInputChange={handleAssignInputChange}
+                    options={assigned?.map((a) => {
+                      return {
+                        id: a.id || "",
+                        fullName: a.fullName || "",
+                      };
+                    })}
+                    opsLoading={opsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>

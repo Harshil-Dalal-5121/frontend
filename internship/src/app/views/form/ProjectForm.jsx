@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Button,
   Container,
+  debounce,
   Grid,
   Stack,
   Switch,
@@ -12,12 +13,20 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate, useParams } from "react-router";
 
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import { getData, model, saveData, tableFields } from "app/services/services";
+import {
+  fetchAssign,
+  fetchOptions,
+  getData,
+  model,
+  saveData,
+  tableFields,
+} from "app/services/services";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
 import DialogBoxComponent from "app/components/Dialog";
 
 import styles from "./Forms.module.css";
 import StatusSelect from "../../components/StatusSelect";
+import AutoCompleteComponent from "app/components/AutoComplete";
 
 const initialValues = {
   name: "",
@@ -53,6 +62,8 @@ const Form = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
+  const [opsLoading, setOpsLoading] = useState(false);
+  const [assigned, setAssigned] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -78,6 +89,46 @@ const Form = () => {
     setFormData({
       ...formData,
       [name]: name === "imputable" ? checked : value,
+    });
+  };
+
+  const handleAssignInputChange = async () => {
+    const assignReqBody = {
+      data: {
+        _domain: "self.id IN(1)",
+        _domainContext: {
+          _typeSelect: "task",
+          _model: "com.axelor.apps.project.db.ProjectTask",
+        },
+        operator: "and",
+        criteria: [],
+      },
+      fields: [
+        "tradingName",
+        "blocked",
+        "name",
+        "activateOn",
+        "fullName",
+        "expiresOn",
+        "activeCompany",
+        "group",
+      ],
+    };
+
+    await debounce(async () => {
+      setOpsLoading(true);
+      await fetchOptions(fetchAssign, setAssigned, assignReqBody);
+      setOpsLoading(false);
+    }, 1000)();
+  };
+
+  const handleAssignChange = (e, value) => {
+    setFormData({
+      ...formData,
+      assignedTo: {
+        id: value.id,
+        fullName: value.fullName,
+      },
     });
   };
 
@@ -147,13 +198,15 @@ const Form = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid item xs={12} sm={8}>
-                  <StatusSelect
-                    options={status}
-                    data={formData}
-                    setData={setFormData}
-                  />
-                </Grid>
+                {id ? (
+                  <Grid align="center" item xs={12} sm={12}>
+                    <StatusSelect
+                      options={status}
+                      data={formData}
+                      setData={setFormData}
+                    />
+                  </Grid>
+                ) : null}
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
@@ -217,6 +270,30 @@ const Form = () => {
                       name="imputable"
                     />
                   </Stack>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <AutoCompleteComponent
+                    data={formData}
+                    setData={setFormData}
+                    errors={errors}
+                    title="assignedTo"
+                    handleChange={handleAssignChange}
+                    noOptionsText="No Data"
+                    isOptionEqualToValue={(option, value) =>
+                      option.fullName === value.fullName
+                    }
+                    getOptionLabel={(option) => {
+                      return option.fullName;
+                    }}
+                    handleInputChange={handleAssignInputChange}
+                    options={assigned?.map((a) => {
+                      return {
+                        id: a.id || "",
+                        fullName: a.fullName || "",
+                      };
+                    })}
+                    opsLoading={opsLoading}
+                  />
                 </Grid>
 
                 {id ? (

@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   FormControl,
   FormControlLabel,
@@ -5,7 +7,6 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import React from "react";
 
 const StatusSelect = ({ options, data, setData }) => {
   return (

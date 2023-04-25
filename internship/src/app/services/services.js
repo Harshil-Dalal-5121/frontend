@@ -33,6 +33,8 @@ const taskTableFields = [
   "targetVersion",
   "progressSelect",
   "taskEndDate",
+  "assignedTo",
+  "parentTask",
 ];
 
 const ticketTableFields = [
@@ -46,6 +48,8 @@ const ticketTableFields = [
   "targetVersion",
   "progressSelect",
   "taskEndDate",
+  "assignedTo",
+  "parentTask",
 ];
 const navigate = (path) => {
   return <Navigate replace to={path} />;
@@ -62,7 +66,6 @@ const fetchData = async (api, reqBody) => {
   }
 };
 
-//Save task and Ticket is diffrenciated by the "typeSelect" in thier intial value
 const saveData = (api, data) => {
   rest.post(
     api,
@@ -114,6 +117,79 @@ const getPriority = async (reqBody) => {
   }
 };
 
+const fetchAction = async (projectId, taskId) => {
+  try {
+    const response = await rest.post(`/ws/action`, {
+      model: "com.axelor.apps.project.db.ProjectTask",
+      action: "action-project-task-attrs-project-parent-task-configurations",
+      data: {
+        criteria: [],
+        context: {
+          _model: "com.axelor.apps.project.db.ProjectTask",
+          _typeSelect: "task",
+
+          project: {
+            id: projectId,
+          },
+          id: taskId,
+
+          _source: "parentTask",
+        },
+      },
+    });
+
+    if (response && response.data.status !== -1) {
+      const domain = response?.data.data[0].attrs.parentTask.domain;
+      return domain;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
+const fetchAssign = async (reqBody) => {
+  try {
+    const response = await rest.post(
+      `/ws/rest/com.axelor.auth.db.User/search`,
+      reqBody
+    );
+
+    if (response && response.data.status !== -1) {
+      return response;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchParentTask = async (projectId, taskId, reqBody) => {
+  try {
+    const domain = await fetchAction(projectId, taskId);
+    const response = await rest.post(`${model}Task/search`, {
+      fields: ["id", "fullName", "name"],
+
+      data: {
+        ...reqBody,
+        _domain: domain,
+        _domainContext: {
+          _typeSelect: "task",
+          project: {
+            id: projectId,
+          },
+          typeSelect: "task",
+          _model: "com.axelor.apps.project.db.ProjectTask",
+        },
+      },
+    });
+
+    if (response && response.data.status !== -1) {
+      return response?.data?.data;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 const getOptions = async (reqBody) => {
   try {
     const response = await rest.post(` ${model}/search`, reqBody);
@@ -151,4 +227,7 @@ export {
   getOptions,
   getPriority,
   handleSearch,
+  fetchAction,
+  fetchParentTask,
+  fetchAssign,
 };
