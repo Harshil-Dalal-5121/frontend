@@ -20,10 +20,10 @@ import { Delete, Edit } from "@mui/icons-material";
 import styles from "./ProjectCardList.module.css";
 import DialogBoxComponent from "app/components/Dialog";
 
-const card = (project, handleClickOpen, setData) => {
+const card = (project, handleClickOpen, setData, i) => {
   return (
     <>
-      <CardContent>
+      <CardContent key={i}>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           #{project?.id}
         </Typography>
@@ -121,7 +121,7 @@ export default function CardList({
             {data?.map((project, i) => {
               return (
                 <>
-                  <Grid item xs={12} sm={4} key={i}>
+                  <Grid item xs={12} sm={4}>
                     <Card sx={{ height: "23vh" }} variant="outlined" key={i}>
                       {card(project, handleClickOpen, setData, i)}
                     </Card>

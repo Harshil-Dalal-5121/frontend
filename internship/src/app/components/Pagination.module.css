@@ -2,8 +2,10 @@
     display: flex;
     justify-content: center;
 
+
 }
 
 .pagination-grid {
-    margin: 0.25em 0;
+    margin: 1em 0 !important;
+    box-sizing: border-box !important;
 }

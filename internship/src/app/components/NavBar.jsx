@@ -25,7 +25,7 @@ const NavBar = ({
       <Grid item xs={12} sm={4} className={styles["grid-item-new"]}>
         <Button
           variant="contained"
-          color="success"
+          color="info"
           onClick={() => {
             navigate(`${path}`);
           }}

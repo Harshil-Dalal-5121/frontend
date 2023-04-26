@@ -340,6 +340,7 @@ const TicketForm = () => {
                     setData={setFormData}
                     errors={errors}
                     title="project"
+                    label="Parent Project"
                     handleChange={handleProjectChange}
                     noOptionsText="No Project"
                     isOptionEqualToValue={(option, value) =>
@@ -365,6 +366,7 @@ const TicketForm = () => {
                     setData={setFormData}
                     errors={errors}
                     title="priority"
+                    label="Priority"
                     handleChange={handlePriorityChange}
                     noOptionsText="Set Priority"
                     isOptionEqualToValue={(option, value) =>
@@ -389,6 +391,7 @@ const TicketForm = () => {
                     setData={setFormData}
                     errors={errors}
                     title="parentTask"
+                    label="Parent Task"
                     handleChange={handleParentTaskChange}
                     noOptionsText="No Tasks"
                     isOptionEqualToValue={(option, value) =>
@@ -414,6 +417,7 @@ const TicketForm = () => {
                     data={formData}
                     setData={setFormData}
                     errors={errors}
+                    label="Assigned To"
                     title="assignedTo"
                     handleChange={handleAssignChange}
                     noOptionsText="No Data"

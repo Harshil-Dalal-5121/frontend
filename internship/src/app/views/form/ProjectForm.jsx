@@ -186,9 +186,6 @@ const Form = () => {
     const errorMessages = {
       name: `Task Name is required`,
       code: `Code is required`,
-      fromDate: `Start Date is required`,
-      toDate: `End Date is required`,
-      parentProject: `Parent Project is required`,
     };
 
     Object.keys(errorMessages).forEach((key) => {
@@ -267,47 +264,11 @@ const Form = () => {
                 </Grid>
 
                 <Grid item xs={12} sm={8}>
-                  <TextField
-                    fullWidth
-                    id="fromDate"
-                    name="fromDate"
-                    error={errors?.fromDate ? true : false}
-                    helperText={errors?.fromDate ? `${errors.fromDate}` : ""}
-                    onChange={handleChange}
-                    type="date"
-                    variant="outlined"
-                    value={formData.fromDate?.slice(0, 10) || ""}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={8}>
-                  <TextField
-                    fullWidth
-                    id="toDate"
-                    name="toDate"
-                    error={errors?.toDate ? true : false}
-                    helperText={errors?.toDate ? `${errors.toDate}` : ""}
-                    onChange={handleChange}
-                    type="date"
-                    variant="outlined"
-                    value={formData.toDate?.slice(0, 10) || ""}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={8}>
-                  <Typography>Imputable :</Typography>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Switch
-                      onClick={handleChange}
-                      checked={formData?.imputable}
-                      color="success"
-                      name="imputable"
-                    />
-                  </Stack>
-                </Grid>
-                <Grid item xs={12} sm={8}>
                   <AutoCompleteComponent
                     data={formData}
                     setData={setFormData}
                     errors={errors}
+                    label="Parent project"
                     title="parentProject"
                     handleChange={handleProjectChange}
                     noOptionsText="No Project"
@@ -332,6 +293,7 @@ const Form = () => {
                   <AutoCompleteComponent
                     data={formData}
                     setData={setFormData}
+                    label="Assigned To"
                     errors={errors}
                     title="assignedTo"
                     handleChange={handleAssignChange}
@@ -350,6 +312,44 @@ const Form = () => {
                       };
                     })}
                     opsLoading={opsLoading}
+                  />
+                  <Grid item xs={12} sm={8}>
+                    <Typography>Imputable :</Typography>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Switch
+                        onClick={handleChange}
+                        checked={formData?.imputable}
+                        color="success"
+                        name="imputable"
+                      />
+                    </Stack>
+                  </Grid>
+                </Grid>
+
+                <Grid item xs={12} sm={8}>
+                  <TextField
+                    fullWidth
+                    id="fromDate"
+                    name="fromDate"
+                    error={errors?.fromDate ? true : false}
+                    helperText={errors?.fromDate ? `${errors.fromDate}` : ""}
+                    onChange={handleChange}
+                    type="date"
+                    variant="outlined"
+                    value={formData.fromDate?.slice(0, 10) || ""}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <TextField
+                    fullWidth
+                    id="toDate"
+                    name="toDate"
+                    error={errors?.toDate ? true : false}
+                    helperText={errors?.toDate ? `${errors.toDate}` : ""}
+                    onChange={handleChange}
+                    type="date"
+                    variant="outlined"
+                    value={formData.toDate?.slice(0, 10) || ""}
                   />
                 </Grid>
 

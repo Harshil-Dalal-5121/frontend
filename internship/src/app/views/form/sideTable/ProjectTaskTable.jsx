@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Box,
   CircularProgress,
   Container,
   Paper,
@@ -120,75 +121,77 @@ const ProjectTaskTable = ({ id }) => {
         </Container>
       ) : (
         <>
-          <TableContainer
-            sx={{ minWidth: 500, height: "23vh", overflowX: "hidden" }}
-            component={Paper}
-          >
-            <Table sx={{ minWidth: 550 }} aria-label="customized table">
-              <TableHead>
-                <StyledTableRow>
-                  <StyledTableCell>Project</StyledTableCell>
-                  <StyledTableCell>Start Date</StyledTableCell>
-                  <StyledTableCell>Assigned To</StyledTableCell>
-                  <StyledTableCell>Progress</StyledTableCell>
-                </StyledTableRow>
-              </TableHead>
-              {tasks ? (
-                <TableBody>
-                  {tasks?.map((task, i) => {
-                    return (
-                      <StyledTableRow key={i}>
-                        <StyledTableCell>{task?.name}</StyledTableCell>
-                        <StyledTableCell>
-                          {" "}
-                          {!task?.taskDate ? "-" : getDate(task?.taskDate)}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {task?.assignedTo?.fullName}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          <div
-                            className="progress"
-                            role="progressbar"
-                            aria-label="Animated striped example"
-                            aria-valuenow="75"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          >
+          <Box>
+            <TableContainer
+              sx={{ minWidth: 500, height: "23vh", overflowX: "hidden" }}
+              component={Paper}
+            >
+              <Table sx={{ minWidth: 550 }} aria-label="customized table">
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableCell>Project</StyledTableCell>
+                    <StyledTableCell>Start Date</StyledTableCell>
+                    <StyledTableCell>Assigned To</StyledTableCell>
+                    <StyledTableCell>Progress</StyledTableCell>
+                  </StyledTableRow>
+                </TableHead>
+                {tasks ? (
+                  <TableBody>
+                    {tasks?.map((task, i) => {
+                      return (
+                        <StyledTableRow key={i}>
+                          <StyledTableCell>{task?.name}</StyledTableCell>
+                          <StyledTableCell>
+                            {" "}
+                            {!task?.taskDate ? "-" : getDate(task?.taskDate)}
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            {task?.assignedTo?.fullName}
+                          </StyledTableCell>
+                          <StyledTableCell>
                             <div
-                              className={
-                                task?.progressSelect <= 30
-                                  ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
-                                  : task?.progressSelect > 30 &&
-                                    task?.progressSelect <= 50
-                                  ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
-                                  : task?.progressSelect > 50 &&
-                                    task?.progressSelect <= 80
-                                  ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
-                                  : "progress-bar progress-bar-striped progress-bar-animated bg-success"
-                              }
-                              style={{
-                                width: `${task?.progressSelect || "0"}% `,
-                              }}
-                            ></div>
-                            {task?.progressSelect || "0"}%
-                          </div>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  })}
-                </TableBody>
-              ) : (
-                <Container>No Records</Container>
-              )}
-            </Table>
-          </TableContainer>
-          <PaginationComponent
-            total={total}
-            limit={limit}
-            page={page}
-            handleChange={handleChange}
-          />
+                              className="progress"
+                              role="progressbar"
+                              aria-label="Animated striped example"
+                              aria-valuenow="75"
+                              aria-valuemin="0"
+                              aria-valuemax="100"
+                            >
+                              <div
+                                className={
+                                  task?.progressSelect <= 30
+                                    ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
+                                    : task?.progressSelect > 30 &&
+                                      task?.progressSelect <= 50
+                                    ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
+                                    : task?.progressSelect > 50 &&
+                                      task?.progressSelect <= 80
+                                    ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
+                                    : "progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                }
+                                style={{
+                                  width: `${task?.progressSelect || "0"}% `,
+                                }}
+                              ></div>
+                              {task?.progressSelect || "0"}%
+                            </div>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                  </TableBody>
+                ) : (
+                  <Container>No Records</Container>
+                )}
+              </Table>
+            </TableContainer>
+            <PaginationComponent
+              total={total}
+              limit={limit}
+              page={page}
+              handleChange={handleChange}
+            />
+          </Box>
         </>
       )}
     </>

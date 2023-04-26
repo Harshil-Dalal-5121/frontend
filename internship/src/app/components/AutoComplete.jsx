@@ -6,6 +6,7 @@ const AutoCompleteComponent = ({
   handleChange,
   errors,
   title,
+  label,
   getOptionLabel,
   noOptionsText,
   isOptionEqualToValue,
@@ -28,7 +29,7 @@ const AutoCompleteComponent = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label={`${title}`}
+            label={`${label}`}
             error={errors?.[title] ? true : false}
             helperText={errors?.[title] ? `${errors[title]}` : ""}
             InputProps={{
