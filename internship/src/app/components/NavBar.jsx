@@ -22,7 +22,7 @@ const NavBar = ({
   const navigate = useNavigate();
   return (
     <Grid container className={styles["grid-container"]}>
-      <Grid item xs={12} sm={4} className={styles["grid-item-new"]}>
+      <Grid item xs={4} sm={4} className={styles["grid-item-new"]}>
         <Button
           variant="contained"
           color="info"
@@ -34,10 +34,10 @@ const NavBar = ({
           <Add /> Create {title}
         </Button>
       </Grid>
-      <Grid item xs={12} sm={4} className={styles["grid-item-view"]}>
+      <Grid item xs={4} sm={4} className={styles["grid-item-view"]}>
         <Toolbar setView={setView} View={View} setPage={setPage} />
       </Grid>
-      <Grid item xs={12} sm={4} className={styles["grid-item-search"]}>
+      <Grid item xs={4} sm={4} className={styles["grid-item-search"]}>
         <div className={styles["grid-container-search"]}>
           <TextField
             className={styles["m1"]}

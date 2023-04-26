@@ -123,10 +123,17 @@ const ProjectTaskTable = ({ id }) => {
         <>
           <Box>
             <TableContainer
-              sx={{ minWidth: 500, height: "23vh", overflowX: "hidden" }}
+              sx={{
+                ...styles["table-container"],
+                height: "23vh",
+                overflow: "auto",
+              }}
               component={Paper}
             >
-              <Table sx={{ minWidth: 550 }} aria-label="customized table">
+              <Table
+                sx={styles["table-container"]}
+                aria-label="customized table"
+              >
                 <TableHead>
                   <StyledTableRow>
                     <StyledTableCell>Project</StyledTableCell>

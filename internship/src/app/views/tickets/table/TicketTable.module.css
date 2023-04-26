@@ -1,16 +1,16 @@
 .loading-container {
-    height: 52vh !important;
+    height: 53vh !important;
     display: flex !important;
     justify-content: center;
     align-items: center;
 }
 
 .table-container {
-    height: 52vh !important;
+    height: 53vh !important;
     padding: 0 1em !important;
 
 }
 
 .tbody {
-    height: 52vh !important;
+    height: 53vh !important;
 }

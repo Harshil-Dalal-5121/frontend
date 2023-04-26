@@ -5,17 +5,17 @@ import { Button } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ViewListIcon from "@mui/icons-material/ViewList";
 
-import styles from "./ListComponent.module.css";
-
 const Toolbar = ({ setView, View, setPage }) => {
+  const [card, setCard] = React.useState(false);
   return (
     <>
       <Button
-        variant="outlined"
-        className={styles.btn}
+        variant={card ? "outlined" : "contained"}
+        sx={{ marginRight: 2 }}
         onClick={() => {
           setPage(1);
           setView(View.table);
+          setCard(false);
         }}
         endIcon=<ViewListIcon />
         color="secondary"
@@ -24,11 +24,12 @@ const Toolbar = ({ setView, View, setPage }) => {
       </Button>
 
       <Button
-        variant="outlined"
+        variant={card ? "contained" : "outlined"}
         color="warning"
         onClick={() => {
           setPage(1);
           setView(View.card);
+          setCard(true);
         }}
         endIcon=<DashboardIcon />
       >

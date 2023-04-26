@@ -20,23 +20,21 @@ import { Delete, Edit } from "@mui/icons-material";
 import styles from "./ProjectCardList.module.css";
 import DialogBoxComponent from "app/components/Dialog";
 
-const card = (project, handleClickOpen, setData, i) => {
+const card = (project, handleClickOpen, setData) => {
   return (
     <>
-      <CardContent key={i}>
+      <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           #{project?.id}
         </Typography>
         <Typography variant="h5" component="div">
           {project?.name || "-"}
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {project?.code || "-"}
-        </Typography>
+        <Typography color="text.secondary">{project?.code || "-"}</Typography>
         <Typography>
           Parent- <b>{project?.clientPartner?.fullName || "-"}</b>
         </Typography>
-        <Typography variant="body2">{project?.projectStatus?.name}</Typography>
+        <Typography>Progess - {project?.projectStatus?.name}</Typography>
       </CardContent>
       <CardActions>
         <Link to={`${project.id}`}>
@@ -117,12 +115,12 @@ export default function CardList({
     <>
       {!loading ? (
         <div className={styles.container}>
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             {data?.map((project, i) => {
               return (
                 <>
                   <Grid item xs={12} sm={4}>
-                    <Card sx={{ height: "23vh" }} variant="outlined" key={i}>
+                    <Card variant="outlined" className={styles.card} key={i}>
                       {card(project, handleClickOpen, setData, i)}
                     </Card>
                   </Grid>

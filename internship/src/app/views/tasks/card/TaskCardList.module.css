@@ -1,11 +1,17 @@
 .container {
-    height: 52vh;
+    height: 53vh;
     padding: 15px;
+    overflow-y: scroll
 }
 
 .loading-container {
-    height: 52vh;
+    height: 53vh;
     display: flex !important;
     justify-content: center;
     align-items: center;
+}
+
+.card {
+    height: 23vh;
+    overflow-y: auto
 }

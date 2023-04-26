@@ -142,7 +142,7 @@ export default function CardList({
               return (
                 <>
                   <Grid item xs={12} sm={4} key={i}>
-                    <Card sx={{ height: "23vh" }} variant="outlined" key={i}>
+                    <Card sx={styles.card} variant="outlined" key={i}>
                       {card(task, handleClickOpen, setData)}
                     </Card>
                   </Grid>

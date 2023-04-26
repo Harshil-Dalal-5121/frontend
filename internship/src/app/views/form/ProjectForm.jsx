@@ -24,6 +24,10 @@ import {
 } from "app/services/services";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
 import DialogBoxComponent from "app/components/Dialog";
+import ClearIcon from "@mui/icons-material/Clear";
+
+import { Add } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
 
 import styles from "./Forms.module.css";
 import StatusSelect from "../../components/StatusSelect";
@@ -355,10 +359,12 @@ const Form = () => {
 
                 {id ? (
                   <>
-                    <Grid item xs={8}>
+                    <Grid item xs={12} sm={8}>
                       <Typography component="h6" variant="h6">
                         Task Tree
                       </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
                       <ProjectTaskTable id={id} />
                     </Grid>
                   </>
@@ -371,7 +377,17 @@ const Form = () => {
                     className={styles["form-btn"]}
                     onClick={handleSubmit}
                   >
-                    {id ? "Update" : "Add"}
+                    {id ? (
+                      <>
+                        Update
+                        <EditIcon fontSize="small" />
+                      </>
+                    ) : (
+                      <>
+                        Add
+                        <Add fontSize="small" />
+                      </>
+                    )}
                   </Button>
                   <Button
                     variant="contained"
@@ -381,6 +397,7 @@ const Form = () => {
                     }}
                   >
                     Back
+                    <ClearIcon fontSize="small" />
                   </Button>
                 </Grid>
               </Grid>
