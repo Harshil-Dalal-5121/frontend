@@ -64,7 +64,11 @@ const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [opsLoading, setOpsLoading] = useState(false);
+  const [parentProjectOpsLoading, setParentProjectOpsLoading] = useState(false);
+  const [assignedOpsLoading, setAssignedOpsLoading] = useState(false);
+  const [priorityOpsLoading, setPriorityOpsLoading] = useState(false);
+  const [parentTaskLoading, setParentTaskLoading] = useState(false);
+
   const [projectOptions, setProjectOptions] = useState([]);
   const [priorityOptions, setPriorityOptions] = useState([]);
   const [parentTasks, setParentTasks] = useState([]);
@@ -107,9 +111,9 @@ const TaskForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setParentProjectOpsLoading(true);
       await fetchOptions(getOptions, setProjectOptions, projectReqBody);
-      setOpsLoading(false);
+      setParentProjectOpsLoading(false);
     }, 1000)();
   };
 
@@ -149,9 +153,9 @@ const TaskForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setPriorityOpsLoading(true);
       await fetchOptions(getPriority, setPriorityOptions, priorityReqBody);
-      setOpsLoading(false);
+      setPriorityOpsLoading(false);
     }, 1000)();
   };
 
@@ -190,9 +194,9 @@ const TaskForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setAssignedOpsLoading(true);
       await fetchOptions(fetchAssign, setAssigned, assignReqBody);
-      setOpsLoading(false);
+      setAssignedOpsLoading(false);
     }, 1000)();
   };
 
@@ -213,14 +217,14 @@ const TaskForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setParentTaskLoading(true);
       const domain = await fetchParentTask(
         formData?.project?.id,
         id,
         parenTaskReqBody
       );
       setParentTasks(domain);
-      setOpsLoading(false);
+      setParentTaskLoading(false);
     }, 1000)();
   };
 
@@ -250,7 +254,6 @@ const TaskForm = () => {
   const handleSave = () => {
     setOpen(false);
     saveData(`${model}Task`, formData);
-    console.log("formData >>>", formData);
     navigate(-1);
   };
 
@@ -367,7 +370,7 @@ const TaskForm = () => {
                         code: a.code || null,
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={parentProjectOpsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -392,7 +395,7 @@ const TaskForm = () => {
                         name: a.name || "",
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={priorityOpsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -419,7 +422,7 @@ const TaskForm = () => {
                         version: a.version || "",
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={parentTaskLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -444,7 +447,7 @@ const TaskForm = () => {
                         fullName: a.fullName || "",
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={assignedOpsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>

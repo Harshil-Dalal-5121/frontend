@@ -68,7 +68,8 @@ const Form = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [opsLoading, setOpsLoading] = useState(false);
+  const [projectOpsLoading, setProjectOpsLoading] = useState(false);
+  const [assignedOpsLoading, setAssignedOpsLoading] = useState(false);
   const [assigned, setAssigned] = useState([]);
   const [projectOptions, setProjectOptions] = useState([]);
 
@@ -123,9 +124,9 @@ const Form = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setAssignedOpsLoading(true);
       await fetchOptions(fetchAssign, setAssigned, assignReqBody);
-      setOpsLoading(false);
+      setAssignedOpsLoading(false);
     }, 1000)();
   };
 
@@ -150,9 +151,9 @@ const Form = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setProjectOpsLoading(true);
       await fetchOptions(getOptions, setProjectOptions, projectReqBody);
-      setOpsLoading(false);
+      setProjectOpsLoading(false);
     }, 1000)();
   };
 
@@ -290,7 +291,7 @@ const Form = () => {
                         code: a.code || null,
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={projectOpsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -315,7 +316,7 @@ const Form = () => {
                         fullName: a.fullName || "",
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={assignedOpsLoading}
                   />
                   <Grid item xs={12} sm={8}>
                     <Typography>Imputable :</Typography>

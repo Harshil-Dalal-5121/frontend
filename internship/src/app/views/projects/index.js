@@ -100,7 +100,7 @@ export function Projects() {
         setTotal(data?.data?.total);
       }
     }
-  }, [offset, limit, search]);
+  }, [search, offset, limit]);
 
   useHandleSubmit(Projects, handleSearchSubmit, search);
 

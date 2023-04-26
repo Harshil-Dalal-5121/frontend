@@ -62,7 +62,10 @@ const TicketForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [opsLoading, setOpsLoading] = useState(false);
+  const [parentProjectOpsLoading, setParentProjectOpsLoading] = useState(false);
+  const [assignedOpsLoading, setAssignedOpsLoading] = useState(false);
+  const [priorityOpsLoading, setPriorityOpsLoading] = useState(false);
+  const [parentTaskLoading, setParentTaskLoading] = useState(false);
   const [projectOptions, setProjectOptions] = useState([]);
   const [priorityOptions, setPriorityOptions] = useState([]);
   const [parentTasks, setParentTasks] = useState([]);
@@ -116,9 +119,10 @@ const TicketForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setParentProjectOpsLoading(true);
+
       await fetchOptions(getOptions, setProjectOptions, projectReqBody);
-      setOpsLoading(false);
+      setParentProjectOpsLoading(false);
     }, 1000)();
   };
 
@@ -150,9 +154,10 @@ const TicketForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setPriorityOpsLoading(true);
+
       await fetchOptions(getPriority, setPriorityOptions, priorityReqBody);
-      setOpsLoading(false);
+      setPriorityOpsLoading(false);
     }, 1000)();
   };
 
@@ -191,9 +196,10 @@ const TicketForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setAssignedOpsLoading(true);
+
       await fetchOptions(fetchAssign, setAssigned, assignReqBody);
-      setOpsLoading(false);
+      setAssignedOpsLoading(false);
     }, 1000)();
   };
 
@@ -214,14 +220,15 @@ const TicketForm = () => {
     };
 
     await debounce(async () => {
-      setOpsLoading(true);
+      setParentTaskLoading(true);
+
       const domain = await fetchParentTask(
         formData?.project?.id,
         id,
         parenTaskReqBody
       );
       setParentTasks(domain);
-      setOpsLoading(false);
+      setParentTaskLoading(false);
     }, 1000)();
   };
 
@@ -357,7 +364,7 @@ const TicketForm = () => {
                         code: a.code || null,
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={parentProjectOpsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -382,7 +389,7 @@ const TicketForm = () => {
                         name: a.name || "",
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={priorityOpsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -409,7 +416,7 @@ const TicketForm = () => {
                         version: a.version || "",
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={parentTaskLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -434,7 +441,7 @@ const TicketForm = () => {
                         fullName: a.fullName || "",
                       };
                     })}
-                    opsLoading={opsLoading}
+                    opsLoading={assignedOpsLoading}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
