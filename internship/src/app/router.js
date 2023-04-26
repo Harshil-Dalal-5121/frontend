@@ -4,7 +4,7 @@ import Index from "app/views";
 import Projects from "app/views/projects";
 import Tasks from "app/views/tasks";
 import Tickets from "app/views/tickets";
-import Form from "./views/form/ProjectForm";
+import ProjectForm from "./views/form/ProjectForm";
 import TaskForm from "./views/form/TaskForm";
 import TicketForm from "./views/form/TicketForm";
 
@@ -22,11 +22,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "new",
-            element: <Form />,
+            element: <ProjectForm />,
           },
           {
             path: ":id",
-            element: <Form />,
+            element: <ProjectForm />,
           },
         ],
       },

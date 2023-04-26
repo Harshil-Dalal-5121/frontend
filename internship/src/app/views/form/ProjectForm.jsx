@@ -64,7 +64,7 @@ const status = [
   },
 ];
 
-const Form = () => {
+const ProjectForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
@@ -419,4 +419,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default ProjectForm;
