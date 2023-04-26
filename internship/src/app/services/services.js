@@ -183,7 +183,7 @@ const fetchParentTask = async (projectId, taskId, reqBody) => {
     });
 
     if (response && response.data.status !== -1) {
-      return response?.data?.data;
+      return response?.data?.data || [];
     }
   } catch (error) {
     return error;

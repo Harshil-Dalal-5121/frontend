@@ -156,6 +156,12 @@ const TicketTableContent = ({ data, setData }) => {
                 {!ticket?.taskEndDate ? "-" : getDate(ticket?.taskEndDate)}
               </StyledTableCell>
               <StyledTableCell align="center">
+                {ticket?.assignedTo?.fullName || "-"}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {ticket?.parentTask?.fullName || "-"}
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Link to={`${ticket.id}`}>
                   <Button variant="contained" color="success">
                     <Edit />

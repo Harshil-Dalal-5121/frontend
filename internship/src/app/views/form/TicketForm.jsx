@@ -301,6 +301,7 @@ const TicketForm = () => {
                       options={status}
                       data={formData}
                       setData={setFormData}
+                      defaultValue={formData?.status?.name || "New"}
                     />
                   </Grid>
                 ) : null}

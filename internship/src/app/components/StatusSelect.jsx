@@ -8,7 +8,7 @@ import {
   RadioGroup,
 } from "@mui/material";
 
-const StatusSelect = ({ options, data, setData }) => {
+const StatusSelect = ({ options, data, setData, defaultValue }) => {
   return (
     <>
       <FormControl>
@@ -20,13 +20,13 @@ const StatusSelect = ({ options, data, setData }) => {
           row
           aria-labelledby="demo-radio-buttons-group-label"
           name="project-status"
-          defaultValue={data?.status?.name || "New"}
+          defaultValue={defaultValue}
         >
           {options?.map((a, i) => {
             return (
               <FormControlLabel
                 key={i}
-                value={a?.name}
+                value={a?.name || null}
                 control={<Radio />}
                 label={a?.name}
                 onChange={() => {

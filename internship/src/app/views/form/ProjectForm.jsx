@@ -17,6 +17,7 @@ import {
   fetchAssign,
   fetchOptions,
   getData,
+  getOptions,
   model,
   saveData,
   tableFields,
@@ -35,6 +36,7 @@ const initialValues = {
   clientPartner: "",
   toDate: "",
   imputable: false,
+  projectStatus: "",
   assignedTo: "",
   code: "",
 };
@@ -64,6 +66,7 @@ const Form = () => {
   const [errors, setErrors] = useState({});
   const [opsLoading, setOpsLoading] = useState(false);
   const [assigned, setAssigned] = useState([]);
+  const [projectOptions, setProjectOptions] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -132,6 +135,34 @@ const Form = () => {
     });
   };
 
+  const handleProjectInputChange = async (e, value) => {
+    const projectReqBody = {
+      data: {
+        code: value,
+        fullName: value,
+        _domainContext: {},
+      },
+      fields: ["id", "fullName", "code"],
+    };
+
+    await debounce(async () => {
+      setOpsLoading(true);
+      await fetchOptions(getOptions, setProjectOptions, projectReqBody);
+      setOpsLoading(false);
+    }, 1000)();
+  };
+
+  const handleProjectChange = async (e, value) => {
+    setFormData({
+      ...formData,
+      parentProject: {
+        id: value.id || "",
+        fullName: value.fullName || "",
+        code: value.code || null,
+      },
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validateForm(formData);
@@ -157,6 +188,7 @@ const Form = () => {
       code: `Code is required`,
       fromDate: `Start Date is required`,
       toDate: `End Date is required`,
+      parentProject: `Parent Project is required`,
     };
 
     Object.keys(errorMessages).forEach((key) => {
@@ -198,15 +230,15 @@ const Form = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                {id ? (
-                  <Grid align="center" item xs={12} sm={12}>
-                    <StatusSelect
-                      options={status}
-                      data={formData}
-                      setData={setFormData}
-                    />
-                  </Grid>
-                ) : null}
+                <Grid align="center" item xs={12} sm={12}>
+                  <StatusSelect
+                    options={status}
+                    data={formData}
+                    setData={setFormData}
+                    defaultValue={formData?.projectStatus?.name || "New"}
+                  />
+                </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
@@ -270,6 +302,31 @@ const Form = () => {
                       name="imputable"
                     />
                   </Stack>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                  <AutoCompleteComponent
+                    data={formData}
+                    setData={setFormData}
+                    errors={errors}
+                    title="parentProject"
+                    handleChange={handleProjectChange}
+                    noOptionsText="No Project"
+                    isOptionEqualToValue={(option, value) =>
+                      option.fullName === value.fullName
+                    }
+                    getOptionLabel={(option) => {
+                      return option.fullName;
+                    }}
+                    handleInputChange={handleProjectInputChange}
+                    options={projectOptions?.map((a) => {
+                      return {
+                        id: a.id || "",
+                        fullName: a.fullName || "",
+                        code: a.code || null,
+                      };
+                    })}
+                    opsLoading={opsLoading}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <AutoCompleteComponent

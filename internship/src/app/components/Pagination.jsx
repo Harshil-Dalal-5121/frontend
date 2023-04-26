@@ -6,7 +6,7 @@ import styles from "./Pagination.module.css";
 const PaginationComponent = ({ total, limit, page, handleChange }) => {
   return (
     <>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} className={styles["pagination-grid"]}>
         <Grid item xs={12} sm={4} align="center">
           Total Items: {total}
         </Grid>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Container,
@@ -124,8 +124,16 @@ const TaskForm = () => {
     });
 
     const domain = await fetchParentTask(value.id, id);
-    setParentTasks(domain);
+    setParentTasks(domain || []);
   };
+  useEffect(() => {
+    if (formData?.project) {
+      (async () => {
+        const domain = await fetchParentTask(formData?.project?.id, id);
+        setParentTasks(domain);
+      })();
+    }
+  }, [formData?.project, id]);
 
   const handlePriorityInputChange = async (e, value) => {
     const priorityReqBody = {
@@ -303,6 +311,7 @@ const TaskForm = () => {
                       options={status}
                       data={formData}
                       setData={setFormData}
+                      defaultValue={formData?.status?.name || "New"}
                     />
                   </Grid>
                 ) : null}

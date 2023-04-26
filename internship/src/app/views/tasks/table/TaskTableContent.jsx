@@ -156,6 +156,12 @@ const TaskTableContent = ({ data, setData }) => {
                 {!task?.taskEndDate ? "-" : getDate(task?.taskEndDate)}
               </StyledTableCell>
               <StyledTableCell align="center">
+                {task?.assignedTo?.fullName || "-"}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {task?.parentTask?.fullName || "-"}
+              </StyledTableCell>
+              <StyledTableCell align="center">
                 <Link to={`${task.id}`}>
                   <Button variant="contained" color="success">
                     <Edit />
