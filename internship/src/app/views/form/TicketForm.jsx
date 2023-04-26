@@ -255,13 +255,8 @@ const TicketForm = () => {
   const validateForm = () => {
     const error = {};
     const errorMessages = {
-      name: `Task Name is required`,
+      name: `Subject is required`,
       project: `Project  is required`,
-      priority: `Priority  is required`,
-      taskDate: `Start Date is required`,
-      taskEndDate: `End Date is required`,
-      parentTask: `Parent Task is required`,
-      assignedTo: `AssignedTo is required`,
     };
 
     Object.keys(errorMessages).forEach((key) => {
@@ -321,7 +316,7 @@ const TicketForm = () => {
                     helperText={errors?.name ? `${errors.name}` : ""}
                     id="name"
                     name="name"
-                    label="Add Name"
+                    label="Subject"
                   />
                 </Grid>
                 <Grid align="center" item xs={12} sm={10}>
