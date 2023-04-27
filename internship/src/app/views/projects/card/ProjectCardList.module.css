@@ -1,11 +1,11 @@
 .container {
-    height: 53vh;
+    height: 54vh;
     padding: 15px;
     overflow-y: scroll
 }
 
 .loading-container {
-    height: 53vh;
+    height: 54vh;
     display: flex !important;
     justify-content: center;
     align-items: center;

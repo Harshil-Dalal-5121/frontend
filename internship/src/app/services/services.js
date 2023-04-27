@@ -23,29 +23,23 @@ const tableFields = [
 ];
 
 const taskTableFields = [
-  "ticketNumber",
   "name",
   "project",
   "taskDate",
   "status",
   "priority",
   "projectTaskCategory",
-  "targetVersion",
-  "progressSelect",
   "taskEndDate",
   "assignedTo",
   "parentTask",
 ];
 
 const ticketTableFields = [
-  "ticketNumber",
   "name",
   "project",
   "taskDate",
   "status",
   "priority",
-  "projectTaskCategory",
-  "targetVersion",
   "progressSelect",
   "taskEndDate",
   "assignedTo",

@@ -1,17 +1,16 @@
 .loading-container {
-    height: 53vh !important;
+    height: 54vh !important;
     display: flex !important;
     justify-content: center;
     align-items: center;
 }
 
 .table-container {
-    height: 53vh !important;
-    padding: 0 0.5em !important;
+    height: 54vh !important;
+    padding: 0 1em !important;
 
 }
 
 .tbody {
-    height: 53vh !important;
-    overflow-y: auto;
+    height: 54vh !important;
 }

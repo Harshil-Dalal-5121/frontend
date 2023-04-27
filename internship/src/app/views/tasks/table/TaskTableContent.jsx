@@ -97,14 +97,14 @@ const TaskTableContent = ({ data, setData }) => {
             <StyledTableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              style={{ height: "30px" }}
+              style={{ height: "65px" }}
             >
               <StyledTableCell align="center">
                 {task?.id || "-"}
               </StyledTableCell>
-              <StyledTableCell align="center">
+              {/* <StyledTableCell align="center">
                 {task?.ticketNumber || "-"}
-              </StyledTableCell>
+              </StyledTableCell> */}
               <StyledTableCell align="center">
                 {task?.name || "-"}
               </StyledTableCell>
@@ -120,12 +120,12 @@ const TaskTableContent = ({ data, setData }) => {
               <StyledTableCell align="center">
                 {task?.priority?.name || "-"}
               </StyledTableCell>
-              <StyledTableCell align="center">
+              {/* <StyledTableCell align="center">
                 {task?.projectTaskCategory || "-"}
               </StyledTableCell>
               <StyledTableCell align="center">
                 {task?.targetVersion || "-"}
-              </StyledTableCell>
+              </StyledTableCell> */}
               <StyledTableCell align="center">
                 <div
                   className="progress"

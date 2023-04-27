@@ -102,9 +102,7 @@ const TicketTableContent = ({ data, setData }) => {
               <StyledTableCell align="center">
                 {ticket?.id || "-"}
               </StyledTableCell>
-              <StyledTableCell align="center">
-                {ticket?.ticketNumber || "-"}
-              </StyledTableCell>
+
               <StyledTableCell align="center">
                 {ticket?.name || "-"}
               </StyledTableCell>
@@ -120,12 +118,7 @@ const TicketTableContent = ({ data, setData }) => {
               <StyledTableCell align="center">
                 {ticket?.priority?.name || "-"}
               </StyledTableCell>
-              <StyledTableCell align="center">
-                {ticket?.projectTaskCategory || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                {ticket?.targetVersion || "-"}
-              </StyledTableCell>
+
               <StyledTableCell align="center">
                 <div
                   className="progress"

@@ -73,6 +73,10 @@ export function Projects() {
     }
   }, [limit, offset]);
 
+  React.useEffect(() => {
+    setSearchParams({ page, limit: limit });
+  }, [page, limit, setSearchParams]);
+
   const handleSearchSubmit = useCallback(async () => {
     if (search) {
       const reqBody = {
