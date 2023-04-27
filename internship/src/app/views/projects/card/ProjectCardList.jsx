@@ -120,7 +120,7 @@ export default function CardList({
               return (
                 <>
                   <Grid item xs={12} sm={4}>
-                    <Card variant="outlined" className={styles.card} key={i}>
+                    <Card variant="outlined" sx={styles.card} key={i}>
                       {card(project, handleClickOpen, setData, i)}
                     </Card>
                   </Grid>

@@ -7,10 +7,11 @@
 
 .table-container {
     height: 53vh !important;
-    padding: 0 1em !important;
+    padding: 0 0.5em !important;
 
 }
 
 .tbody {
     height: 53vh !important;
+    overflow-y: auto;
 }

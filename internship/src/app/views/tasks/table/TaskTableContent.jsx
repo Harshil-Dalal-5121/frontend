@@ -33,7 +33,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:last-child td, &:last-child th": {
     border: 0,
   },
-  height: "7.5vh",
 }));
 
 const TaskTableContent = ({ data, setData }) => {
@@ -98,7 +97,7 @@ const TaskTableContent = ({ data, setData }) => {
             <StyledTableRow
               key={i}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              style={{ height: "70px" }}
+              style={{ height: "30px" }}
             >
               <StyledTableCell align="center">
                 {task?.id || "-"}
