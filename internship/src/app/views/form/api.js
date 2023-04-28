@@ -71,7 +71,6 @@ const formApi = {
 
   saveTask: (formData) => {
     try {
-      console.log(`Task`);
       rest.post(`${model}`, formData);
     } catch (error) {
       console.log(error);

@@ -37,7 +37,6 @@ const api = {
       });
 
       if (response && response.data.status !== -1) {
-        console.log(`hello`);
         return response;
       }
     } catch (error) {

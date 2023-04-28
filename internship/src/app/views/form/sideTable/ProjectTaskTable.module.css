@@ -1,5 +1,5 @@
 .loading-container {
-    height: 26.25vh;
+    height: 29.5vh;
     display: flex !important;
     justify-content: center;
     align-items: center;
@@ -7,10 +7,4 @@
 
 .loading {
     margin: auto;
-}
-
-.table-container {
-    @media only screen and (min-width: 500px) {
-        width: 100,
-    }
 }
