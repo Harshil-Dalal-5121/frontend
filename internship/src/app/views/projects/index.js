@@ -47,6 +47,7 @@ export function Projects() {
 
   const handleChange = (event) => {
     setSearch(event.target.value);
+    setPage(1);
   };
 
   const offset = (page - 1) * limit;

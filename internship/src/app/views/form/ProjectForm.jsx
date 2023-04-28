@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   debounce,
+  FormControlLabel,
   Grid,
   Stack,
   Switch,
@@ -319,13 +320,18 @@ const ProjectForm = () => {
                     opsLoading={assignedOpsLoading}
                   />
                   <Grid item xs={12} sm={8}>
-                    <Typography>Imputable :</Typography>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Switch
-                        onClick={handleChange}
-                        checked={formData?.imputable}
-                        color="success"
-                        name="imputable"
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Typography>Imputable :</Typography>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            onClick={handleChange}
+                            checked={formData?.imputable}
+                            color="success"
+                            name="imputable"
+                          />
+                        }
+                        label={formData?.imputable ? "True" : "False"}
                       />
                     </Stack>
                   </Grid>
