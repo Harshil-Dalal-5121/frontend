@@ -20,7 +20,6 @@ const ProjectTable = ({
   limit,
   page,
   setPage,
-  setSearchParams,
   total,
 }) => {
   const handleChange = (event, value) => {

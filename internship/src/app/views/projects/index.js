@@ -10,6 +10,8 @@ import NavBar from "app/components/NavBar";
 import { useDebounce } from "../../services/custom-hooks/useDebounce";
 import api from "../../services/api";
 
+const model = "com.axelor.apps.project.db.Project";
+
 const View = {
   table: "table",
   card: "card",
@@ -40,7 +42,7 @@ export function Projects() {
   const debouncedChangeSearch = useDebounce(handleChangeSearch);
 
   const handleFetch = useCallback(async ({ offset, search }) => {
-    const { data } = await api.find({ offset, search });
+    const { data } = await api.find({ model, offset, search });
     setProjects(data?.data);
     setTotal(data?.total);
   }, []);
@@ -84,16 +86,13 @@ export function Projects() {
       <List
         ViewComponent={ViewComponent}
         view={view}
-        search={search}
         data={projects}
         loading={loading}
         total={total}
         page={page}
         limit={LIMIT}
-        searchParams={searchParams}
         setData={setProjects}
         setPage={setPage}
-        setSearchParams={setSearchParams}
       />
     </>
   );

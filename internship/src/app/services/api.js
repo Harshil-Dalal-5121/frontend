@@ -2,10 +2,9 @@ import rest from "./rest";
 import { tableFields } from "./services";
 
 export const LIMIT = 6;
-export const model = "com.axelor.apps.project.db.Project";
 
 const api = {
-  find: async ({ search = "", offset }) => {
+  find: async ({ model, search = "", offset }) => {
     const response = await rest.post(`${model}/search`, {
       data: {
         criteria: [
