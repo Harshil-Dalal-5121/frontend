@@ -1,24 +1,14 @@
 import Typography from "@mui/material/Typography";
-
-import {
-  taskTableFields,
-  fetchData,
-  model,
-  handleSearch,
-} from "app/services/services";
-import { useTranslation } from "app/services/translate";
-
-import TasksTable from "./table/TasksTable";
-import { useSearchParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
-import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
 import { List } from "app/components/ListComponent";
-
+import { useTranslation } from "app/services/translate";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import CardList from "./card/TaskCardList";
-
+import TasksTable from "./table/TasksTable";
 import NavBar from "app/components/NavBar";
 
-const LIMIT = 6;
+import { useDebounce } from "../../services/custom-hooks/useDebounce";
+import api from "./api";
 
 const View = {
   table: "table",
@@ -30,85 +20,44 @@ const ViewComponent = {
   card: CardList,
 };
 
-export function Tasks() {
-  const [view, setView] = useState(View.table); // grid | card
-  const [tasks, setTasks] = useState([]);
+const LIMIT = 6;
+
+export function Projects() {
+  const [view, setView] = useState(View.table);
+  const [tasks, setTasks] = useState("");
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-
-  const limit = +searchParams.get("limit") || LIMIT;
-  const [loading, setLoading] = useState(false);
-
   const { t } = useTranslation();
 
-  const handleChange = (event) => {
+  const handleChangeSearch = (event) => {
     setSearch(event.target.value);
+    setPage(1);
   };
 
-  const offset = (page - 1) * limit;
+  const debouncedChangeSearch = useDebounce(handleChangeSearch);
 
-  const Tasks = useCallback(async () => {
-    const reqBody = {
-      data: {
-        criteria: [],
-        _domain: "self.typeSelect = :_typeSelect",
-        _domainContext: {
-          _typeSelect: "task",
-          _model: "com.axelor.apps.Task.db.ProjectTask",
-          operator: "and",
-        },
-      },
-      fields: taskTableFields,
-      offset,
-
-      limit: limit,
-      sortBy: ["id"],
-      model: "com.axelor.apps.project.db.ProjectTask",
-      _typeSelect: "task",
-    };
-
-    setLoading(true);
-    const response = await fetchData(` ${model}Task/search`, reqBody);
-    setLoading(false);
-    if (response) {
-      setTasks(response?.data?.data);
-      setTotal(response?.data?.total);
-    }
-  }, [offset, limit]);
-
-  const handleSearchSubmit = useCallback(async () => {
-    if (search) {
-      const reqBody = {
-        data: {
-          criteria: [
-            {
-              fieldName: "name",
-              operator: "like",
-              value: search,
-            },
-          ],
-          operator: "or",
-        },
-        fields: taskTableFields,
-        offset,
-        limit: limit,
-        sortBy: ["id"],
-      };
-      setLoading(true);
-      const data = await handleSearch(`${model}Task/search`, reqBody);
-      setLoading(false);
-      setTasks(data?.data?.data);
-      setTotal(data?.data?.total);
-    }
-  }, [offset, limit, search]);
-
-  useHandleSubmit(Tasks, handleSearchSubmit, search);
+  const handleFetch = useCallback(async ({ offset, search }) => {
+    const { data } = await api.find({ offset, search });
+    setTasks(data?.data);
+    setTotal(data?.total);
+  }, []);
 
   useEffect(() => {
-    setSearchParams({ page, limit: limit });
-  }, [page, limit, setSearchParams]);
+    setLoading(true);
+    handleFetch({
+      search,
+      offset: (page - 1) * LIMIT,
+    }).finally(() => {
+      setLoading(false);
+    });
+  }, [page, search, handleFetch]);
+
+  useEffect(() => {
+    setSearchParams({ page });
+  }, [page, setSearchParams, total]);
 
   return (
     <>
@@ -122,31 +71,29 @@ export function Tasks() {
       </legend>
 
       <NavBar
-        title="Task"
+        title="Tasks"
         View={View}
+        loading={loading}
         setView={setView}
-        setPage={setPage}
         path="/tasks/new"
-        handleChange={handleChange}
+        setPage={setPage}
+        handleChange={debouncedChangeSearch}
         search={search}
-        handleSearchSubmit={handleSearchSubmit}
       />
+
       <List
         ViewComponent={ViewComponent}
         view={view}
-        search={search}
         data={tasks}
         loading={loading}
         total={total}
         page={page}
-        limit={limit}
-        searchParams={searchParams}
+        limit={LIMIT}
         setData={setTasks}
         setPage={setPage}
-        setSearchParams={setSearchParams}
       />
     </>
   );
 }
 
-export default Tasks;
+export default Projects;

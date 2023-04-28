@@ -1,13 +1,13 @@
 const { useEffect, useState } = require("react");
 
-function useFetchRecord(id, fetcher, setter, api, fields) {
+function useFetchRecord(id, fetcher, setter) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
       (async () => {
         setLoading(true);
-        const response = await fetcher(api, fields);
+        const response = await fetcher({ id });
 
         if (response) {
           const data = response.data.data[0];
@@ -16,7 +16,7 @@ function useFetchRecord(id, fetcher, setter, api, fields) {
         setLoading(false);
       })();
     }
-  }, [id, fetcher, setter, api, fields]);
+  }, [id, fetcher, setter]);
 
   return { loading };
 }

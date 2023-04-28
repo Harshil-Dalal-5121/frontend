@@ -10,10 +10,10 @@ import {
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
-import { deleteData, model } from "app/services/services";
 import DialogBoxComponent from "app/components/Dialog";
 
 import { Delete, Edit } from "@mui/icons-material";
+import api from "../api";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,13 +46,10 @@ const TaskTableContent = ({ data, setData }) => {
   });
   const handleDeleteTask = async () => {
     const { name, id, version, setData } = deleteProject;
-    const reqBody = {
-      records: [{ id: id, version: version, name: name }],
-    };
+    await api.delete({ id, version, name });
+    setData((prev) => prev.filter((project) => project.id !== id));
 
-    await deleteData(`${model}Task/removeAll`, reqBody);
-
-    setData((prev) => prev.filter((task) => task.id !== id));
+    setOpen(false);
   };
 
   const handleClickOpen = (id, version, name, setData) => {
@@ -102,9 +99,7 @@ const TaskTableContent = ({ data, setData }) => {
               <StyledTableCell align="center">
                 {task?.id || "-"}
               </StyledTableCell>
-              {/* <StyledTableCell align="center">
-                {task?.ticketNumber || "-"}
-              </StyledTableCell> */}
+
               <StyledTableCell align="center">
                 {task?.name || "-"}
               </StyledTableCell>
@@ -120,12 +115,7 @@ const TaskTableContent = ({ data, setData }) => {
               <StyledTableCell align="center">
                 {task?.priority?.name || "-"}
               </StyledTableCell>
-              {/* <StyledTableCell align="center">
-                {task?.projectTaskCategory || "-"}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                {task?.targetVersion || "-"}
-              </StyledTableCell> */}
+
               <StyledTableCell align="center">
                 <div
                   className="progress"

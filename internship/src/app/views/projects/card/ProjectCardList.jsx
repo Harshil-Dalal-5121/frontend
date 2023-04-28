@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-import { deleteData, model } from "app/services/services";
 import PaginationComponent from "app/components/Pagination";
 
 import { Delete, Edit } from "@mui/icons-material";
 
 import styles from "./ProjectCardList.module.css";
 import DialogBoxComponent from "app/components/Dialog";
+import api from "../api";
 
 const card = (project, handleClickOpen, setData) => {
   return (
@@ -75,12 +75,8 @@ export default function CardList({
   });
   const handleDeleteProject = async () => {
     const { name, id, version, setData } = deleteProject;
-    const reqBody = {
-      records: [{ id: id, version: version, name: name }],
-    };
-
-    await deleteData(`${model}/removeAll`, reqBody);
-    setData((prev) => prev.filter((task) => task.id !== id));
+    await api.delete({ id, version, name });
+    setData((prev) => prev.filter((project) => project.id !== id));
 
     setOpen(false);
   };

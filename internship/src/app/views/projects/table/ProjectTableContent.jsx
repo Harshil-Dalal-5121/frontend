@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
+import api from "../api";
 
-import { deleteData, model } from "app/services/services";
 import DialogBoxComponent from "app/components/Dialog";
 
 import { Delete, Edit } from "@mui/icons-material";
@@ -63,12 +63,8 @@ const ProjectTableContent = ({ data, setData }) => {
 
   const handleDelete = async () => {
     const { name, id, version, setData } = deleteProject;
-    const reqBody = {
-      records: [{ id: id, version: version, name: name }],
-    };
-
-    await deleteData(`${model}/removeAll`, reqBody);
-    setData((prev) => prev.filter((task) => task.id !== id));
+    await api.delete({ id, version, name });
+    setData((prev) => prev.filter((project) => project.id !== id));
 
     setOpen(false);
   };
@@ -81,7 +77,7 @@ const ProjectTableContent = ({ data, setData }) => {
   };
 
   const getDate = (val) => {
-    var date = new Date(val); // M-D-YYYY
+    var date = new Date(val);
 
     var d = date.getDate();
     var m = date.getMonth() + 1;

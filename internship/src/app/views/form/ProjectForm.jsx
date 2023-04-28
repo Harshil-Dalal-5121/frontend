@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+
 import {
   Button,
   Container,
-  debounce,
   FormControlLabel,
   Grid,
   Stack,
@@ -14,25 +14,18 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate, useParams } from "react-router";
 
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import {
-  fetchAssign,
-  fetchOptions,
-  getData,
-  getOptions,
-  model,
-  saveData,
-  tableFields,
-} from "app/services/services";
+
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
 import DialogBoxComponent from "app/components/Dialog";
 import ClearIcon from "@mui/icons-material/Clear";
-
 import { Add } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
-
+import api from "../projects/api";
 import styles from "./Forms.module.css";
 import StatusSelect from "../../components/StatusSelect";
 import AutoCompleteComponent from "app/components/AutoComplete";
+import { useDebounce } from "app/services/custom-hooks/useDebounce";
+import formApi from "./api";
 
 const initialValues = {
   name: "",
@@ -85,13 +78,7 @@ const ProjectForm = () => {
   };
 
   const { id } = useParams();
-  const { loading } = useFetchRecord(
-    id,
-    getData,
-    setFormData,
-    `${model}/${id}/fetch`,
-    tableFields
-  );
+  const { loading } = useFetchRecord(id, api.fetch, setFormData);
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target || {};
@@ -102,33 +89,10 @@ const ProjectForm = () => {
   };
 
   const handleAssignInputChange = async () => {
-    const assignReqBody = {
-      data: {
-        _domain: "self.id IN(1)",
-        _domainContext: {
-          _typeSelect: "task",
-          _model: "com.axelor.apps.project.db.ProjectTask",
-        },
-        operator: "and",
-        criteria: [],
-      },
-      fields: [
-        "tradingName",
-        "blocked",
-        "name",
-        "activateOn",
-        "fullName",
-        "expiresOn",
-        "activeCompany",
-        "group",
-      ],
-    };
-
-    await debounce(async () => {
-      setAssignedOpsLoading(true);
-      await fetchOptions(fetchAssign, setAssigned, assignReqBody);
-      setAssignedOpsLoading(false);
-    }, 1000)();
+    setAssignedOpsLoading(true);
+    const options = await formApi.assignedTo();
+    setAssigned(options?.data?.data);
+    setAssignedOpsLoading(false);
   };
 
   const handleAssignChange = (e, value) => {
@@ -142,26 +106,18 @@ const ProjectForm = () => {
   };
 
   const handleProjectInputChange = async (e, value) => {
-    const projectReqBody = {
-      data: {
-        code: value,
-        fullName: value,
-        _domainContext: {},
-      },
-      fields: ["id", "fullName", "code"],
-    };
-
-    await debounce(async () => {
-      setProjectOpsLoading(true);
-      await fetchOptions(getOptions, setProjectOptions, projectReqBody);
-      setProjectOpsLoading(false);
-    }, 1000)();
+    setProjectOpsLoading(true);
+    const options = await formApi.projects(value);
+    setProjectOptions(options?.data?.data);
+    setProjectOpsLoading(false);
   };
+
+  const delayedProjectSearch = useDebounce(handleProjectInputChange);
 
   const handleProjectChange = async (e, value) => {
     setFormData({
       ...formData,
-      parentProject: {
+      project: {
         id: value.id || "",
         fullName: value.fullName || "",
         code: value.code || null,
@@ -182,7 +138,8 @@ const ProjectForm = () => {
     setOpen(false);
   };
   const handleSave = () => {
-    saveData(`${model}`, formData);
+    api.save(formData);
+
     navigate("/projects");
     setOpen(false);
   };
@@ -284,7 +241,7 @@ const ProjectForm = () => {
                     getOptionLabel={(option) => {
                       return option.fullName;
                     }}
-                    handleInputChange={handleProjectInputChange}
+                    handleInputChange={delayedProjectSearch}
                     options={projectOptions?.map((a) => {
                       return {
                         id: a.id || "",

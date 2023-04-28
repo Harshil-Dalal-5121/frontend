@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   CircularProgress,
@@ -12,12 +12,9 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
 import styled from "@emotion/styled";
-
 import PaginationComponent from "app/components/Pagination";
-
-import { fetchData, model } from "app/services/services";
+import api from "../../tasks/api";
 
 import styles from "./ProjectTaskTable.module.css";
 
@@ -43,55 +40,21 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const LIMIT = 3;
 
-const getReqBody = (limit, offset, id) => {
-  const reqBody = {
-    data: {
-      _domain:
-        "(self.project.id = :_id AND self.parentTask = null) AND (self.project.id = :_id)",
-      _domainAction: "action-view-show-project-task-tree",
-      _domainContext: {
-        id: id,
-        _model: "com.axelor.apps.project.db.Project",
-        _countOn: "parentTask",
-      },
-    },
-    fields: ["name", "taskDate", "assignedTo", "progressSelect"],
-    limit: limit,
-    offset: offset,
-    sortBy: ["taskDate"],
-  };
-
-  return reqBody;
-};
-
 const ProjectTaskTable = ({ id }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const limit = +searchParams.get("limit") || LIMIT;
-  const offset = (page - 1) * limit;
-
+  const [page, setPage] = useState(1);
   const handleChange = (event, value) => {
     setPage(value);
   };
 
-  const getTasks = React.useCallback(
-    async (loader, setter, total) => {
-      loader(true);
-      let reqBody = getReqBody(limit, offset, id);
-      const response = await fetchData(`${model}Task/search`, reqBody);
-      loader(false);
-
-      if (response) {
-        setter(response?.data?.data);
-        total(response?.data?.total);
-      }
-    },
-    [id, limit, offset]
-  );
+  const getTasks = useCallback(async ({ id, offset, limit }) => {
+    const { data } = await api.fetchTasks({ id, offset, limit });
+    setTasks(data?.data);
+    setTotal(data?.total);
+  }, []);
 
   const getDate = (val) => {
     var date = new Date(val);
@@ -106,12 +69,11 @@ const ProjectTaskTable = ({ id }) => {
   };
 
   useEffect(() => {
-    getTasks(setLoading, setTasks, setTotal);
-  }, [getTasks]);
-
-  useEffect(() => {
-    setSearchParams({ page, limit: limit });
-  }, [page, limit, setSearchParams]);
+    setLoading(true);
+    getTasks({ id, offset: (page - 1) * LIMIT, limit: LIMIT }).finally(() => {
+      setLoading(false);
+    });
+  }, [getTasks, id, page]);
 
   return (
     <>
@@ -194,7 +156,7 @@ const ProjectTaskTable = ({ id }) => {
             </TableContainer>
             <PaginationComponent
               total={total}
-              limit={limit}
+              limit={LIMIT}
               page={page}
               handleChange={handleChange}
             />

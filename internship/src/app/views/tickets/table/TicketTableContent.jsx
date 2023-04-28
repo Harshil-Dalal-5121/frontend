@@ -11,9 +11,9 @@ import {
 import { Link } from "react-router-dom";
 
 import DialogBoxComponent from "app/components/Dialog";
-import { deleteData, model } from "app/services/services";
 
 import { Delete, Edit } from "@mui/icons-material";
+import api from "../api";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,12 +46,10 @@ const TicketTableContent = ({ data, setData }) => {
   });
   const handleDeleteTicket = async () => {
     const { name, id, version, setData } = deleteProject;
-    const reqBody = {
-      records: [{ id: id, version: version, name: name }],
-    };
+    await api.delete({ id, version, name });
+    setData((prev) => prev.filter((project) => project.id !== id));
 
-    await deleteData(`${model}Task/removeAll`, reqBody);
-    setData((prev) => prev.filter((ticket) => ticket.id !== id));
+    setOpen(false);
   };
 
   const handleClickOpen = (id, version, name, setData) => {

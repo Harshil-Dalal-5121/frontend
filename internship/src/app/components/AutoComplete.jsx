@@ -7,6 +7,7 @@ const AutoCompleteComponent = ({
   errors,
   title,
   label,
+  disabled,
   getOptionLabel,
   noOptionsText,
   isOptionEqualToValue,
@@ -31,6 +32,7 @@ const AutoCompleteComponent = ({
             {...params}
             label={`${label}`}
             error={errors?.[title] ? true : false}
+            disabled={disabled}
             helperText={errors?.[title] ? `${errors[title]}` : ""}
             InputProps={{
               ...params.InputProps,

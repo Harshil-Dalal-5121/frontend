@@ -11,7 +11,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-import { deleteData, model } from "app/services/services";
 import PaginationComponent from "app/components/Pagination";
 
 import { Delete, Edit } from "@mui/icons-material";
@@ -19,6 +18,7 @@ import { Link } from "react-router-dom";
 
 import styles from "./TaskCardList.module.css";
 import DialogBoxComponent from "app/components/Dialog";
+import api from "../api";
 
 const card = (task, handleClickOpen, setData) => {
   return (
@@ -98,13 +98,10 @@ export default function CardList({
   });
   const handleDeleteTask = async () => {
     const { name, id, version, setData } = deleteProject;
-    const reqBody = {
-      records: [{ id: id, version: version, name: name }],
-    };
+    await api.delete({ id, version, name });
+    setData((prev) => prev.filter((project) => project.id !== id));
 
-    await deleteData(`${model}Task/removeAll`, reqBody);
-
-    setData((prev) => prev.filter((task) => task.id !== id));
+    setOpen(false);
   };
 
   const handleClickOpen = (id, version, name, setData) => {

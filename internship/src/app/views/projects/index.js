@@ -8,9 +8,7 @@ import ProjectTable from "./table/ProjectTable";
 import NavBar from "app/components/NavBar";
 
 import { useDebounce } from "../../services/custom-hooks/useDebounce";
-import api from "../../services/api";
-
-const model = "com.axelor.apps.project.db.Project";
+import api from "./api";
 
 const View = {
   table: "table",
@@ -42,7 +40,7 @@ export function Projects() {
   const debouncedChangeSearch = useDebounce(handleChangeSearch);
 
   const handleFetch = useCallback(async ({ offset, search }) => {
-    const { data } = await api.find({ model, offset, search });
+    const { data } = await api.find({ offset, search });
     setProjects(data?.data);
     setTotal(data?.total);
   }, []);

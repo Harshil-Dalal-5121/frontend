@@ -1,33 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Container,
-  debounce,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import api from "../tasks/api";
+import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import { Slider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
-
-import {
-  saveData,
-  model,
-  getData,
-  taskTableFields,
-  getOptions,
-  fetchOptions,
-  getPriority,
-  fetchParentTask,
-  fetchAssign,
-} from "app/services/services";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import AutoCompleteComponent from "app/components/AutoComplete";
 import DialogBoxComponent from "app/components/Dialog";
 
 import styles from "./Forms.module.css";
 import StatusSelect from "../../components/StatusSelect";
+import { useDebounce } from "app/services/custom-hooks/useDebounce";
+import formApi from "./api";
 
 const initialValues = {
   name: "",
@@ -68,20 +52,13 @@ const TaskForm = () => {
   const [assignedOpsLoading, setAssignedOpsLoading] = useState(false);
   const [priorityOpsLoading, setPriorityOpsLoading] = useState(false);
   const [parentTaskLoading, setParentTaskLoading] = useState(false);
-
   const [projectOptions, setProjectOptions] = useState([]);
   const [priorityOptions, setPriorityOptions] = useState([]);
   const [parentTasks, setParentTasks] = useState([]);
   const [assigned, setAssigned] = useState([]);
 
   const { id } = useParams();
-  const { loading } = useFetchRecord(
-    id,
-    getData,
-    setFormData,
-    `${model}Task/${id}/fetch`,
-    taskTableFields
-  );
+  const { loading } = useFetchRecord(id, api.fetch, setFormData);
 
   const navigate = useNavigate();
   const handleClickOpen = () => {
@@ -101,21 +78,13 @@ const TaskForm = () => {
   };
 
   const handleProjectInputChange = async (e, value) => {
-    const projectReqBody = {
-      data: {
-        code: value,
-        fullName: value,
-        _domainContext: {},
-      },
-      fields: ["id", "fullName", "code"],
-    };
-
-    await debounce(async () => {
-      setParentProjectOpsLoading(true);
-      await fetchOptions(getOptions, setProjectOptions, projectReqBody);
-      setParentProjectOpsLoading(false);
-    }, 1000)();
+    setParentProjectOpsLoading(true);
+    const options = await formApi.projects(value);
+    setProjectOptions(options?.data?.data);
+    setParentProjectOpsLoading(false);
   };
+
+  const delayedProjectSearch = useDebounce(handleProjectInputChange);
 
   const handleProjectChange = async (e, value) => {
     setFormData({
@@ -127,37 +96,28 @@ const TaskForm = () => {
       },
     });
 
-    const domain = await fetchParentTask(value.id, id);
-    setParentTasks(domain || []);
+    const options = await formApi.parentTask(value?.id, id);
+    setParentTasks(options?.data?.data || []);
   };
+
   useEffect(() => {
     if (formData?.project) {
       (async () => {
-        const domain = await fetchParentTask(formData?.project?.id, id);
-        setParentTasks(domain);
+        const options = await formApi.parentTask(formData?.project?.id, id);
+        setParentTasks(options?.data?.data || []);
       })();
     }
   }, [formData?.project, id]);
 
   const handlePriorityInputChange = async (e, value) => {
-    const priorityReqBody = {
-      data: {
-        name: value,
-        _domain: "self.id IN (1,2,3,4)",
-        _domainContext: {
-          _model: "com.axelor.apps.project.db.ProjectTask",
-          _typeSelect: "task",
-        },
-      },
-      fields: ["id", "name"],
-    };
+    setPriorityOpsLoading(true);
+    const options = await formApi.priority(value);
+    setPriorityOptions(options?.data?.data);
 
-    await debounce(async () => {
-      setPriorityOpsLoading(true);
-      await fetchOptions(getPriority, setPriorityOptions, priorityReqBody);
-      setPriorityOpsLoading(false);
-    }, 1000)();
+    setPriorityOpsLoading(false);
   };
+
+  const delayedPrioritySearch = useDebounce(handlePriorityInputChange);
 
   const handlePriorityChange = (e, value) => {
     setFormData({
@@ -171,33 +131,10 @@ const TaskForm = () => {
   };
 
   const handleAssignInputChange = async () => {
-    const assignReqBody = {
-      data: {
-        _domain: "self.id IN(1)",
-        _domainContext: {
-          _typeSelect: "task",
-          _model: "com.axelor.apps.project.db.ProjectTask",
-        },
-        operator: "and",
-        criteria: [],
-      },
-      fields: [
-        "tradingName",
-        "blocked",
-        "name",
-        "activateOn",
-        "fullName",
-        "expiresOn",
-        "activeCompany",
-        "group",
-      ],
-    };
-
-    await debounce(async () => {
-      setAssignedOpsLoading(true);
-      await fetchOptions(fetchAssign, setAssigned, assignReqBody);
-      setAssignedOpsLoading(false);
-    }, 1000)();
+    setAssignedOpsLoading(true);
+    const options = await formApi.assignedTo();
+    setAssigned(options?.data?.data);
+    setAssignedOpsLoading(false);
   };
 
   const handleAssignChange = (e, value) => {
@@ -211,21 +148,10 @@ const TaskForm = () => {
   };
 
   const handleParentTaskInputChange = async (e, value) => {
-    const parenTaskReqBody = {
-      fullName: value,
-      name: value,
-    };
-
-    await debounce(async () => {
-      setParentTaskLoading(true);
-      const domain = await fetchParentTask(
-        formData?.project?.id,
-        id,
-        parenTaskReqBody
-      );
-      setParentTasks(domain);
-      setParentTaskLoading(false);
-    }, 1000)();
+    const options = await formApi.parentTask(formData?.project?.id, id, value);
+    setParentTasks(options);
+    setParentTasks(options?.data?.data);
+    setParentTaskLoading(false);
   };
 
   const handleParentTaskChange = (e, value) => {
@@ -240,6 +166,8 @@ const TaskForm = () => {
     });
   };
 
+  const delayedParentSearch = useDebounce(handleParentTaskInputChange);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validateForm(formData);
@@ -253,7 +181,7 @@ const TaskForm = () => {
   };
   const handleSave = () => {
     setOpen(false);
-    saveData(`${model}Task`, formData);
+    api.save(formData);
     navigate(-1);
   };
 
@@ -357,7 +285,7 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option.fullName;
                     }}
-                    handleInputChange={handleProjectInputChange}
+                    handleInputChange={delayedProjectSearch}
                     options={projectOptions?.map((a) => {
                       return {
                         id: a.id || "",
@@ -383,7 +311,7 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option.name;
                     }}
-                    handleInputChange={handlePriorityInputChange}
+                    handleInputChange={delayedPrioritySearch}
                     options={priorityOptions?.map((a) => {
                       return {
                         id: a.id || "",
@@ -408,7 +336,7 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option.fullName;
                     }}
-                    handleInputChange={handleParentTaskInputChange}
+                    handleInputChange={delayedParentSearch}
                     options={parentTasks?.map((a) => {
                       return {
                         id: a.id || "",
