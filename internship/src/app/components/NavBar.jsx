@@ -15,9 +15,7 @@ const NavBar = ({
   setView,
   setPage,
   handleChange,
-  search,
   path,
-  handleSearchSubmit,
 }) => {
   const navigate = useNavigate();
   return (
@@ -44,20 +42,19 @@ const NavBar = ({
             id="search"
             onChange={handleChange}
             name="search"
-            value={search}
             label={`Search ${title}`}
             variant="outlined"
             onKeyPress={(e) => {
               if (e.key === "Enter") {
                 if (loading) {
-                  handleSearchSubmit();
+                  handleChange();
                 }
               }
             }}
           />
 
           <Search
-            onClick={handleSearchSubmit}
+            onClick={() => handleChange()}
             variant="contained"
             className={styles["btn-search"]}
             color="success"

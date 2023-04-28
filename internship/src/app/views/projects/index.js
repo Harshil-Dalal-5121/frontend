@@ -1,26 +1,14 @@
-import useHandleSubmit from "app/services/custom-hooks/useHandleSubmit";
-import {
-  tableFields,
-  handleSearch,
-  fetchData,
-  model,
-} from "app/services/services";
-
-import { useTranslation } from "app/services/translate";
-
-import CardList from "./card/ProjectCardList";
-
-import React, { useCallback, useState } from "react";
-
-import { useSearchParams } from "react-router-dom";
-
-import ProjectTable from "./table/ProjectTable";
-
+import Typography from "@mui/material/Typography";
 import { List } from "app/components/ListComponent";
+import { useTranslation } from "app/services/translate";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import CardList from "./card/ProjectCardList";
+import ProjectTable from "./table/ProjectTable";
 import NavBar from "app/components/NavBar";
-import { Typography } from "@mui/material";
 
-const LIMIT = 6;
+import { useDebounce } from "../../services/custom-hooks/useDebounce";
+import api from "../../services/api";
 
 const View = {
   table: "table",
@@ -32,82 +20,44 @@ const ViewComponent = {
   card: CardList,
 };
 
+const LIMIT = 6;
+
 export function Projects() {
   const [view, setView] = useState(View.table);
-
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState("");
   const [total, setTotal] = useState(0);
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
-  const limit = +searchParams.get("limit") || LIMIT;
-
   const { t } = useTranslation();
 
-  const handleChange = (event) => {
+  const handleChangeSearch = (event) => {
     setSearch(event.target.value);
     setPage(1);
   };
 
-  const offset = (page - 1) * limit;
+  const debouncedChangeSearch = useDebounce(handleChangeSearch);
 
-  const Projects = useCallback(async () => {
-    const reqBody = {
-      data: {
-        criteria: [],
-        operator: "and",
-        _domain: null,
-        domainContext: { _model: "com.axelor.apps.project.db.Project" },
-      },
-      fields: tableFields,
-      offset,
-      limit: limit,
-      sortBy: ["id"],
-    };
+  const handleFetch = useCallback(async ({ offset, search }) => {
+    const { data } = await api.find({ offset, search });
+    setProjects(data?.data);
+    setTotal(data?.total);
+  }, []);
+
+  useEffect(() => {
     setLoading(true);
-    const response = await fetchData(` ${model}/search`, reqBody);
-    setLoading(false);
-    if (response && response.data.status !== -1) {
-      setProjects(response?.data?.data);
-      setTotal(response?.data?.total);
-    }
-  }, [limit, offset]);
-
-  React.useEffect(() => {
-    setSearchParams({ page, limit: limit });
-  }, [page, limit, setSearchParams]);
-
-  const handleSearchSubmit = useCallback(async () => {
-    if (search) {
-      const reqBody = {
-        data: {
-          criteria: [
-            {
-              fieldName: "name",
-              operator: "like",
-              value: search,
-            },
-          ],
-          operator: "or",
-        },
-        fields: tableFields,
-        offset,
-        limit: limit,
-        sortBy: ["id"],
-      };
-      setLoading(true);
-      const data = await handleSearch(`${model}/search`, reqBody);
-
+    handleFetch({
+      search,
+      offset: (page - 1) * LIMIT,
+    }).finally(() => {
       setLoading(false);
-      if (data && data.data.status !== -1) {
-        setProjects(data?.data?.data);
-        setTotal(data?.data?.total);
-      }
-    }
-  }, [search, offset, limit]);
+    });
+  }, [page, search, handleFetch]);
 
-  useHandleSubmit(Projects, handleSearchSubmit, search);
+  useEffect(() => {
+    setSearchParams({ page });
+  }, [page, setSearchParams, total]);
 
   return (
     <>
@@ -127,9 +77,8 @@ export function Projects() {
         setView={setView}
         path="/projects/new"
         setPage={setPage}
-        handleChange={handleChange}
+        handleChange={debouncedChangeSearch}
         search={search}
-        handleSearchSubmit={handleSearchSubmit}
       />
 
       <List
@@ -140,7 +89,7 @@ export function Projects() {
         loading={loading}
         total={total}
         page={page}
-        limit={limit}
+        limit={LIMIT}
         searchParams={searchParams}
         setData={setProjects}
         setPage={setPage}
