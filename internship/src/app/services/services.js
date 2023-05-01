@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Navigate } from "react-router";
 
-const rest = axios.create({
+const action = axios.create({
   headers: {
     Authorization: "Basic YWRtaW46YWRtaW4=",
   },
@@ -49,7 +49,7 @@ const navigate = (path) => {
 
 const fetchAction = async (projectId, taskId) => {
   try {
-    const response = await rest.post(`/ws/action`, {
+    const response = await action.post(`/ws/action`, {
       model: "com.axelor.apps.project.db.ProjectTask",
       action: "action-project-task-attrs-project-parent-task-configurations",
       data: {

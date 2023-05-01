@@ -40,7 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "7.5vh",
 }));
 
-const ProjectTableContent = ({ data, setData }) => {
+const ProjectTableContent = ({ data, setData, renderer }) => {
   const [open, setOpen] = useState(false);
 
   const [deleteProject, setDeleteProject] = useState({
@@ -65,7 +65,6 @@ const ProjectTableContent = ({ data, setData }) => {
     const { name, id, version, setData } = deleteProject;
     await api.delete({ id, version, name });
     setData((prev) => prev.filter((project) => project.id !== id));
-
     setOpen(false);
   };
 
@@ -130,6 +129,7 @@ const ProjectTableContent = ({ data, setData }) => {
               <StyledTableCell align="center">
                 {project.projectStatus?.name || "-"}
               </StyledTableCell>
+
               <StyledTableCell align="center">
                 <Link to={`${project.id}`}>
                   <Button variant="contained" color="success">

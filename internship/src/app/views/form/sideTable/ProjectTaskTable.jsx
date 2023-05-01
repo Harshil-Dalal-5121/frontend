@@ -159,6 +159,7 @@ const ProjectTaskTable = ({ id }) => {
               limit={LIMIT}
               page={page}
               handleChange={handleChange}
+              boundaryCount={2}
             />
           </Box>
         </>

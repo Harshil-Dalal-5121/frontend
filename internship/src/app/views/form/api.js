@@ -2,6 +2,13 @@ import requestBody from "./requestBody";
 import rest from "app/services/rest";
 import { model } from "../projects/api";
 import { fetchAction } from "app/services/services";
+import axios from "axios";
+
+const action = axios.create({
+  headers: {
+    Authorization: "Basic YWRtaW46YWRtaW4=",
+  },
+});
 
 const formApi = {
   projects: async (value) => {
@@ -54,6 +61,153 @@ const formApi = {
         requestBody.parentTask(value, projectId, domain)
       );
       if (response && response.data.status !== -1) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  fetchCustomer: async (value) => {
+    try {
+      const response = await rest.post(
+        `/com.axelor.apps.base.db.Partner/search`,
+        {
+          data: {
+            criteria: [
+              {
+                fieldName: "simpleFullName",
+                operator: "like",
+                value: value,
+              },
+            ],
+            operator: "and",
+            _domain:
+              "self.isCustomer = true AND :company member of self.companySet",
+
+            _domainContext: {
+              company: {
+                code: "AXE",
+                name: "Axelor",
+                id: 1,
+              },
+
+              _model: "com.axelor.apps.project.db.Project",
+            },
+          },
+          fields: [
+            "partnerCategory",
+            "fiscalPosition.code",
+            "simpleFullName",
+            "partnerSeq",
+            "emailAddress.address",
+            "fixedPhone",
+            "registrationCode",
+            "mainAddress",
+            "companyStr",
+          ],
+          limit: 10,
+          offset: 0,
+          sortBy: ["name"],
+        }
+      );
+
+      if (response && response.data.status !== -1) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  fetchCustomerCurrency: async (data) => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+
+    const response = await action.post(`/ws/action`, {
+      model: "com.axelor.apps.project.db.Project",
+      action: "action-project-method-get-partner-data",
+      data: {
+        criteria: [],
+        context: {
+          _model: "com.axelor.apps.project.db.Project",
+          clientPartner: data,
+        },
+      },
+    });
+
+    if (response && response.data.status !== -1) {
+      return response?.data?.data;
+    }
+  },
+
+  fetchCurrency: async (value) => {
+    try {
+      const response = await rest.post(
+        `/com.axelor.apps.base.db.Currency/search`,
+        {
+          data: {
+            criteria: [{ fieldName: "name", operator: "like", value: value }],
+            operator: "and",
+            _domainContext: {
+              _model: "com.axelor.apps.base.db.Currency",
+            },
+          },
+          fields: ["symbol", "code", "name", "codeISO", "id"],
+          limit: 10,
+        }
+      );
+
+      if (response && response?.data?.status !== -1) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  fetchContactAction: async (data) => {
+    try {
+      const response = await action.post(`/ws/action`, {
+        action: "action-attrs-domain-on-contact-partner",
+        data: {
+          context: {
+            _model: "com.axelor.apps.project.db.Project",
+            _source: "contactPartner",
+            clientPartner: data,
+          },
+        },
+      });
+
+      if (response && response?.data?.status !== -1) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  fetchCustomerContact: async (id) => {
+    try {
+      const domain = await formApi.fetchContactAction(id);
+      const response = await rest.post(
+        `/com.axelor.apps.base.db.Partner/search`,
+        {
+          data: {
+            _domain: domain,
+            _domainContext: {
+              clientPartner: id,
+              _model: "com.axelor.apps.project.db.Project",
+            },
+          },
+
+          fields: ["id", "fullName"],
+          limit: 10,
+        }
+      );
+      if (response && response?.data?.status !== -1) {
         return response;
       }
     } catch (error) {

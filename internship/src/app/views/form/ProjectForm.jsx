@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -37,6 +37,7 @@ const initialValues = {
   projectStatus: "",
   assignedTo: "",
   code: "",
+  currency: "",
 };
 
 const status = [
@@ -64,8 +65,14 @@ const ProjectForm = () => {
   const [errors, setErrors] = useState({});
   const [projectOpsLoading, setProjectOpsLoading] = useState(false);
   const [assignedOpsLoading, setAssignedOpsLoading] = useState(false);
+  const [customerOpsLoading, setCustomerOpsLoading] = useState(false);
+  const [currencyOpsLoading, setCurrencyOpsLoading] = useState(false);
   const [assigned, setAssigned] = useState([]);
+  const [customerOps, setCustomerOps] = useState([]);
   const [projectOptions, setProjectOptions] = useState([]);
+  const [currencyOps, setCurrencyOps] = useState([]);
+  const [customerContactOps, setCustomerContactOps] = useState([]);
+  const [businessProject, setBusinessProject] = useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -125,23 +132,57 @@ const ProjectForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errors = validateForm(formData);
-    setErrors(errors);
-    if (Object.keys(errors)?.length === 0) {
-      handleClickOpen();
-    }
+  const handleCustomerInputChange = async (e, value) => {
+    setCustomerOpsLoading(true);
+    const options = await formApi.fetchCustomer(value);
+    setCustomerOps(options?.data?.data);
+    setCustomerOpsLoading(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleSave = () => {
-    api.save(formData);
+  const delayedCustomerSearch = useDebounce(handleCustomerInputChange);
 
-    navigate("/projects");
-    setOpen(false);
+  const handleCustomerChange = async (e, value) => {
+    setFormData({
+      ...formData,
+      clientPartner: {
+        id: value.id || "",
+        fullName: value.fullName || "",
+      },
+    });
+
+    const currency = await formApi.fetchCustomerCurrency(value);
+    const currencyData = currency[0]?.values?.currency;
+    setFormData({
+      ...formData,
+      currency: {
+        id: currencyData.id,
+        name: currencyData.name,
+        code: currencyData.code,
+      },
+    });
+
+    const customerContact = await formApi.fetchCustomerContact(value);
+    // console.log(customerContact);
+  };
+
+  const handleCurrencyInputChange = async (e, value) => {
+    setCurrencyOpsLoading(true);
+    const option = await formApi.fetchCurrency(value);
+    setCurrencyOps(option?.data?.data);
+    setCurrencyOpsLoading(false);
+  };
+
+  const delayedCurrencySearch = useDebounce(handleCurrencyInputChange);
+
+  const handleCurrencyChange = (e, value) => {
+    setFormData({
+      ...formData,
+      currency: {
+        code: value.code,
+        id: value.id,
+        name: value.name,
+      },
+    });
   };
 
   const validateForm = () => {
@@ -162,6 +203,47 @@ const ProjectForm = () => {
     }
 
     return error;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const errors = validateForm(formData);
+    setErrors(errors);
+    if (Object.keys(errors)?.length === 0) {
+      handleClickOpen();
+    }
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleSave = () => {
+    api.save(formData);
+
+    navigate("/projects");
+    setOpen(false);
+  };
+  useEffect(() => {
+    if (formData?.clientPartner) {
+      (async () => {
+        const options = await formApi.fetchCustomerCurrency(
+          formData?.clientPartner
+        );
+        const data = options[0]?.values?.currency;
+        setFormData({
+          ...formData,
+          currency: {
+            id: data.id,
+            name: data.name,
+            code: data.code,
+          },
+        });
+      })();
+    }
+  }, [formData?.clientPartner]);
+
+  const handleBusinessChange = (e) => {
+    const { checked } = e.target || {};
+    setBusinessProject(checked);
   };
 
   return (
@@ -190,13 +272,26 @@ const ProjectForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid align="center" item xs={12} sm={12}>
+                <Grid align="right" item xs={12} sm={6}>
                   <StatusSelect
                     options={status}
                     data={formData}
                     setData={setFormData}
                     defaultValue={formData?.projectStatus?.name || "New"}
                   />
+                </Grid>
+                <Grid align="center" item xs={12} sm={6}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Typography>Business Project</Typography>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          onClick={handleBusinessChange}
+                          color="warning"
+                        />
+                      }
+                    />
+                  </Stack>
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
@@ -276,7 +371,7 @@ const ProjectForm = () => {
                     })}
                     opsLoading={assignedOpsLoading}
                   />
-                  <Grid item xs={12} sm={8}>
+                  <Grid item xs={12} sm={12}>
                     <Stack direction="row" spacing={2} alignItems="center">
                       <Typography>Imputable :</Typography>
                       <FormControlLabel
@@ -293,6 +388,62 @@ const ProjectForm = () => {
                     </Stack>
                   </Grid>
                 </Grid>
+
+                {businessProject ? (
+                  <>
+                    <Grid item xs={12} sm={6}>
+                      <AutoCompleteComponent
+                        data={formData}
+                        setData={setFormData}
+                        label="Customer"
+                        errors={errors}
+                        title="clientPartner"
+                        handleChange={handleCustomerChange}
+                        noOptionsText="No Records"
+                        isOptionEqualToValue={(option, value) =>
+                          option.fullName === value.fullName
+                        }
+                        getOptionLabel={(option) => {
+                          return option.fullName;
+                        }}
+                        handleInputChange={delayedCustomerSearch}
+                        options={customerOps?.map((a) => {
+                          return {
+                            fullName: `${a?.partnerSeq} - ${a?.simpleFullName}`,
+                            id: a?.id,
+                          };
+                        })}
+                        opsLoading={customerOpsLoading}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <AutoCompleteComponent
+                        data={formData}
+                        setData={setFormData}
+                        label="Currency"
+                        errors={errors}
+                        title="currency"
+                        handleChange={handleCurrencyChange}
+                        noOptionsText="No Records"
+                        isOptionEqualToValue={(option, value) =>
+                          option.name === value.name
+                        }
+                        getOptionLabel={(option) => {
+                          return option.name;
+                        }}
+                        handleInputChange={delayedCurrencySearch}
+                        options={currencyOps?.map((a) => {
+                          return {
+                            name: a.name,
+                            id: a.id,
+                            code: a.code,
+                          };
+                        })}
+                        opsLoading={currencyOpsLoading}
+                      />
+                    </Grid>
+                  </>
+                ) : null}
 
                 <Grid item xs={12} sm={8}>
                   <TextField
@@ -353,6 +504,13 @@ const ProjectForm = () => {
                       </>
                     )}
                   </Button>
+                  {/* <Button
+                    onClick={() =>
+                      formApi.fetchContactAction(formData?.clientPartner)
+                    }
+                  >
+                    Button
+                  </Button> */}
                   <Button
                     variant="contained"
                     color="success"

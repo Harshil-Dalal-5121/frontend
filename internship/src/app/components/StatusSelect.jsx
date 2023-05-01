@@ -3,7 +3,6 @@ import React from "react";
 import {
   FormControl,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
 } from "@mui/material";
@@ -12,10 +11,6 @@ const StatusSelect = ({ options, data, setData, defaultValue }) => {
   return (
     <>
       <FormControl>
-        <FormLabel id="demo-radio-buttons-group-label">
-          Project Status
-        </FormLabel>
-
         <RadioGroup
           row
           aria-labelledby="demo-radio-buttons-group-label"
