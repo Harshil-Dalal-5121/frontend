@@ -122,24 +122,23 @@ const formApi = {
 
   fetchCustomerCurrency: async (data) => {
     try {
+      const response = await action.post(`/ws/action`, {
+        model: "com.axelor.apps.project.db.Project",
+        action: "action-project-method-get-partner-data",
+        data: {
+          criteria: [],
+          context: {
+            _model: "com.axelor.apps.project.db.Project",
+            clientPartner: data,
+          },
+        },
+      });
+
+      if (response && response.data.status !== -1) {
+        return response?.data?.data[0]?.values;
+      }
     } catch (error) {
       console.log(error);
-    }
-
-    const response = await action.post(`/ws/action`, {
-      model: "com.axelor.apps.project.db.Project",
-      action: "action-project-method-get-partner-data",
-      data: {
-        criteria: [],
-        context: {
-          _model: "com.axelor.apps.project.db.Project",
-          clientPartner: data,
-        },
-      },
-    });
-
-    if (response && response.data.status !== -1) {
-      return response?.data?.data;
     }
   },
 
@@ -219,7 +218,6 @@ const formApi = {
 
   fetchAddress: async (id, value) => {
     try {
-      console.log(id, value);
       const response = await rest.post(
         `/com.axelor.apps.base.db.Address/search`,
         {
@@ -260,7 +258,6 @@ const formApi = {
         }
       );
       if (response && response?.data?.status !== -1) {
-        console.log(response);
         return response;
       }
     } catch (error) {

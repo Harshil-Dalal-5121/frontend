@@ -90,9 +90,9 @@ const TaskForm = () => {
     setFormData({
       ...formData,
       project: {
-        id: value.id || "",
-        fullName: value.fullName || "",
-        code: value.code || null,
+        id: value?.id || "",
+        fullName: value?.fullName || "",
+        code: value?.code || null,
       },
     });
 
@@ -123,8 +123,8 @@ const TaskForm = () => {
     setFormData({
       ...formData,
       priority: {
-        id: value.id,
-        name: value.name,
+        id: value?.id,
+        name: value?.name,
         $version: 0,
       },
     });
@@ -141,8 +141,8 @@ const TaskForm = () => {
     setFormData({
       ...formData,
       assignedTo: {
-        id: value.id,
-        fullName: value.fullName,
+        id: value?.id,
+        fullName: value?.fullName,
       },
     });
   };
@@ -158,10 +158,10 @@ const TaskForm = () => {
     setFormData({
       ...formData,
       parentTask: {
-        id: value.id,
-        name: value.name,
-        fullName: value.fullName,
-        version: value.version,
+        id: value?.id,
+        name: value?.name,
+        fullName: value?.fullName,
+        version: value?.version,
       },
     });
   };
@@ -280,7 +280,8 @@ const TaskForm = () => {
                     handleChange={handleProjectChange}
                     noOptionsText="No Project"
                     isOptionEqualToValue={(option, value) =>
-                      option.fullName === value.fullName
+                      option.fullName === value?.fullName ||
+                      value?.fullName === ""
                     }
                     getOptionLabel={(option) => {
                       return option.fullName;
@@ -306,7 +307,7 @@ const TaskForm = () => {
                     handleChange={handlePriorityChange}
                     noOptionsText="Set Priority"
                     isOptionEqualToValue={(option, value) =>
-                      option.name === value.name
+                      option.name === value?.name || value?.name === ""
                     }
                     getOptionLabel={(option) => {
                       return option.name;
@@ -331,7 +332,8 @@ const TaskForm = () => {
                     handleChange={handleParentTaskChange}
                     noOptionsText="No Tasks"
                     isOptionEqualToValue={(option, value) =>
-                      option.fullName === value.fullName
+                      option.fullName === value?.fullName ||
+                      value?.fullName === ""
                     }
                     getOptionLabel={(option) => {
                       return option.fullName;
@@ -358,7 +360,8 @@ const TaskForm = () => {
                     handleChange={handleAssignChange}
                     noOptionsText="No Data"
                     isOptionEqualToValue={(option, value) =>
-                      option.fullName === value.fullName
+                      option.fullName === value?.fullName ||
+                      value?.fullName === ""
                     }
                     getOptionLabel={(option) => {
                       return option.fullName;

@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  // useEffect,
+  useState,
+} from "react";
 
 import {
   Button,
@@ -121,7 +124,7 @@ const ProjectForm = () => {
       ...formData,
       assignedTo: {
         id: value.id,
-        fullName: value.fullName,
+        fullName: value?.fullName,
       },
     });
   };
@@ -139,10 +142,10 @@ const ProjectForm = () => {
     setFormData({
       ...formData,
       parentProject: {
-        id: value.id || "",
-        fullName: value.fullName || "",
-        code: value.code || null,
-        $version: value.version,
+        id: value?.id || "",
+        fullName: value?.fullName || "",
+        code: value?.code || "",
+        $version: value?.version,
       },
     });
   };
@@ -158,26 +161,27 @@ const ProjectForm = () => {
 
   const handleCustomerChange = async (e, value) => {
     const currency = await formApi.fetchCustomerCurrency(value);
-    const currencyData = currency[0]?.values?.currency;
-
-    const customerContact = await formApi.fetchCustomerContact(value);
-    setCustomerContactOps(customerContact?.data?.data);
-
-    const address = await formApi.fetchAddress(value);
-    setAddressOps(address?.data?.data);
+    const currencyData = currency?.currency || "";
 
     setFormData({
       ...formData,
       clientPartner: {
-        id: value.id || "",
-        fullName: value.fullName || "",
+        id: value?.id || "",
+        fullName: value?.fullName || "",
       },
       currency: {
-        id: currencyData.id,
-        name: currencyData.name,
-        code: currencyData.code,
+        id: currencyData?.id || "",
+        name: currencyData?.name || "",
+        code: currencyData?.code || "",
       },
     });
+
+    const fetchCustomerContact = await formApi?.fetchCustomerContact(value);
+
+    const fetchAddress = await formApi?.fetchAddress(value);
+
+    setAddressOps(fetchAddress?.data?.data);
+    setCustomerContactOps(fetchCustomerContact?.data?.data);
   };
 
   const handleCurrencyInputChange = async (e, value) => {
@@ -193,9 +197,9 @@ const ProjectForm = () => {
     setFormData({
       ...formData,
       currency: {
-        code: value.code,
-        id: value.id,
-        name: value.name,
+        code: value?.code || "",
+        id: value?.id || "",
+        name: value?.name || "",
       },
     });
   };
@@ -216,9 +220,9 @@ const ProjectForm = () => {
     setFormData({
       ...formData,
       contactPartner: {
-        fullName: value.fullName,
-        id: value.id,
-        $version: value.$version,
+        fullName: value?.fullName || "",
+        id: value?.id || "",
+        $version: value?.$version || "",
       },
     });
   };
@@ -236,43 +240,11 @@ const ProjectForm = () => {
     setFormData({
       ...formData,
       customerAddress: {
-        fullName: value.fullName,
-        id: value.id,
+        fullName: value?.fullName || "",
+        id: value?.id || "",
       },
     });
   };
-
-  useEffect(() => {
-    if (formData?.clientPartner) {
-      (async () => {
-        const fetchCurrency = await formApi.fetchCustomerCurrency(
-          formData?.clientPartner
-        );
-
-        const fetchCustomerContact = await formApi.fetchCustomerContact(
-          formData?.clientPartner
-        );
-
-        const fetchAddress = await formApi.fetchAddress(
-          formData?.clientPartner
-        );
-
-        const currency = fetchCurrency[0]?.values?.currency;
-
-        setAddressOps(fetchAddress?.data?.data);
-        setCustomerContactOps(fetchCustomerContact?.data?.data);
-
-        setFormData({
-          ...formData,
-          currency: {
-            id: currency.id,
-            name: currency.name,
-            code: currency.code,
-          },
-        });
-      })();
-    }
-  }, [formData?.clientPartner]);
 
   const validateForm = () => {
     const error = {};
@@ -320,12 +292,7 @@ const ProjectForm = () => {
         </Container>
       ) : (
         <>
-          <Typography
-            component="h3"
-            variant="h3"
-            // className={styles["form-heading"]}
-            align="center"
-          >
+          <Typography component="h3" variant="h3" align="center">
             {id ? "Update Project Data" : "Add a new Project"}
           </Typography>
           <Container className={styles["form-container"]}>
@@ -399,18 +366,19 @@ const ProjectForm = () => {
                     handleChange={handleProjectChange}
                     noOptionsText="No Project"
                     isOptionEqualToValue={(option, value) =>
-                      option.fullName === value.fullName
+                      option?.fullName === value?.fullName ||
+                      value?.fullName === ""
                     }
                     getOptionLabel={(option) => {
-                      return option.fullName;
+                      return option?.fullName;
                     }}
                     handleInputChange={delayedProjectSearch}
                     options={projectOptions?.map((a) => {
                       return {
-                        id: a.id || "",
-                        fullName: a.fullName || "",
-                        code: a.code || null,
-                        $version: a.version,
+                        id: a?.id,
+                        fullName: a?.fullName,
+                        code: a?.code,
+                        $version: a?.version,
                       };
                     })}
                     opsLoading={projectOpsLoading}
@@ -426,16 +394,17 @@ const ProjectForm = () => {
                     handleChange={handleAssignChange}
                     noOptionsText="No Data"
                     isOptionEqualToValue={(option, value) =>
-                      option.fullName === value.fullName
+                      option?.fullName === value?.fullName ||
+                      value?.fullName === ""
                     }
                     getOptionLabel={(option) => {
-                      return option.fullName;
+                      return option?.fullName;
                     }}
                     handleInputChange={handleAssignInputChange}
                     options={assigned?.map((a) => {
                       return {
-                        id: a.id || "",
-                        fullName: a.fullName || "",
+                        id: a?.id,
+                        fullName: a?.fullName,
                       };
                     })}
                     opsLoading={assignedOpsLoading}
@@ -470,10 +439,11 @@ const ProjectForm = () => {
                         handleChange={handleCustomerChange}
                         noOptionsText="No Records"
                         isOptionEqualToValue={(option, value) =>
-                          option.fullName === value.fullName
+                          option?.fullName === value?.fullName ||
+                          value?.fullName === ""
                         }
                         getOptionLabel={(option) => {
-                          return option.fullName;
+                          return option?.fullName;
                         }}
                         handleInputChange={delayedCustomerSearch}
                         options={customerOps?.map((a) => {
@@ -494,18 +464,20 @@ const ProjectForm = () => {
                         title="currency"
                         handleChange={handleCurrencyChange}
                         noOptionsText="No Records"
-                        isOptionEqualToValue={(option, value) =>
-                          option.name === value.name
-                        }
+                        isOptionEqualToValue={(option, value) => {
+                          return (
+                            option?.code === value?.code || value?.code === ""
+                          );
+                        }}
                         getOptionLabel={(option) => {
-                          return option.name;
+                          return option?.name;
                         }}
                         handleInputChange={delayedCurrencySearch}
                         options={currencyOps?.map((a) => {
                           return {
-                            name: a.name,
-                            id: a.id,
-                            code: a.code,
+                            name: a?.name,
+                            code: a?.code,
+                            id: a?.id,
                           };
                         })}
                         opsLoading={currencyOpsLoading}
@@ -521,18 +493,19 @@ const ProjectForm = () => {
                         handleChange={handleCustomerContactChange}
                         noOptionsText="No Records"
                         isOptionEqualToValue={(option, value) =>
-                          option.fullName === value.fullName
+                          option?.fullName === value?.fullName ||
+                          value?.fullName === ""
                         }
                         getOptionLabel={(option) => {
-                          return option.fullName;
+                          return option?.fullName;
                         }}
                         handleInputChange={delayedCustomerContactSearch}
                         options={
                           customerContactOps?.map((a) => {
                             return {
-                              fullName: a.fullName,
-                              id: a.id,
-                              $version: a.version,
+                              fullName: a?.fullName,
+                              id: a?.id,
+                              $version: a?.version,
                             };
                           }) || []
                         }
@@ -549,16 +522,17 @@ const ProjectForm = () => {
                         handleChange={handleAddressChange}
                         noOptionsText="No Data"
                         isOptionEqualToValue={(option, value) =>
-                          option.fullName === value.fullName
+                          option?.fullName === value?.fullName ||
+                          value?.fullName === ""
                         }
                         getOptionLabel={(option) => {
-                          return option.fullName;
+                          return option?.fullName;
                         }}
                         handleInputChange={delayedAddressSearch}
                         options={addressOps?.map((a) => {
                           return {
-                            id: a.id || "",
-                            fullName: a.fullName || "",
+                            id: a?.id,
+                            fullName: a?.fullName,
                           };
                         })}
                         opsLoading={addressOpsLoading}
