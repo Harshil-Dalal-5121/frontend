@@ -182,21 +182,23 @@ const formApi = {
       });
 
       if (response && response?.data?.status !== -1) {
-        return response;
+        return response?.data?.data[0]?.attrs;
       }
     } catch (error) {
       console.log(error);
     }
   },
 
-  fetchCustomerContact: async (id) => {
+  fetchCustomerContact: async (id, value) => {
     try {
       const domain = await formApi.fetchContactAction(id);
+
       const response = await rest.post(
         `/com.axelor.apps.base.db.Partner/search`,
         {
           data: {
-            _domain: domain,
+            fullName: value,
+            _domain: domain?.contactPartner?.domain,
             _domainContext: {
               clientPartner: id,
               _model: "com.axelor.apps.project.db.Project",
@@ -208,6 +210,57 @@ const formApi = {
         }
       );
       if (response && response?.data?.status !== -1) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  fetchAddress: async (id, value) => {
+    try {
+      console.log(id, value);
+      const response = await rest.post(
+        `/com.axelor.apps.base.db.Address/search`,
+        {
+          fields: [
+            "id",
+            "fullName",
+            "addressL2",
+            "addressL3",
+            "addressL4",
+            "addressL5",
+            "addressL6",
+          ],
+
+          data: {
+            addressL2: value,
+            addressL3: value,
+            addressL4: value,
+            addressL5: value,
+            addressL6: value,
+            fullName: value,
+
+            _domain:
+              "self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)",
+            _domainContext: {
+              company: {
+                code: "AXE",
+                name: "Axelor",
+                id: 1,
+              },
+              clientPartner: id,
+
+              _model: "com.axelor.apps.project.db.Project",
+            },
+          },
+          limit: 10,
+          offset: 0,
+          translate: true,
+        }
+      );
+      if (response && response?.data?.status !== -1) {
+        console.log(response);
         return response;
       }
     } catch (error) {

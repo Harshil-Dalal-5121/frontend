@@ -32,11 +32,14 @@ const initialValues = {
   fromDate: "",
   parentProject: "",
   clientPartner: "",
+  contactPartner: "",
   toDate: "",
   imputable: false,
   projectStatus: "",
+  isBusinessProject: true,
   assignedTo: "",
   code: "",
+  customerAddress: "",
   currency: "",
 };
 
@@ -67,12 +70,15 @@ const ProjectForm = () => {
   const [assignedOpsLoading, setAssignedOpsLoading] = useState(false);
   const [customerOpsLoading, setCustomerOpsLoading] = useState(false);
   const [currencyOpsLoading, setCurrencyOpsLoading] = useState(false);
+  const [addressOpsLoading, setAddressOpsLoading] = useState(false);
+  const [customerContactOpsLoading, setCustomerContactOpsLoading] =
+    useState(false);
   const [assigned, setAssigned] = useState([]);
   const [customerOps, setCustomerOps] = useState([]);
   const [projectOptions, setProjectOptions] = useState([]);
   const [currencyOps, setCurrencyOps] = useState([]);
   const [customerContactOps, setCustomerContactOps] = useState([]);
-  const [businessProject, setBusinessProject] = useState(true);
+  const [addressOps, setAddressOps] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,10 +94,18 @@ const ProjectForm = () => {
   const { loading } = useFetchRecord(id, api.fetch, setFormData);
 
   const handleChange = (e) => {
-    const { name, value, checked } = e.target || {};
+    const { name, value } = e.target || {};
     setFormData({
       ...formData,
-      [name]: name === "imputable" ? checked : value,
+      [name]: value,
+    });
+  };
+
+  const handleSwitchChange = (e) => {
+    const { name, checked } = e.target || {};
+    setFormData({
+      ...formData,
+      [name]: checked,
     });
   };
 
@@ -124,10 +138,11 @@ const ProjectForm = () => {
   const handleProjectChange = async (e, value) => {
     setFormData({
       ...formData,
-      project: {
+      parentProject: {
         id: value.id || "",
         fullName: value.fullName || "",
         code: value.code || null,
+        $version: value.version,
       },
     });
   };
@@ -142,27 +157,27 @@ const ProjectForm = () => {
   const delayedCustomerSearch = useDebounce(handleCustomerInputChange);
 
   const handleCustomerChange = async (e, value) => {
+    const currency = await formApi.fetchCustomerCurrency(value);
+    const currencyData = currency[0]?.values?.currency;
+
+    const customerContact = await formApi.fetchCustomerContact(value);
+    setCustomerContactOps(customerContact?.data?.data);
+
+    const address = await formApi.fetchAddress(value);
+    setAddressOps(address?.data?.data);
+
     setFormData({
       ...formData,
       clientPartner: {
         id: value.id || "",
         fullName: value.fullName || "",
       },
-    });
-
-    const currency = await formApi.fetchCustomerCurrency(value);
-    const currencyData = currency[0]?.values?.currency;
-    setFormData({
-      ...formData,
       currency: {
         id: currencyData.id,
         name: currencyData.name,
         code: currencyData.code,
       },
     });
-
-    const customerContact = await formApi.fetchCustomerContact(value);
-    // console.log(customerContact);
   };
 
   const handleCurrencyInputChange = async (e, value) => {
@@ -184,6 +199,80 @@ const ProjectForm = () => {
       },
     });
   };
+
+  const handleInputCustomerContact = async (e, value) => {
+    setCustomerContactOpsLoading(true);
+    const option = await formApi.fetchCustomerContact(
+      formData?.clientPartner,
+      value
+    );
+    setCustomerContactOps(option?.data?.data);
+    setCustomerContactOpsLoading(false);
+  };
+
+  const delayedCustomerContactSearch = useDebounce(handleInputCustomerContact);
+
+  const handleCustomerContactChange = async (e, value) => {
+    setFormData({
+      ...formData,
+      contactPartner: {
+        fullName: value.fullName,
+        id: value.id,
+        $version: value.$version,
+      },
+    });
+  };
+
+  const handleAddressInputChange = async (e, value) => {
+    setAddressOpsLoading(true);
+    const option = await formApi.fetchAddress(formData?.clientPartner, value);
+    setAddressOps(option?.data?.data);
+    setAddressOpsLoading(false);
+  };
+
+  const delayedAddressSearch = useDebounce(handleAddressInputChange);
+
+  const handleAddressChange = async (e, value) => {
+    setFormData({
+      ...formData,
+      customerAddress: {
+        fullName: value.fullName,
+        id: value.id,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (formData?.clientPartner) {
+      (async () => {
+        const fetchCurrency = await formApi.fetchCustomerCurrency(
+          formData?.clientPartner
+        );
+
+        const fetchCustomerContact = await formApi.fetchCustomerContact(
+          formData?.clientPartner
+        );
+
+        const fetchAddress = await formApi.fetchAddress(
+          formData?.clientPartner
+        );
+
+        const currency = fetchCurrency[0]?.values?.currency;
+
+        setAddressOps(fetchAddress?.data?.data);
+        setCustomerContactOps(fetchCustomerContact?.data?.data);
+
+        setFormData({
+          ...formData,
+          currency: {
+            id: currency.id,
+            name: currency.name,
+            code: currency.code,
+          },
+        });
+      })();
+    }
+  }, [formData?.clientPartner]);
 
   const validateForm = () => {
     const error = {};
@@ -222,29 +311,6 @@ const ProjectForm = () => {
     navigate("/projects");
     setOpen(false);
   };
-  useEffect(() => {
-    if (formData?.clientPartner) {
-      (async () => {
-        const options = await formApi.fetchCustomerCurrency(
-          formData?.clientPartner
-        );
-        const data = options[0]?.values?.currency;
-        setFormData({
-          ...formData,
-          currency: {
-            id: data.id,
-            name: data.name,
-            code: data.code,
-          },
-        });
-      })();
-    }
-  }, [formData?.clientPartner]);
-
-  const handleBusinessChange = (e) => {
-    const { checked } = e.target || {};
-    setBusinessProject(checked);
-  };
 
   return (
     <>
@@ -257,7 +323,7 @@ const ProjectForm = () => {
           <Typography
             component="h3"
             variant="h3"
-            className={styles["form-heading"]}
+            // className={styles["form-heading"]}
             align="center"
           >
             {id ? "Update Project Data" : "Add a new Project"}
@@ -286,8 +352,10 @@ const ProjectForm = () => {
                     <FormControlLabel
                       control={
                         <Switch
-                          onClick={handleBusinessChange}
+                          onClick={handleSwitchChange}
+                          checked={formData?.isBusinessProject}
                           color="warning"
+                          name="isBusinessProject"
                         />
                       }
                     />
@@ -342,6 +410,7 @@ const ProjectForm = () => {
                         id: a.id || "",
                         fullName: a.fullName || "",
                         code: a.code || null,
+                        $version: a.version,
                       };
                     })}
                     opsLoading={projectOpsLoading}
@@ -377,7 +446,7 @@ const ProjectForm = () => {
                       <FormControlLabel
                         control={
                           <Switch
-                            onClick={handleChange}
+                            onClick={handleSwitchChange}
                             checked={formData?.imputable}
                             color="success"
                             name="imputable"
@@ -389,9 +458,9 @@ const ProjectForm = () => {
                   </Grid>
                 </Grid>
 
-                {businessProject ? (
+                {formData?.isBusinessProject ? (
                   <>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={8}>
                       <AutoCompleteComponent
                         data={formData}
                         setData={setFormData}
@@ -416,7 +485,7 @@ const ProjectForm = () => {
                         opsLoading={customerOpsLoading}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={8}>
                       <AutoCompleteComponent
                         data={formData}
                         setData={setFormData}
@@ -440,6 +509,59 @@ const ProjectForm = () => {
                           };
                         })}
                         opsLoading={currencyOpsLoading}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                      <AutoCompleteComponent
+                        data={formData}
+                        setData={setFormData}
+                        label="Customer Contact"
+                        errors={errors}
+                        title="contactPartner"
+                        handleChange={handleCustomerContactChange}
+                        noOptionsText="No Records"
+                        isOptionEqualToValue={(option, value) =>
+                          option.fullName === value.fullName
+                        }
+                        getOptionLabel={(option) => {
+                          return option.fullName;
+                        }}
+                        handleInputChange={delayedCustomerContactSearch}
+                        options={
+                          customerContactOps?.map((a) => {
+                            return {
+                              fullName: a.fullName,
+                              id: a.id,
+                              $version: a.version,
+                            };
+                          }) || []
+                        }
+                        opsLoading={customerContactOpsLoading}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                      <AutoCompleteComponent
+                        data={formData}
+                        setData={setFormData}
+                        label="Address"
+                        errors={errors}
+                        title="customerAddress"
+                        handleChange={handleAddressChange}
+                        noOptionsText="No Data"
+                        isOptionEqualToValue={(option, value) =>
+                          option.fullName === value.fullName
+                        }
+                        getOptionLabel={(option) => {
+                          return option.fullName;
+                        }}
+                        handleInputChange={delayedAddressSearch}
+                        options={addressOps?.map((a) => {
+                          return {
+                            id: a.id || "",
+                            fullName: a.fullName || "",
+                          };
+                        })}
+                        opsLoading={addressOpsLoading}
                       />
                     </Grid>
                   </>

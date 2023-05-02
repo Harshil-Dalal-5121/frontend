@@ -4,6 +4,22 @@ import { tableFields } from "../../services/services";
 export const LIMIT = 6;
 export const model = "com.axelor.apps.project.db.Project";
 
+const formFields = [
+  "name",
+  "fromDate",
+  "parentProject",
+  "clientPartner",
+  "contactPartner",
+  "toDate",
+  "imputable",
+  "projectStatus",
+  "isBusinessProject",
+  "assignedTo",
+  "code",
+  "customerAddress",
+  "currency",
+];
+
 const api = {
   find: async ({ search = "", offset }) => {
     try {
@@ -47,7 +63,7 @@ const api = {
   fetch: async ({ id }) => {
     try {
       const response = await rest.post(`${model}/${id}/fetch`, {
-        fields: tableFields,
+        fields: formFields,
       });
 
       if (response && response.data.status !== -1) {
