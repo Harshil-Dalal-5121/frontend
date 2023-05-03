@@ -19,7 +19,7 @@ const Selection = ({
 
   const handleInputChange = async (e, value) => {
     setLoader(true);
-    const options = await fetchApi({ value: value });
+    const options = await fetchApi({ value });
     setOptions(options?.data?.data || []);
     setLoader(false);
   };

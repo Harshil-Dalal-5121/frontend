@@ -137,9 +137,8 @@ const ProjectForm = () => {
   // };
 
   const handleCustomerChange = async (e, value) => {
-    const currency = await formApi.fetchCustomerCurrency({
-      value: value || "",
-    });
+    console.log(value);
+    const currency = await formApi.fetchCustomerCurrency({ value });
     const currencyData = currency?.currency || "";
 
     setFormData({
@@ -242,6 +241,7 @@ const ProjectForm = () => {
     return formApi.fetchCustomerContact(value, formData?.clientPartner);
   };
   const fetchCustomersApi = ({ value }) => {
+    console.log(value);
     return formApi.fetchCustomer(value).then((response) => {
       return {
         ...response,
@@ -407,7 +407,7 @@ const ProjectForm = () => {
                     </Grid>
                     <Grid item xs={12} sm={8}>
                       <Selection
-                        fetchApi={formApi.fetchCurrency()}
+                        fetchApi={formApi?.fetchCurrency}
                         value={formData?.currency}
                         id={formData?.clientPartner}
                         getOptionLabel={(option) => {

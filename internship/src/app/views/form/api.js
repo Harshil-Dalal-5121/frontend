@@ -120,7 +120,7 @@ const formApi = {
     }
   },
 
-  fetchCustomerCurrency: async (data) => {
+  fetchCustomerCurrency: async ({ value }) => {
     try {
       const response = await action.post(`/ws/action`, {
         model: "com.axelor.apps.project.db.Project",
@@ -129,7 +129,7 @@ const formApi = {
           criteria: [],
           context: {
             _model: "com.axelor.apps.project.db.Project",
-            clientPartner: data,
+            clientPartner: value,
           },
         },
       });
@@ -188,10 +188,10 @@ const formApi = {
     }
   },
 
-  fetchCustomerContact: async (value, id) => {
+  fetchCustomerContact: async ({ value, id }) => {
     try {
       const domain = await formApi.fetchContactAction(id);
-      console.log(`Hello>>>`, value);
+      console.log(value);
       const response = await rest.post(
         `/com.axelor.apps.base.db.Partner/search`,
         {
