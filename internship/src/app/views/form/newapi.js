@@ -25,7 +25,7 @@ const formApi = {
     }
   },
 
-  priority: async (value) => {
+  priority: async ({ value }) => {
     try {
       const response = await rest.post(
         `${model}Priority/search`,
@@ -53,7 +53,7 @@ const formApi = {
     }
   },
 
-  parentTask: async (projectId, taskId, value) => {
+  parentTask: async ({ projectId, taskId, value }) => {
     try {
       const domain = await fetchAction(projectId, taskId);
       const response = await rest.post(
@@ -119,8 +119,7 @@ const formApi = {
       console.log(error);
     }
   },
-
-  fetchCustomerCurrency: async (data) => {
+  fetchCustomerCurrency: async ({ value }) => {
     try {
       const response = await action.post(`/ws/action`, {
         model: "com.axelor.apps.project.db.Project",
@@ -129,7 +128,7 @@ const formApi = {
           criteria: [],
           context: {
             _model: "com.axelor.apps.project.db.Project",
-            clientPartner: data,
+            clientPartner: value,
           },
         },
       });
@@ -142,7 +141,7 @@ const formApi = {
     }
   },
 
-  fetchCurrency: async (value) => {
+  fetchCurrency: async ({ value }) => {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Currency/search`,
@@ -167,7 +166,7 @@ const formApi = {
     }
   },
 
-  fetchContactAction: async (data) => {
+  fetchContactAction: async ({ value }) => {
     try {
       const response = await action.post(`/ws/action`, {
         action: "action-attrs-domain-on-contact-partner",
@@ -175,7 +174,7 @@ const formApi = {
           context: {
             _model: "com.axelor.apps.project.db.Project",
             _source: "contactPartner",
-            clientPartner: data,
+            clientPartner: value,
           },
         },
       });
@@ -188,7 +187,7 @@ const formApi = {
     }
   },
 
-  fetchCustomerContact: async (value, id) => {
+  fetchCustomerContact: async ({ value, id }) => {
     try {
       const domain = await formApi.fetchContactAction(id);
       console.log(`Hello>>>`, value);
@@ -216,7 +215,7 @@ const formApi = {
     }
   },
 
-  fetchAddress: async (id, value) => {
+  fetchAddress: async ({ id, value }) => {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Address/search`,
@@ -264,7 +263,6 @@ const formApi = {
       console.log(error);
     }
   },
-
   saveProject: (formData) => {
     try {
       rest.post(`${model}`, formData);
