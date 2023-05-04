@@ -1,35 +1,27 @@
-import React, {
-  // useEffect,
-  useState,
-} from "react";
-
 import {
   Button,
-  Container,
+  CircularProgress,
   FormControlLabel,
   Grid,
-  Stack,
   Switch,
   TextField,
   Typography,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate, useParams } from "react-router";
-
+import { Container, Stack } from "@mui/system";
+import Selection from "app/components/Selection";
+import StatusSelect from "app/components/StatusSelect";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-
-import ProjectTaskTable from "./sideTable/ProjectTaskTable";
-import DialogBoxComponent from "app/components/Dialog";
-import ClearIcon from "@mui/icons-material/Clear";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import api from "../projects/api";
+import formApi from "./api";
 import { Add } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
-import api from "../projects/api";
+import ClearIcon from "@mui/icons-material/Clear";
+
 import styles from "./Forms.module.css";
-import StatusSelect from "../../components/StatusSelect";
-// import AutoCompleteComponent from "app/components/AutoComplete";
-// import { useDebounce } from "app/services/custom-hooks/useDebounce";
-import formApi from "./api";
-import Selection from "app/components/Selection";
+import ProjectTaskTable from "./sideTable/ProjectTaskTable";
+import DialogBoxComponent from "app/components/Dialog";
 
 const initialValues = {
   name: "",
@@ -46,58 +38,34 @@ const initialValues = {
   customerAddress: "",
   currency: "",
 };
-
-const status = [
-  {
-    name: "New",
-    id: "5",
-  },
-  {
-    name: "In progress",
-    id: "6",
-  },
-  {
-    name: "Done",
-    id: "7",
-  },
-  {
-    name: "Canceled",
-    id: "8",
-  },
-];
-
 const ProjectForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // const [customerOpsLoading, setCustomerOpsLoading] = useState(false);
-
-  // const [customerOps, setCustomerOps] = useState([]);
-
-  const [customerContactOps, setCustomerContactOps] = useState([]);
-  const [addressOps, setAddressOps] = useState([]);
+  const [customerContactOptions, setCustomerContactOptions] = useState([]);
+  const [addressOptions, setAddressOptions] = useState([]);
 
   const { id } = useParams();
-  const { loading } = useFetchRecord(id, api.fetch, setFormData);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const navigate = useNavigate();
 
-  const handleCancel = () => {
-    setOpen(false);
-  };
+  const { loading } = useFetchRecord(id, api.fetch, setFormData);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target || {};
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const {
+    clientPartner,
+    assignedTo,
+    parentProject,
+    contactPartner,
+    toDate,
+    fromDate,
+    imputable,
+    projectStatus,
+    isBusinessProject,
+    code,
+    name,
+    customerAddress,
+    currency,
+  } = formData;
 
   const handleSwitchChange = (e) => {
     const { name, checked } = e.target || {};
@@ -107,6 +75,7 @@ const ProjectForm = () => {
     });
   };
 
+  console.log(formData);
   const handleAssignChange = (e, value) => {
     setFormData({
       ...formData,
@@ -129,17 +98,10 @@ const ProjectForm = () => {
     });
   };
 
-  // const handleCustomerInputChange = async (e, value) => {
-  //   setCustomerOpsLoading(true);
-  //   const options = await formApi.fetchCustomer({ value: value });
-  //   setCustomerOps(options?.data?.data);
-  //   setCustomerOpsLoading(false);
-  // };
-
   const handleCustomerChange = async (e, value) => {
-    console.log(value);
-    const currency = await formApi.fetchCustomerCurrency({ value });
-    const currencyData = currency?.currency || "";
+    const currency = await formApi.fetchCustomerCurrency({ value: value });
+
+    const currencyData = currency || "";
 
     setFormData({
       ...formData,
@@ -155,14 +117,15 @@ const ProjectForm = () => {
     });
 
     const fetchCustomerContact = await formApi?.fetchCustomerContact({
-      id: value,
-      value: value || "",
+      client: value,
     });
 
-    const fetchAddress = await formApi?.fetchAddress({ id: value });
+    const fetchAddress = await formApi?.fetchAddress({
+      client: value,
+    });
 
-    setAddressOps(fetchAddress?.data?.data);
-    setCustomerContactOps(fetchCustomerContact?.data?.data);
+    setAddressOptions(fetchAddress);
+    setCustomerContactOptions(fetchCustomerContact);
   };
 
   const handleCurrencyChange = (e, value) => {
@@ -197,7 +160,27 @@ const ProjectForm = () => {
     });
   };
 
-  // const delayedCustomerSearch = useDebounce(handleCustomerInputChange);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const fetchContactsApi = async ({ value }) => {
+    return await formApi.fetchCustomerContact({
+      value: { id: value.id, fullName: value.fullName },
+      client: clientPartner,
+    });
+  };
+
+  const fetchAddressApi = async ({ value }) => {
+    return await formApi.fetchAddress({
+      value: value,
+      client: clientPartner,
+    });
+  };
 
   const validateForm = () => {
     const error = {};
@@ -219,6 +202,14 @@ const ProjectForm = () => {
     return error;
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target || {};
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = validateForm(formData);
@@ -227,6 +218,7 @@ const ProjectForm = () => {
       handleClickOpen();
     }
   };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -236,27 +228,6 @@ const ProjectForm = () => {
     navigate("/projects");
     setOpen(false);
   };
-
-  const fetchContactsApi = ({ value }) => {
-    return formApi.fetchCustomerContact(value, formData?.clientPartner);
-  };
-  const fetchCustomersApi = ({ value }) => {
-    console.log(value);
-    return formApi.fetchCustomer(value).then((response) => {
-      return {
-        ...response,
-        data: {
-          ...response?.data,
-          data: response?.data?.data?.map((option) => ({
-            ...option,
-
-            fullName: `${option?.partnerSeq} - ${option?.simpleFullName}`,
-          })),
-        },
-      };
-    });
-  };
-
   return (
     <>
       {loading ? (
@@ -265,11 +236,16 @@ const ProjectForm = () => {
         </Container>
       ) : (
         <>
-          <Typography component="h3" variant="h3" align="center">
+          <Typography
+            component="h3"
+            variant="h3"
+            align="center"
+            className={styles["form-heading"]}
+          >
             {id ? "Update Project Data" : "Add a new Project"}
           </Typography>
           <Container className={styles["form-container"]}>
-            <form id="form" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <Grid
                 container
                 spacing={2}
@@ -278,218 +254,184 @@ const ProjectForm = () => {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Grid align="right" item xs={12} sm={6}>
+                <Grid item align="right" xs={12} sm={6}>
                   <StatusSelect
-                    options={status}
                     data={formData}
                     setData={setFormData}
-                    defaultValue={formData?.projectStatus?.name || "New"}
+                    defaultValue={projectStatus?.name || "New"}
                   />
                 </Grid>
-                <Grid align="center" item xs={12} sm={6}>
+                <Grid item align="center" xs={12} sm={6}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <Typography>Business Project</Typography>
                     <FormControlLabel
                       control={
                         <Switch
-                          onClick={handleSwitchChange}
-                          checked={formData?.isBusinessProject}
-                          color="warning"
                           name="isBusinessProject"
+                          checked={isBusinessProject}
+                          onClick={handleSwitchChange}
+                          color="warning"
                         />
                       }
                     />
                   </Stack>
                 </Grid>
-
                 <Grid item xs={12} sm={4}>
                   <TextField
-                    fullWidth
                     id="name"
                     name="name"
-                    error={errors?.name ? true : false}
-                    helperText={errors?.name ? `${errors.name}` : ""}
-                    value={formData.name || ""}
-                    onChange={handleChange}
                     label="Add Name"
+                    value={name || ""}
+                    onChange={handleChange}
+                    helperText={errors?.name ? `${errors.name}` : ""}
+                    error={errors?.name ? true : false}
                     variant="outlined"
+                    fullWidth
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <TextField
-                    fullWidth
-                    id="code"
                     name="code"
+                    id="code"
+                    label="Add Code"
+                    value={code || ""}
+                    onChange={handleChange}
                     error={errors?.code ? true : false}
                     helperText={errors?.code ? `${errors.code}` : ""}
-                    onChange={handleChange}
-                    value={formData.code || ""}
-                    label="Add Code"
                     variant="outlined"
+                    fullWidth
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={8}>
                   <Selection
-                    fetchApi={formApi.projects}
-                    value={formData?.parentProject}
+                    label="Parent Project"
+                    fetchApi={formApi?.projects}
+                    value={parentProject}
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
                     handleChange={handleProjectChange}
-                    label="Parent Project"
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <Selection
                     fetchApi={formApi?.assignedTo}
-                    value={formData?.assignedTo}
+                    value={assignedTo}
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
                     handleChange={handleAssignChange}
                     label="Assigned To"
                   />
-                  <Grid item xs={12} sm={12}>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Typography>Imputable :</Typography>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            onClick={handleSwitchChange}
-                            checked={formData?.imputable}
-                            color="success"
-                            name="imputable"
-                          />
-                        }
-                        label={formData?.imputable ? "True" : "False"}
-                      />
-                    </Stack>
-                  </Grid>
                 </Grid>
 
-                {formData?.isBusinessProject ? (
+                <Grid item xs={12} sm={12}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Typography>Imputable :</Typography>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          onClick={handleSwitchChange}
+                          checked={imputable}
+                          color="success"
+                          name="imputable"
+                        />
+                      }
+                      label={imputable ? "True" : "False"}
+                    />
+                  </Stack>
+                </Grid>
+
+                {isBusinessProject ? (
                   <>
                     <Grid item xs={12} sm={8}>
                       <Selection
-                        fetchApi={fetchCustomersApi}
-                        value={formData?.clientPartner}
+                        label="Customer"
+                        fetchApi={formApi?.fetchCustomer}
+                        value={clientPartner}
                         getOptionLabel={(option) => {
                           return option.fullName;
                         }}
                         handleChange={handleCustomerChange}
-                        label="Customer"
                       />
-                      {/*                     
-                      <AutoCompleteComponent
-                        data={formData}
-                        setData={setFormData}
-                        label="Customer"
-                        errors={errors}
-                        title="clientPartner"
-                        handleChange={handleCustomerChange}
-                        noOptionsText="No Records"
-                        isOptionEqualToValue={(option, value) =>
-                          option?.value === value?.value || value?.value === ""
-                        }
-                        getOptionLabel={(option) => {
-                          return option?.fullName;
-                        }}
-                        handleInputChange={delayedCustomerSearch}
-                        options={customerOps?.map((a) => {
-                          return {
-                            fullName: `${a?.partnerSeq} - ${a?.simpleFullName}`,
-                            id: a?.id,
-                          };
-                        })}
-                        opsLoading={customerOpsLoading}
-                      /> */}
                     </Grid>
                     <Grid item xs={12} sm={8}>
                       <Selection
+                        label="Currency"
                         fetchApi={formApi?.fetchCurrency}
-                        value={formData?.currency}
-                        id={formData?.clientPartner}
+                        value={currency}
                         getOptionLabel={(option) => {
                           return option?.name;
                         }}
                         handleChange={handleCurrencyChange}
-                        label="Currency"
                       />
                     </Grid>
                     <Grid item xs={12} sm={8}>
                       <Selection
+                        label="Customer Contact"
                         fetchApi={fetchContactsApi}
-                        value={formData?.contactPartner}
-                        // id={formData?.clientPartner}
+                        value={contactPartner}
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}
+                        options={customerContactOptions}
                         handleChange={handleCustomerContactChange}
-                        label="Customer Contact"
-                        ops={customerContactOps}
                       />
                     </Grid>
                     <Grid item xs={12} sm={8}>
                       <Selection
-                        fetchApi={formApi.fetchAddress}
-                        value={formData?.customerAddress}
-                        id={formData?.clientPartner}
+                        label="Address"
+                        fetchApi={fetchAddressApi}
+                        value={customerAddress}
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}
                         handleChange={handleAddressChange}
-                        label="Address"
-                        ops={addressOps}
+                        options={addressOptions}
                       />
                     </Grid>
                   </>
                 ) : null}
-
                 <Grid item xs={12} sm={8}>
                   <TextField
-                    fullWidth
                     id="fromDate"
                     name="fromDate"
-                    error={errors?.fromDate ? true : false}
-                    helperText={errors?.fromDate ? `${errors.fromDate}` : ""}
-                    onChange={handleChange}
                     type="date"
+                    value={fromDate?.slice(0, 10) || ""}
+                    onChange={handleChange}
                     variant="outlined"
-                    value={formData.fromDate?.slice(0, 10) || ""}
+                    fullWidth
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <TextField
-                    fullWidth
                     id="toDate"
                     name="toDate"
-                    error={errors?.toDate ? true : false}
-                    helperText={errors?.toDate ? `${errors.toDate}` : ""}
-                    onChange={handleChange}
                     type="date"
+                    value={toDate?.slice(0, 10) || ""}
+                    onChange={handleChange}
                     variant="outlined"
-                    value={formData.toDate?.slice(0, 10) || ""}
+                    fullWidth
                   />
+                  {id ? (
+                    <>
+                      <Grid item xs={12} sm={8}>
+                        <Typography component="h6" variant="h6">
+                          Task Tree
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={12}>
+                        <ProjectTaskTable id={id} />
+                      </Grid>
+                    </>
+                  ) : null}
                 </Grid>
-
-                {id ? (
-                  <>
-                    <Grid item xs={12} sm={8}>
-                      <Typography component="h6" variant="h6">
-                        Task Tree
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <ProjectTaskTable id={id} />
-                    </Grid>
-                  </>
-                ) : null}
                 <Grid item xs={12} sm={8}>
                   <Button
+                    type="submit"
                     variant="contained"
                     color="success"
-                    type="submit"
                     className={styles["form-btn"]}
                     onClick={handleSubmit}
                   >
@@ -505,13 +447,6 @@ const ProjectForm = () => {
                       </>
                     )}
                   </Button>
-                  {/* <Button
-                    onClick={() =>
-                      formApi.fetchContactAction(formData?.clientPartner)
-                    }
-                  >
-                    Button
-                  </Button> */}
                   <Button
                     variant="contained"
                     color="success"
@@ -528,7 +463,6 @@ const ProjectForm = () => {
           </Container>
         </>
       )}
-
       <DialogBoxComponent
         type="Save"
         id={id}

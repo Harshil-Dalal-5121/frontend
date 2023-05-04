@@ -6,8 +6,26 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
+const status = [
+  {
+    name: "New",
+    id: "5",
+  },
+  {
+    name: "In progress",
+    id: "6",
+  },
+  {
+    name: "Done",
+    id: "7",
+  },
+  {
+    name: "Canceled",
+    id: "8",
+  },
+];
 
-const StatusSelect = ({ options, data, setData, defaultValue }) => {
+const StatusSelect = ({ data, setData, defaultValue }) => {
   return (
     <>
       <FormControl>
@@ -17,7 +35,7 @@ const StatusSelect = ({ options, data, setData, defaultValue }) => {
           name="project-status"
           defaultValue={defaultValue}
         >
-          {options?.map((a, i) => {
+          {status?.map((a, i) => {
             return (
               <FormControlLabel
                 key={i}

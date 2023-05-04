@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import { useDebounce } from "app/services/custom-hooks/useDebounce";
 
-function Xselection({ title, value, options: _options, ...rest }) {
-  return <Autocomplete {...rest} value={value || null} />;
-}
+// function Xselection({ title, value, options: _options, ...rest }) {
+//   return <Autocomplete {...rest} value={value || null} />;
+// }
 
 const Selection = ({
   fetchApi,
@@ -12,15 +12,15 @@ const Selection = ({
   getOptionLabel,
   handleChange,
   label,
-  ops,
+  options: _options,
 }) => {
   const [options, setOptions] = useState([]);
   const [loader, setLoader] = useState(false);
 
   const handleInputChange = async (e, value) => {
     setLoader(true);
-    const options = await fetchApi({ value });
-    setOptions(options?.data?.data || []);
+    const options = await fetchApi({ value: value });
+    setOptions(options || []);
     setLoader(false);
   };
 
@@ -32,7 +32,7 @@ const Selection = ({
         fullWidth
         filterOptions={(x) => x}
         value={value || null}
-        options={ops ? ops : options || []}
+        options={_options ? _options : options}
         onInputChange={delayedSearch}
         getOptionLabel={getOptionLabel}
         noOptionsText="No Records"

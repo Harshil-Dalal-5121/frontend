@@ -1,5 +1,5 @@
 import requestBody from "./requestBody";
-import rest from "app/services/rest";
+import rest from "../../services/rest";
 import { model } from "../projects/api";
 import { fetchAction } from "app/services/services";
 import axios from "axios";
@@ -11,28 +11,30 @@ const action = axios.create({
 });
 
 const formApi = {
-  projects: async (value) => {
+  projects: async ({ value }) => {
     try {
       const response = await rest.post(
         `${model}/search`,
         requestBody.project(value)
       );
-      if (response && response.data.status !== -1) {
-        return response;
+
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data || [];
       }
     } catch (error) {
       console.log(error);
     }
   },
 
-  priority: async (value) => {
+  priority: async ({ value }) => {
     try {
       const response = await rest.post(
         `${model}Priority/search`,
         requestBody.priority(value)
       );
-      if (response && response.data.status !== -1) {
-        return response;
+
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data || [];
       }
     } catch (error) {
       console.log(error);
@@ -45,30 +47,14 @@ const formApi = {
         `com.axelor.auth.db.User/search`,
         requestBody.assignedTo()
       );
-      if (response && response.data.status !== -1) {
-        return response;
+
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data || [];
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   },
 
-  parentTask: async (projectId, taskId, value) => {
-    try {
-      const domain = await fetchAction(projectId, taskId);
-      const response = await rest.post(
-        `${model}Task/search`,
-        requestBody.parentTask(value, projectId, domain)
-      );
-      if (response && response.data.status !== -1) {
-        return response;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  fetchCustomer: async (value) => {
+  fetchCustomer: async ({ value }) => {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Partner/search`,
@@ -76,7 +62,7 @@ const formApi = {
           data: {
             criteria: [
               {
-                fieldName: "simpleFullName",
+                fieldName: "fullName",
                 operator: "like",
                 value: value,
               },
@@ -95,31 +81,20 @@ const formApi = {
               _model: "com.axelor.apps.project.db.Project",
             },
           },
-          fields: [
-            "partnerCategory",
-            "fiscalPosition.code",
-            "simpleFullName",
-            "partnerSeq",
-            "emailAddress.address",
-            "fixedPhone",
-            "registrationCode",
-            "mainAddress",
-            "companyStr",
-          ],
+          fields: ["fullName"],
           limit: 10,
           offset: 0,
           sortBy: ["name"],
         }
       );
 
-      if (response && response.data.status !== -1) {
-        return response;
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data || [];
       }
     } catch (error) {
       console.log(error);
     }
   },
-
   fetchCustomerCurrency: async ({ value }) => {
     try {
       const response = await action.post(`/ws/action`, {
@@ -134,15 +109,14 @@ const formApi = {
         },
       });
 
-      if (response && response.data.status !== -1) {
-        return response?.data?.data[0]?.values || "";
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data[0]?.values?.currency || [];
       }
     } catch (error) {
       console.log(error);
     }
   },
-
-  fetchCurrency: async (value) => {
+  fetchCurrency: async ({ value }) => {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Currency/search`,
@@ -154,69 +128,65 @@ const formApi = {
               _model: "com.axelor.apps.base.db.Currency",
             },
           },
-          fields: ["symbol", "code", "name", "codeISO", "id"],
+          fields: ["code", "name", "id"],
           limit: 10,
         }
       );
 
-      if (response && response?.data?.status !== -1) {
-        return response;
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data || [];
       }
     } catch (error) {
       console.log(error);
     }
   },
 
-  fetchContactAction: async (data) => {
+  fetchContactAction: async ({ value }) => {
     try {
-      const response = await action.post(`/ws/action`, {
+      const domain = await action.post(`/ws/action`, {
         action: "action-attrs-domain-on-contact-partner",
         data: {
           context: {
             _model: "com.axelor.apps.project.db.Project",
             _source: "contactPartner",
-            clientPartner: data,
+            clientPartner: value,
           },
         },
       });
-
-      if (response && response?.data?.status !== -1) {
-        return response?.data?.data[0]?.attrs;
+      if (domain && domain?.data?.status === 0) {
+        return domain?.data?.data[0]?.attrs?.contactPartner?.domain || {};
       }
     } catch (error) {
       console.log(error);
     }
   },
 
-  fetchCustomerContact: async ({ value, id }) => {
-    try {
-      const domain = await formApi.fetchContactAction(id);
-      console.log(value);
-      const response = await rest.post(
-        `/com.axelor.apps.base.db.Partner/search`,
-        {
-          data: {
-            fullName: value,
-            _domain: domain?.contactPartner?.domain,
-            _domainContext: {
-              clientPartner: id,
-              _model: "com.axelor.apps.project.db.Project",
-            },
+  fetchCustomerContact: async ({ client, value }) => {
+    const domain = await formApi.fetchContactAction({ value: client });
+
+    const response = await rest.post(
+      `/com.axelor.apps.base.db.Partner/search`,
+      {
+        data: {
+          fullName: value,
+          _domain: domain,
+          _domainContext: {
+            clientPartner: client,
+            _model: "com.axelor.apps.project.db.Project",
           },
+        },
 
-          fields: ["id", "fullName"],
-          limit: 10,
-        }
-      );
-      if (response && response?.data?.status !== -1) {
-        return response;
+        fields: ["id", "fullName"],
+        limit: 10,
       }
-    } catch (error) {
-      console.log(error);
+    );
+
+    if (response && response?.data?.status === 0) {
+      return response?.data?.data || [];
     }
   },
 
-  fetchAddress: async (id, value) => {
+  fetchAddress: async ({ client, value }) => {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Address/search`,
@@ -247,7 +217,7 @@ const formApi = {
                 name: "Axelor",
                 id: 1,
               },
-              clientPartner: id,
+              clientPartner: client,
 
               _model: "com.axelor.apps.project.db.Project",
             },
@@ -257,33 +227,11 @@ const formApi = {
           translate: true,
         }
       );
-      if (response && response?.data?.status !== -1) {
-        return response;
+
+      if (response && response?.data?.status === 0) {
+        console.log(response);
+        return response?.data?.data;
       }
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  saveProject: (formData) => {
-    try {
-      rest.post(`${model}`, formData);
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  saveTask: (formData) => {
-    try {
-      rest.post(`${model}`, formData);
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  saveTicket: ({ formData }) => {
-    try {
-      rest.post(`${model}`, formData);
     } catch (error) {
       console.log(error);
     }
