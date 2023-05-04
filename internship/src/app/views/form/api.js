@@ -1,7 +1,6 @@
 import requestBody from "./requestBody";
 import rest from "../../services/rest";
 import { model } from "../projects/api";
-import { fetchAction } from "app/services/services";
 import axios from "axios";
 
 const action = axios.create({
@@ -20,6 +19,60 @@ const formApi = {
 
       if (response && response?.data?.status === 0) {
         return response?.data?.data || [];
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  fetchParentTaskAction: async ({ projectId, taskId }) => {
+    try {
+      const response = await action.post(`/ws/action`, {
+        model: "com.axelor.apps.project.db.ProjectTask",
+        action: "action-project-task-attrs-project-parent-task-configurations",
+        data: {
+          criteria: [],
+          context: {
+            _model: "com.axelor.apps.project.db.ProjectTask",
+            _typeSelect: "task",
+
+            project: {
+              id: projectId,
+            },
+            id: taskId,
+
+            _source: "parentTask",
+          },
+        },
+      });
+
+      if (response && response.data.status !== -1) {
+        const domain = response?.data.data[0].attrs.parentTask.domain;
+        return domain;
+      }
+    } catch (error) {
+      return error;
+    }
+  },
+
+  parentTask: async ({ projectId, taskId, value }) => {
+    try {
+      console.log({ projectId, taskId, value });
+      const domain = await formApi.fetchParentTaskAction({
+        projectId: projectId,
+        taskId: taskId,
+      });
+      console.log(domain);
+      const response = await rest.post(
+        `${model}Task/search`,
+        requestBody.parentTask({
+          value: value,
+          projectId: projectId,
+          domain: domain,
+        })
+      );
+      if (response && response.data.status !== -1) {
+        return response?.data?.data;
       }
     } catch (error) {
       console.log(error);
@@ -51,7 +104,9 @@ const formApi = {
       if (response && response?.data?.status === 0) {
         return response?.data?.data || [];
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   fetchCustomer: async ({ value }) => {
@@ -229,7 +284,6 @@ const formApi = {
       );
 
       if (response && response?.data?.status === 0) {
-        console.log(response);
         return response?.data?.data;
       }
     } catch (error) {

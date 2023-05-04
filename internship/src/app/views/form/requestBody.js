@@ -48,7 +48,7 @@ const requestBody = {
     };
   },
 
-  parentTask: (value, projectId, domain) => {
+  parentTask: ({ value, projectId, domain }) => {
     return {
       data: {
         fullName: value,

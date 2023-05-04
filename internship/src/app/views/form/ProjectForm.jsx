@@ -3,11 +3,12 @@ import {
   CircularProgress,
   FormControlLabel,
   Grid,
+  Container,
+  Stack,
   Switch,
   TextField,
   Typography,
 } from "@mui/material";
-import { Container, Stack } from "@mui/system";
 import Selection from "app/components/Selection";
 import StatusSelect from "app/components/StatusSelect";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
@@ -75,7 +76,6 @@ const ProjectForm = () => {
     });
   };
 
-  console.log(formData);
   const handleAssignChange = (e, value) => {
     setFormData({
       ...formData,
@@ -169,23 +169,25 @@ const ProjectForm = () => {
   };
 
   const fetchContactsApi = async ({ value }) => {
-    return await formApi.fetchCustomerContact({
+    const res = await formApi.fetchCustomerContact({
       value: { id: value.id, fullName: value.fullName },
       client: clientPartner,
     });
+    setCustomerContactOptions(res);
   };
 
   const fetchAddressApi = async ({ value }) => {
-    return await formApi.fetchAddress({
+    const res = await formApi.fetchAddress({
       value: value,
       client: clientPartner,
     });
+    setAddressOptions(res);
   };
 
   const validateForm = () => {
     const error = {};
     const errorMessages = {
-      name: `Task Name is required`,
+      name: `Project Name is required`,
       code: `Code is required`,
     };
 
@@ -324,23 +326,23 @@ const ProjectForm = () => {
                     handleChange={handleAssignChange}
                     label="Assigned To"
                   />
-                </Grid>
 
-                <Grid item xs={12} sm={12}>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography>Imputable :</Typography>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          onClick={handleSwitchChange}
-                          checked={imputable}
-                          color="success"
-                          name="imputable"
-                        />
-                      }
-                      label={imputable ? "True" : "False"}
-                    />
-                  </Stack>
+                  <Grid item xs={12} sm={12}>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Typography>Imputable :</Typography>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            onClick={handleSwitchChange}
+                            checked={imputable}
+                            color="success"
+                            name="imputable"
+                          />
+                        }
+                        label={imputable ? "True" : "False"}
+                      />
+                    </Stack>
+                  </Grid>
                 </Grid>
 
                 {isBusinessProject ? (

@@ -47,7 +47,7 @@ const navigate = (path) => {
   return <Navigate replace to={path} />;
 };
 
-const fetchAction = async (projectId, taskId) => {
+const fetchAction = async ({ projectId, taskId }) => {
   try {
     const response = await action.post(`/ws/action`, {
       model: "com.axelor.apps.project.db.ProjectTask",

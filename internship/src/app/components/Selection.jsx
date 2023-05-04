@@ -37,7 +37,7 @@ const Selection = ({
         getOptionLabel={getOptionLabel}
         noOptionsText="No Records"
         isOptionEqualToValue={(option, value) =>
-          option?.value === value?.value || value?.value === ""
+          option?.value === value?.value || value === ""
         }
         onChange={(e, value) => handleChange(e, value)}
         renderInput={(params) => (
