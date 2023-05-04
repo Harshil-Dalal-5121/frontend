@@ -157,8 +157,6 @@ const TaskForm = () => {
   }, [project, id]);
   return (
     <>
-      <Button onClick={() => handleProjectChange()}>Button</Button>
-
       {loading ? (
         <Container className={styles["loading-container"]}>
           <CircularProgress className={styles["loading"]} />
@@ -212,11 +210,10 @@ const TaskForm = () => {
                     name="progressSelect"
                     onChange={handleChange}
                     sx={{ width: 300 }}
-                    aria-label="Temperature"
                     defaultValue={0}
                     valueLabelDisplay="auto"
                     step={10}
-                    color="secondary"
+                    color="info"
                     min={0}
                     max={100}
                   />

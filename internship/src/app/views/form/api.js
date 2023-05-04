@@ -57,12 +57,11 @@ const formApi = {
 
   parentTask: async ({ projectId, taskId, value }) => {
     try {
-      console.log({ projectId, taskId, value });
       const domain = await formApi.fetchParentTaskAction({
         projectId: projectId,
         taskId: taskId,
       });
-      console.log(domain);
+
       const response = await rest.post(
         `${model}Task/search`,
         requestBody.parentTask({
