@@ -1,5 +1,5 @@
 import rest from "../../services/rest";
-import { tableFields } from "../../services/services";
+import { TABLEFIELDS } from "../../utils/constants";
 
 export const LIMIT = 6;
 export const model = "com.axelor.apps.project.db.Project";
@@ -34,7 +34,7 @@ const api = {
           ],
           operator: "or",
         },
-        fields: [...tableFields, "fullName"],
+        fields: [...TABLEFIELDS, "fullName"],
         offset,
         limit: LIMIT,
         sortBy: ["id"],

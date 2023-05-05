@@ -17,7 +17,7 @@ import { useNavigate, useParams } from "react-router";
 import api from "../tickets/api";
 import formApi from "./api";
 import styles from "./Forms.module.css";
-import { validateForm } from "app/services/services";
+import handleValidate from "app/utils/handleValidate";
 import onChange from "./onChange";
 
 const initialValues = {
@@ -84,7 +84,7 @@ const TicketForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = validateForm(formData, regex, regexMessege, errorMessages);
+    const errors = handleValidate(formData, regex, regexMessege, errorMessages);
     setError(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);

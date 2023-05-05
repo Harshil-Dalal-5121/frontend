@@ -1,5 +1,5 @@
 import rest from "../../services/rest";
-import { taskTableFields } from "../../services/services";
+import { TASKTABLEFIELDS } from "../../utils/constants";
 
 export const LIMIT = 6;
 export const model = "com.axelor.apps.project.db.ProjectTask";
@@ -21,7 +21,7 @@ const api = {
           _typeSelect: "task",
         },
       },
-      fields: taskTableFields,
+      fields: TASKTABLEFIELDS,
       offset,
       limit: LIMIT,
       sortBy: ["id"],
@@ -34,7 +34,7 @@ const api = {
   fetch: async ({ id }) => {
     try {
       const response = await rest.post(`${model}/${id}/fetch`, {
-        fields: taskTableFields,
+        fields: TASKTABLEFIELDS,
       });
 
       if (response && response.data.status !== -1) {

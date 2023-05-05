@@ -8,7 +8,7 @@ import {
 
 import styled from "@emotion/styled";
 
-import { ticketTableFields } from "app/services/services";
+import { TICKETTABLEFIELDS } from "app/utils/constants";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,7 +37,7 @@ const TicketTableHeader = () => {
       <TableHead>
         <StyledTableRow>
           <StyledTableCell align="center">Id</StyledTableCell>
-          {ticketTableFields?.map((field, i) => {
+          {TICKETTABLEFIELDS?.map((field, i) => {
             return (
               <StyledTableCell
                 key={i}

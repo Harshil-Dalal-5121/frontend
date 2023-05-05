@@ -23,7 +23,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import styles from "./Forms.module.css";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
 import DialogBox from "app/components/Dialog";
-import { validateForm } from "app/services/services";
+import handleValidate from "app/utils/handleValidate";
 import onChange from "./onChange";
 
 const initialValues = {
@@ -131,7 +131,7 @@ const ProjectForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = validateForm(formData, regex, regexMessege, errorMessages);
+    const errors = handleValidate(formData, regex, regexMessege, errorMessages);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);

@@ -12,7 +12,7 @@ import Selection from "app/components/Selection";
 import StatusSelect from "app/components/StatusSelect";
 
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import { validateForm } from "app/services/services";
+import handleValidate from "app/utils/handleValidate";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import api from "../tasks/api";
@@ -86,7 +86,7 @@ const TaskForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = validateForm(formData, regex, regexMessege, errorMessages);
+    const errors = handleValidate(formData, regex, regexMessege, errorMessages);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);

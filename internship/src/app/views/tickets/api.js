@@ -1,5 +1,5 @@
 import rest from "../../services/rest";
-import { ticketTableFields } from "../../services/services";
+import { TICKETTABLEFIELDS } from "../../utils/constants";
 
 export const LIMIT = 6;
 export const model = "com.axelor.apps.project.db.ProjectTask";
@@ -20,7 +20,7 @@ const api = {
           "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet",
         _domainContext: { _typeSelect: "ticket" },
       },
-      fields: ticketTableFields,
+      fields: TICKETTABLEFIELDS,
       offset,
       limit: LIMIT,
       sortBy: ["id"],
@@ -33,7 +33,7 @@ const api = {
   fetch: async ({ id }) => {
     try {
       const response = await rest.post(`${model}/${id}/fetch`, {
-        fields: ticketTableFields,
+        fields: TICKETTABLEFIELDS,
       });
 
       if (response && response.data.status !== -1) {
