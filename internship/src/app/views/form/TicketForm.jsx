@@ -7,7 +7,6 @@ import {
   Typography,
   Container,
   TextField,
-  Slider,
 } from "@mui/material";
 import DialogBox from "app/components/Dialog";
 import Selection from "app/components/Selection";
@@ -17,8 +16,13 @@ import { useNavigate, useParams } from "react-router";
 import api from "../tickets/api";
 import formApi from "./api";
 import styles from "./Forms.module.css";
-import handleValidate from "app/utils/handleValidate";
+import handleValidation from "app/utils/handleValidation";
 import onChange from "./onChange";
+import ProgressBar from "app/components/ProgressBar";
+
+import { Add } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const initialValues = {
   name: "",
@@ -84,7 +88,12 @@ const TicketForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidate(formData, regex, regexMessege, errorMessages);
+    const errors = handleValidation(
+      formData,
+      regex,
+      regexMessege,
+      errorMessages
+    );
     setError(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
@@ -157,26 +166,11 @@ const TicketForm = () => {
                 </Grid>
                 <Grid align="center" item xs="auto" sm={10}>
                   <Typography>Progress :</Typography>
-                  <Slider
-                    value={progressSelect || 0}
-                    id="progressSelect"
+                  <ProgressBar
                     name="progressSelect"
-                    onChange={(e) => onChange?.change(e, formData, setFormData)}
-                    sx={{ width: 300 }}
-                    defaultValue={0}
-                    valueLabelDisplay="auto"
+                    value={progressSelect}
                     step={10}
-                    color={
-                      progressSelect <= 20
-                        ? "primary"
-                        : progressSelect > 20 && progressSelect <= 50
-                        ? "warning"
-                        : progressSelect > 50 && progressSelect <= 80
-                        ? "info"
-                        : "success"
-                    }
-                    min={0}
-                    max={100}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -255,25 +249,35 @@ const TicketForm = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} sm={8} className={styles["btn-grid"]}>
                   <Button
                     variant="contained"
-                    color="success"
-                    type="submit"
-                    onClick={handleSubmit}
-                    className={styles["form-btn"]}
-                  >
-                    {id ? "Update" : "Add"}
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    color="success"
+                    color="warning"
+                    startIcon={
+                      <ArrowBackIosIcon
+                        style={{ width: "15px", height: "15px" }}
+                      />
+                    }
                     onClick={() => {
                       navigate(-1);
                     }}
                   >
                     Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    startIcon={
+                      id ? (
+                        <Add style={{ width: "15px", height: "15px" }} />
+                      ) : (
+                        <EditIcon style={{ width: "15px", height: "15px" }} />
+                      )
+                    }
+                    onClick={handleSubmit}
+                  >
+                    {id ? "Update" : "Add"}
                   </Button>
                 </Grid>
               </Grid>

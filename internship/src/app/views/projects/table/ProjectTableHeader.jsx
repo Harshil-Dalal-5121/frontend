@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import styled from "@emotion/styled";
 
-import { TABLEFIELDS } from "app/utils/constants";
+import { TABLE_FIELDS } from "app/utils/constants";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,7 +35,7 @@ const ProjectTableHeader = () => {
     <>
       <TableHead>
         <StyledTableRow>
-          {TABLEFIELDS?.map((field, i) => {
+          {TABLE_FIELDS?.map((field, i) => {
             return (
               <StyledTableCell
                 key={i}

@@ -1,4 +1,4 @@
-const validateForm = (data, regex, regexMessege, errorMessages) => {
+const handleValidation = (data, regex, regexMessege, errorMessages) => {
   const error = {};
 
   Object.keys(errorMessages).forEach((key) => {
@@ -18,4 +18,4 @@ const validateForm = (data, regex, regexMessege, errorMessages) => {
   return error;
 };
 
-export { validateForm };
+export default handleValidation;

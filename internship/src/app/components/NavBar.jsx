@@ -24,12 +24,13 @@ const NavBar = ({
         <Button
           variant="contained"
           color="info"
+          startIcon={<Add />}
           onClick={() => {
             navigate(`${path}`);
           }}
           className={styles["grid-btn m1"]}
         >
-          <Add /> Create {title}
+          Create {title}
         </Button>
       </Grid>
       <Grid item xs={4} sm={4} className={styles["grid-item-view"]}>

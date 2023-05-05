@@ -5,20 +5,24 @@ import {
   Typography,
   Container,
   TextField,
-  Slider,
 } from "@mui/material";
 import DialogBox from "app/components/Dialog";
+import ProgressBar from "app/components/ProgressBar";
 import Selection from "app/components/Selection";
 import StatusSelect from "app/components/StatusSelect";
 
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
-import handleValidate from "app/utils/handleValidate";
+import handleValidation from "app/utils/handleValidation";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import api from "../tasks/api";
 import formApi from "./api";
 import styles from "./Forms.module.css";
 import onChange from "./onChange";
+import EditIcon from "@mui/icons-material/Edit";
+
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { Add } from "@mui/icons-material";
 
 const initialValues = {
   name: "",
@@ -86,7 +90,12 @@ const TaskForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidate(formData, regex, regexMessege, errorMessages);
+    const errors = handleValidation(
+      formData,
+      regex,
+      regexMessege,
+      errorMessages
+    );
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
@@ -159,26 +168,11 @@ const TaskForm = () => {
                 </Grid>
                 <Grid align="center" item xs="auto" sm={10}>
                   <Typography>Progress :</Typography>
-                  <Slider
-                    value={progressSelect || 0}
-                    id="progressSelect"
+                  <ProgressBar
                     name="progressSelect"
-                    onChange={(e) => onChange?.change(e, formData, setFormData)}
-                    sx={{ width: 300 }}
-                    defaultValue={0}
-                    valueLabelDisplay="auto"
+                    value={progressSelect}
                     step={10}
-                    color={
-                      progressSelect <= 20
-                        ? "primary"
-                        : progressSelect > 20 && progressSelect <= 50
-                        ? "warning"
-                        : progressSelect > 50 && progressSelect <= 80
-                        ? "info"
-                        : "success"
-                    }
-                    min={0}
-                    max={100}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -257,25 +251,35 @@ const TaskForm = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={8}>
+                <Grid item xs={12} sm={8} className={styles["btn-grid"]}>
                   <Button
                     variant="contained"
-                    color="success"
-                    type="submit"
-                    onClick={handleSubmit}
-                    className={styles["form-btn"]}
-                  >
-                    {id ? "Update" : "Add"}
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    color="success"
+                    color="warning"
+                    startIcon={
+                      <ArrowBackIosIcon
+                        style={{ width: "15px", height: "15px" }}
+                      />
+                    }
                     onClick={() => {
                       navigate(-1);
                     }}
                   >
                     Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    startIcon={
+                      id ? (
+                        <Add style={{ width: "15px", height: "15px" }} />
+                      ) : (
+                        <EditIcon style={{ width: "15px", height: "15px" }} />
+                      )
+                    }
+                    onClick={handleSubmit}
+                  >
+                    {id ? "Update" : "Add"}
                   </Button>
                 </Grid>
               </Grid>

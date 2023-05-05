@@ -18,12 +18,12 @@ import api from "../projects/api";
 import formApi from "./api";
 import { Add } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
-import ClearIcon from "@mui/icons-material/Clear";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 import styles from "./Forms.module.css";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
 import DialogBox from "app/components/Dialog";
-import handleValidate from "app/utils/handleValidate";
+import handleValidation from "app/utils/handleValidation";
 import onChange from "./onChange";
 
 const initialValues = {
@@ -131,7 +131,12 @@ const ProjectForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidate(formData, regex, regexMessege, errorMessages);
+    const errors = handleValidation(
+      formData,
+      regex,
+      regexMessege,
+      errorMessages
+    );
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
@@ -372,33 +377,33 @@ const ProjectForm = () => {
                   </Grid>
                   <Grid item xs={12} sm={8}>
                     <Button
-                      type="submit"
                       variant="contained"
-                      color="success"
-                      className={styles["form-btn"]}
-                      onClick={handleSubmit}
+                      color="warning"
+                      startIcon={
+                        <ArrowBackIosIcon
+                          style={{ width: "15px", height: "15px" }}
+                        />
+                      }
+                      onClick={() => {
+                        navigate(-1);
+                      }}
                     >
-                      {id ? (
-                        <>
-                          Update
-                          <EditIcon fontSize="small" />
-                        </>
-                      ) : (
-                        <>
-                          Add
-                          <Add fontSize="small" />
-                        </>
-                      )}
+                      Back
                     </Button>
                     <Button
                       variant="contained"
                       color="success"
-                      onClick={() => {
-                        navigate("/projects");
-                      }}
+                      type="submit"
+                      startIcon={
+                        id ? (
+                          <Add style={{ width: "15px", height: "15px" }} />
+                        ) : (
+                          <EditIcon style={{ width: "15px", height: "15px" }} />
+                        )
+                      }
+                      onClick={handleSubmit}
                     >
-                      Back
-                      <ClearIcon fontSize="small" />
+                      {id ? "Update" : "Add"}
                     </Button>
                   </Grid>
                 </Grid>

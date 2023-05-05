@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { TASKTABLEFIELDS } from "app/utils/constants";
+import { TASK_TABLE_FIELDS } from "app/utils/constants";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,7 +36,7 @@ const TaskTableHeader = () => {
       <TableHead>
         <StyledTableRow>
           <StyledTableCell align="center">Id</StyledTableCell>
-          {TASKTABLEFIELDS?.map((field, i) => {
+          {TASK_TABLE_FIELDS?.map((field, i) => {
             return (
               <StyledTableCell
                 key={i}

@@ -19,7 +19,6 @@ const TasksTable = ({
   page,
   limit,
   setPage,
-  setSearchParams,
   loading,
   total,
 }) => {

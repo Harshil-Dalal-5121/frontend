@@ -71,7 +71,7 @@ export function Projects() {
       </legend>
 
       <NavBar
-        title="Tasks"
+        title="Task"
         View={View}
         loading={loading}
         setView={setView}

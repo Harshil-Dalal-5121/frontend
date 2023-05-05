@@ -1,4 +1,4 @@
-export const TABLEFIELDS = [
+export const TABLE_FIELDS = [
   "id",
   "name",
   "code",
@@ -11,7 +11,7 @@ export const TABLEFIELDS = [
   "projectStatus",
 ];
 
-export const TASKTABLEFIELDS = [
+export const TASK_TABLE_FIELDS = [
   "name",
   "project",
   "taskDate",
@@ -23,7 +23,7 @@ export const TASKTABLEFIELDS = [
   "parentTask",
 ];
 
-export const TICKETTABLEFIELDS = [
+export const TICKET_TABLE_FIELDS = [
   "name",
   "project",
   "taskDate",
