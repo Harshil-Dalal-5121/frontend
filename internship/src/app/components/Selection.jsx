@@ -13,6 +13,8 @@ const Selection = ({
   handleChange,
   label,
   options: _options,
+  error,
+  helperText,
 }) => {
   const [options, setOptions] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -44,6 +46,8 @@ const Selection = ({
           <TextField
             {...params}
             label={`${label}`}
+            error={error}
+            helperText={helperText}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -61,55 +65,5 @@ const Selection = ({
     </>
   );
 };
-
-// const AutoCompleteComponent = ({
-//   data,
-//   handleChange,
-//   errors,
-//   title,
-//   label,
-//   disabled,
-//   getOptionLabel,
-//   noOptionsText,
-//   isOptionEqualToValue,
-//   handleInputChange,
-//   options,
-//   opsLoading,
-// }) => {
-//   return (
-//     <>
-//       <Autocomplete
-//         fullWidth
-//         filterOptions={(x) => x}
-//         value={data?.[title] || null}
-//         options={options || []}
-//         onInputChange={handleInputChange}
-//         getOptionLabel={getOptionLabel}
-//         noOptionsText={noOptionsText}
-//         isOptionEqualToValue={isOptionEqualToValue}
-//         onChange={(e, newValue) => handleChange(e, newValue)}
-//         renderInput={(params) => (
-//           <TextField
-//             {...params}
-//             label={`${label}`}
-//             error={errors?.[title] ? true : false}
-//             helperText={errors?.[title] ? `${errors[title]}` : ""}
-//             InputProps={{
-//               ...params.InputProps,
-//               endAdornment: (
-//                 <>
-//                   {opsLoading ? (
-//                     <CircularProgress color="inherit" size={20} />
-//                   ) : null}
-//                   {params.InputProps.endAdornment}
-//                 </>
-//               ),
-//             }}
-//           />
-//         )}
-//       />
-//     </>
-//   );
-// };
 
 export default Selection;

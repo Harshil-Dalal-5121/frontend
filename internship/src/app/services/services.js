@@ -1,11 +1,4 @@
-import axios from "axios";
 import { Navigate } from "react-router";
-
-const action = axios.create({
-  headers: {
-    Authorization: "Basic YWRtaW46YWRtaW4=",
-  },
-});
 
 const tableFields = [
   "id",
@@ -47,34 +40,24 @@ const navigate = (path) => {
   return <Navigate replace to={path} />;
 };
 
-const fetchAction = async ({ projectId, taskId }) => {
-  try {
-    const response = await action.post(`/ws/action`, {
-      model: "com.axelor.apps.project.db.ProjectTask",
-      action: "action-project-task-attrs-project-parent-task-configurations",
-      data: {
-        criteria: [],
-        context: {
-          _model: "com.axelor.apps.project.db.ProjectTask",
-          _typeSelect: "task",
+const validateForm = (data, regex, regexMessege, errorMessages) => {
+  const error = {};
 
-          project: {
-            id: projectId,
-          },
-          id: taskId,
-
-          _source: "parentTask",
-        },
-      },
-    });
-
-    if (response && response.data.status !== -1) {
-      const domain = response?.data.data[0].attrs.parentTask.domain;
-      return domain;
+  Object.keys(errorMessages).forEach((key) => {
+    if (data[key]) {
+      if (!regex[key]?.test(data[key])) {
+        error[key] = regexMessege[key];
+      }
+    } else {
+      error[key] = errorMessages[key];
     }
-  } catch (error) {
-    return error;
+  });
+
+  if (data.taskDate > data.taskEndDate) {
+    error.taskEndDate = `End Date is invalid`;
   }
+
+  return error;
 };
 
 export {
@@ -82,5 +65,5 @@ export {
   taskTableFields,
   ticketTableFields,
   navigate,
-  fetchAction,
+  validateForm,
 };

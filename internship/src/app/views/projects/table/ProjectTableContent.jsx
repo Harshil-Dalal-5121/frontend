@@ -11,7 +11,7 @@ import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import api from "../api";
 
-import DialogBoxComponent from "app/components/Dialog";
+import DialogBox from "app/components/Dialog";
 
 import { Delete, Edit } from "@mui/icons-material";
 import { Check, XCircle } from "react-bootstrap-icons";
@@ -160,7 +160,7 @@ const ProjectTableContent = ({ data, setData, renderer }) => {
         <Container>No Records</Container>
       )}
 
-      <DialogBoxComponent
+      <DialogBox
         type="Delete"
         open={open}
         handleCancel={handleCancel}

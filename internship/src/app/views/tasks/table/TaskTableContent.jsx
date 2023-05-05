@@ -10,7 +10,7 @@ import {
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
-import DialogBoxComponent from "app/components/Dialog";
+import DialogBox from "app/components/Dialog";
 
 import { Delete, Edit } from "@mui/icons-material";
 import api from "../api";
@@ -175,7 +175,7 @@ const TaskTableContent = ({ data, setData }) => {
       ) : (
         <Container>No Records</Container>
       )}
-      <DialogBoxComponent
+      <DialogBox
         type="Delete"
         open={open}
         handleCancel={handleCancel}

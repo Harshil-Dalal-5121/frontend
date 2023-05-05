@@ -17,7 +17,7 @@ import PaginationComponent from "app/components/Pagination";
 import { Delete, Edit } from "@mui/icons-material";
 
 import styles from "./ProjectCardList.module.css";
-import DialogBoxComponent from "app/components/Dialog";
+import DialogBox from "app/components/Dialog";
 import api from "../api";
 
 const card = (project, handleClickOpen, setData) => {
@@ -137,7 +137,7 @@ export default function CardList({
         page={page}
         handleChange={handleChange}
       />
-      <DialogBoxComponent
+      <DialogBox
         type="Delete"
         open={open}
         handleCancel={handleCancel}

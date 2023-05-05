@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { useTheme } from "@emotion/react";
+
 import {
   Button,
   Dialog,
@@ -8,29 +8,17 @@ import {
   DialogContentText,
   DialogTitle,
   Slide,
-  useMediaQuery,
 } from "@mui/material";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const DialogBoxComponent = ({
-  type,
-  id,
-  open,
-  handleCancel,
-  handleClose,
-  onClick,
-}) => {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
+const DialogBox = ({ type, id, open, handleCancel, handleClose, onClick }) => {
   return (
     <>
       <Dialog
         open={open}
-        fullScreen={fullScreen}
         TransitionComponent={Transition}
         keepMounted
         fullWidth
@@ -63,4 +51,4 @@ const DialogBoxComponent = ({
   );
 };
 
-export default DialogBoxComponent;
+export default DialogBox;

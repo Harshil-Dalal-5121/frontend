@@ -22,7 +22,9 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 import styles from "./Forms.module.css";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
-import DialogBoxComponent from "app/components/Dialog";
+import DialogBox from "app/components/Dialog";
+import { validateForm } from "app/services/services";
+import onChange from "./onChange";
 
 const initialValues = {
   name: "",
@@ -39,6 +41,20 @@ const initialValues = {
   customerAddress: "",
   currency: "",
 };
+
+const errorMessages = {
+  name: `Project Name is required`,
+  code: `Code is required`,
+};
+
+const regex = {
+  name: /^[a-zA-Z]{3,20}/,
+};
+
+const regexMessege = {
+  name: "Invalid Project Name",
+};
+
 const ProjectForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
@@ -68,39 +84,8 @@ const ProjectForm = () => {
     currency,
   } = formData;
 
-  const handleSwitchChange = (e) => {
-    const { name, checked } = e.target || {};
-    setFormData({
-      ...formData,
-      [name]: checked,
-    });
-  };
-
-  const handleAssignChange = (e, value) => {
-    setFormData({
-      ...formData,
-      assignedTo: {
-        id: value?.id || "",
-        fullName: value?.fullName || "",
-      },
-    });
-  };
-
-  const handleProjectChange = async (e, value) => {
-    setFormData({
-      ...formData,
-      parentProject: {
-        id: value?.id || "",
-        fullName: value?.fullName || "",
-        code: value?.code || "",
-        $version: value?.version,
-      },
-    });
-  };
-
   const handleCustomerChange = async (e, value) => {
     const currency = await formApi.fetchCustomerCurrency({ value: value });
-
     const currencyData = currency || "";
 
     setFormData({
@@ -128,38 +113,6 @@ const ProjectForm = () => {
     setCustomerContactOptions(fetchCustomerContact);
   };
 
-  const handleCurrencyChange = (e, value) => {
-    setFormData({
-      ...formData,
-      currency: {
-        code: value?.code || "",
-        id: value?.id || "",
-        name: value?.name || "",
-      },
-    });
-  };
-
-  const handleCustomerContactChange = async (e, value) => {
-    setFormData({
-      ...formData,
-      contactPartner: {
-        fullName: value?.fullName || "",
-        id: value?.id || "",
-        $version: value?.$version || "",
-      },
-    });
-  };
-
-  const handleAddressChange = async (e, value) => {
-    setFormData({
-      ...formData,
-      customerAddress: {
-        fullName: value?.fullName || "",
-        id: value?.id || "",
-      },
-    });
-  };
-
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -184,37 +137,9 @@ const ProjectForm = () => {
     setAddressOptions(res);
   };
 
-  const validateForm = () => {
-    const error = {};
-    const errorMessages = {
-      name: `Project Name is required`,
-      code: `Code is required`,
-    };
-
-    Object.keys(errorMessages).forEach((key) => {
-      if (!formData[key]) {
-        error[key] = errorMessages[key];
-      }
-    });
-
-    if (formData.taskDate > formData.taskEndDate) {
-      error.taskEndDate = `End Date is invalid`;
-    }
-
-    return error;
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target || {};
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = validateForm(formData);
+    const errors = validateForm(formData, regex, regexMessege, errorMessages);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       handleClickOpen();
@@ -226,7 +151,6 @@ const ProjectForm = () => {
   };
   const handleSave = () => {
     api.save(formData);
-
     navigate("/projects");
     setOpen(false);
   };
@@ -271,7 +195,9 @@ const ProjectForm = () => {
                         <Switch
                           name="isBusinessProject"
                           checked={isBusinessProject}
-                          onClick={handleSwitchChange}
+                          onClick={(e) =>
+                            onChange?.switch(e, formData, setFormData)
+                          }
                           color="warning"
                         />
                       }
@@ -284,7 +210,7 @@ const ProjectForm = () => {
                     name="name"
                     label="Add Name"
                     value={name || ""}
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     helperText={errors?.name ? `${errors.name}` : ""}
                     error={errors?.name ? true : false}
                     variant="outlined"
@@ -297,7 +223,7 @@ const ProjectForm = () => {
                     id="code"
                     label="Add Code"
                     value={code || ""}
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     error={errors?.code ? true : false}
                     helperText={errors?.code ? `${errors.code}` : ""}
                     variant="outlined"
@@ -313,7 +239,9 @@ const ProjectForm = () => {
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
-                    handleChange={handleProjectChange}
+                    handleChange={(e, value) =>
+                      onChange?.project(e, value, formData, setFormData)
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -323,7 +251,9 @@ const ProjectForm = () => {
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
-                    handleChange={handleAssignChange}
+                    handleChange={(e, value) =>
+                      onChange?.assignedTo(e, value, formData, setFormData)
+                    }
                     label="Assigned To"
                   />
 
@@ -333,7 +263,9 @@ const ProjectForm = () => {
                       <FormControlLabel
                         control={
                           <Switch
-                            onClick={handleSwitchChange}
+                            onClick={(e) =>
+                              onChange?.switch(e, formData, setFormData)
+                            }
                             checked={imputable}
                             color="success"
                             name="imputable"
@@ -366,7 +298,9 @@ const ProjectForm = () => {
                         getOptionLabel={(option) => {
                           return option?.name;
                         }}
-                        handleChange={handleCurrencyChange}
+                        handleChange={(e, value) =>
+                          onChange?.currency(e, value, formData, setFormData)
+                        }
                       />
                     </Grid>
                     <Grid item xs={12} sm={8}>
@@ -378,7 +312,14 @@ const ProjectForm = () => {
                           return option?.fullName;
                         }}
                         options={customerContactOptions}
-                        handleChange={handleCustomerContactChange}
+                        handleChange={(e, value) =>
+                          onChange?.customerContact(
+                            e,
+                            value,
+                            formData,
+                            setFormData
+                          )
+                        }
                       />
                     </Grid>
                     <Grid item xs={12} sm={8}>
@@ -389,7 +330,9 @@ const ProjectForm = () => {
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}
-                        handleChange={handleAddressChange}
+                        handleChange={(e, value) =>
+                          onChange?.address(e, value, formData, setFormData)
+                        }
                         options={addressOptions}
                       />
                     </Grid>
@@ -401,7 +344,7 @@ const ProjectForm = () => {
                     name="fromDate"
                     type="date"
                     value={fromDate?.slice(0, 10) || ""}
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     variant="outlined"
                     fullWidth
                   />
@@ -412,7 +355,7 @@ const ProjectForm = () => {
                     name="toDate"
                     type="date"
                     value={toDate?.slice(0, 10) || ""}
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     variant="outlined"
                     fullWidth
                   />
@@ -465,7 +408,7 @@ const ProjectForm = () => {
           </Container>
         </>
       )}
-      <DialogBoxComponent
+      <DialogBox
         type="Save"
         id={id}
         open={open}

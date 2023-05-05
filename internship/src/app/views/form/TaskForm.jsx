@@ -7,16 +7,18 @@ import {
   TextField,
   Slider,
 } from "@mui/material";
-import DialogBoxComponent from "app/components/Dialog";
+import DialogBox from "app/components/Dialog";
 import Selection from "app/components/Selection";
 import StatusSelect from "app/components/StatusSelect";
 
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
+import { validateForm } from "app/services/services";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import api from "../tasks/api";
 import formApi from "./api";
 import styles from "./Forms.module.css";
+import onChange from "./onChange";
 
 const initialValues = {
   name: "",
@@ -29,6 +31,19 @@ const initialValues = {
   parentTask: "",
   progressSelect: 0,
   assignedTo: "",
+};
+
+const errorMessages = {
+  name: `Subject is required`,
+  project: `Project  is required`,
+};
+
+const regex = {
+  name: /^[a-zA-Z]{3,20}/,
+};
+
+const regexMessege = {
+  name: "Invalid Subject Name",
 };
 const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
@@ -52,40 +67,12 @@ const TaskForm = () => {
     assignedTo,
   } = formData;
 
-  const validateForm = () => {
-    const error = {};
-    const errorMessages = {
-      name: `Subject is required`,
-      project: `Project  is required`,
-    };
-
-    Object.keys(errorMessages).forEach((key) => {
-      if (!formData[key]) {
-        error[key] = errorMessages[key];
-      }
-    });
-
-    if (formData.taskDate > formData.taskEndDate) {
-      error.taskEndDate = `End Date is invalid`;
-    }
-
-    return error;
-  };
-
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleCancel = () => {
     setOpen(false);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target || {};
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
   };
 
   const handleProjectChange = async (e, value) => {
@@ -105,31 +92,9 @@ const TaskForm = () => {
     setParentTasks(options);
   };
 
-  const handleAssignChange = (e, value) => {
-    setFormData({
-      ...formData,
-      assignedTo: {
-        id: value?.id,
-        fullName: value?.fullName || "",
-      },
-    });
-  };
-
-  const handleParentTaskChange = (e, value) => {
-    setFormData({
-      ...formData,
-      parentTask: {
-        id: value?.id,
-        name: value?.name,
-        fullName: value?.fullName,
-        version: value?.version,
-      },
-    });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = validateForm(formData);
+    const errors = validateForm(formData, regex, regexMessege, errorMessages);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       handleClickOpen();
@@ -193,7 +158,7 @@ const TaskForm = () => {
                 <Grid item xs={12} sm={8}>
                   <TextField
                     value={name || ""}
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     fullWidth
                     error={error?.name ? true : false}
                     helperText={error?.name ? `${error.name}` : ""}
@@ -208,7 +173,7 @@ const TaskForm = () => {
                     value={progressSelect || 0}
                     id="progressSelect"
                     name="progressSelect"
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     sx={{ width: 300 }}
                     defaultValue={0}
                     valueLabelDisplay="auto"
@@ -221,8 +186,11 @@ const TaskForm = () => {
                 <Grid item xs={12} sm={8}>
                   <Selection
                     label="Parent Project"
+                    name="project"
                     fetchApi={formApi?.projects}
                     value={project}
+                    error={error?.project ? true : false}
+                    helperText={error?.project ? `${error.project}` : ""}
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
@@ -237,7 +205,9 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option?.name;
                     }}
-                    handleChange={handleProjectChange}
+                    handleChange={(e, value) =>
+                      onChange?.priority(e, value, formData, setFormData)
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -249,7 +219,9 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
-                    handleChange={handleParentTaskChange}
+                    handleChange={(e, value) =>
+                      onChange?.parentTask(e, value, formData, setFormData)
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
@@ -259,14 +231,16 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
-                    handleChange={handleAssignChange}
+                    handleChange={(e, value) =>
+                      onChange?.assignedTo(e, value, formData, setFormData)
+                    }
                     label="Assigned To"
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
                   <TextField
                     fullWidth
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     value={taskDate || ""}
                     id="taskDate"
                     name="taskDate"
@@ -277,7 +251,7 @@ const TaskForm = () => {
                 <Grid item xs={12} sm={8}>
                   <TextField
                     fullWidth
-                    onChange={handleChange}
+                    onChange={(e) => onChange?.change(e, formData, setFormData)}
                     value={taskEndDate || ""}
                     id="taskEndDate"
                     name="taskEndDate"
@@ -311,7 +285,7 @@ const TaskForm = () => {
           </Container>
         </>
       )}
-      <DialogBoxComponent
+      <DialogBox
         type="Save"
         id={id}
         open={open}

@@ -17,7 +17,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 import styles from "./TaskCardList.module.css";
-import DialogBoxComponent from "app/components/Dialog";
+import DialogBox from "app/components/Dialog";
 import api from "../api";
 
 const card = (task, handleClickOpen, setData) => {
@@ -159,7 +159,7 @@ export default function CardList({
         page={page}
         handleChange={handleChange}
       />
-      <DialogBoxComponent
+      <DialogBox
         type="Delete"
         open={open}
         handleCancel={handleCancel}
