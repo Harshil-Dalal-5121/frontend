@@ -67,7 +67,8 @@ function Content() {
 function Footer() {
   return (
     <Box
-      height="60px"
+      // height="60px"
+      sx={{ paddingBlock: "18px" }}
       display="flex"
       alignItems="center"
       justifyContent="center"

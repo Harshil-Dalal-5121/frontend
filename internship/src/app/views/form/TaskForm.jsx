@@ -67,14 +67,6 @@ const TaskForm = () => {
     assignedTo,
   } = formData;
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
   const handleProjectChange = async (e, value) => {
     setFormData({
       ...formData,
@@ -97,12 +89,10 @@ const TaskForm = () => {
     const errors = validateForm(formData, regex, regexMessege, errorMessages);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
-      handleClickOpen();
+      setOpen(true);
     }
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+
   const handleSave = () => {
     setOpen(false);
     api.save(formData);
@@ -178,7 +168,15 @@ const TaskForm = () => {
                     defaultValue={0}
                     valueLabelDisplay="auto"
                     step={10}
-                    color="info"
+                    color={
+                      progressSelect <= 20
+                        ? "primary"
+                        : progressSelect > 20 && progressSelect <= 50
+                        ? "warning"
+                        : progressSelect > 50 && progressSelect <= 80
+                        ? "info"
+                        : "success"
+                    }
                     min={0}
                     max={100}
                   />
@@ -289,8 +287,12 @@ const TaskForm = () => {
         type="Save"
         id={id}
         open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
+        handleCancel={() => {
+          setOpen(false);
+        }}
+        handleClose={() => {
+          setOpen(false);
+        }}
         onClick={handleSave}
       />
     </>

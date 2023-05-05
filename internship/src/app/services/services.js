@@ -1,5 +1,3 @@
-import { Navigate } from "react-router";
-
 const tableFields = [
   "id",
   "name",
@@ -36,9 +34,6 @@ const ticketTableFields = [
   "assignedTo",
   "parentTask",
 ];
-const navigate = (path) => {
-  return <Navigate replace to={path} />;
-};
 
 const validateForm = (data, regex, regexMessege, errorMessages) => {
   const error = {};
@@ -60,10 +55,4 @@ const validateForm = (data, regex, regexMessege, errorMessages) => {
   return error;
 };
 
-export {
-  tableFields,
-  taskTableFields,
-  ticketTableFields,
-  navigate,
-  validateForm,
-};
+export { tableFields, taskTableFields, ticketTableFields, validateForm };

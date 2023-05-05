@@ -9,15 +9,22 @@
     margin: auto;
 }
 
+.container {
+    padding-block: "20px"
+}
+
+
 .form-heading {
     margin: 5vh auto !important;
 
 }
 
 .form-container {
-    display: flex !important;
+    display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
+
 }
 
 .form-btn {

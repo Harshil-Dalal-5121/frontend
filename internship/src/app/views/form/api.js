@@ -27,24 +27,10 @@ const formApi = {
 
   fetchParentTaskAction: async ({ projectId, taskId }) => {
     try {
-      const response = await action.post(`/ws/action`, {
-        model: "com.axelor.apps.project.db.ProjectTask",
-        action: "action-project-task-attrs-project-parent-task-configurations",
-        data: {
-          criteria: [],
-          context: {
-            _model: "com.axelor.apps.project.db.ProjectTask",
-            _typeSelect: "task",
-
-            project: {
-              id: projectId,
-            },
-            id: taskId,
-
-            _source: "parentTask",
-          },
-        },
-      });
+      const response = await action.post(
+        `/ws/action`,
+        requestBody.parentTaskAction({ projectId: projectId, taskId: taskId })
+      );
 
       if (response && response.data.status !== -1) {
         const domain = response?.data.data[0].attrs.parentTask.domain;
@@ -112,34 +98,7 @@ const formApi = {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Partner/search`,
-        {
-          data: {
-            criteria: [
-              {
-                fieldName: "fullName",
-                operator: "like",
-                value: value,
-              },
-            ],
-            operator: "and",
-            _domain:
-              "self.isCustomer = true AND :company member of self.companySet",
-
-            _domainContext: {
-              company: {
-                code: "AXE",
-                name: "Axelor",
-                id: 1,
-              },
-
-              _model: "com.axelor.apps.project.db.Project",
-            },
-          },
-          fields: ["fullName"],
-          limit: 10,
-          offset: 0,
-          sortBy: ["name"],
-        }
+        requestBody.customer(value)
       );
 
       if (response && response?.data?.status === 0) {
@@ -151,17 +110,10 @@ const formApi = {
   },
   fetchCustomerCurrency: async ({ value }) => {
     try {
-      const response = await action.post(`/ws/action`, {
-        model: "com.axelor.apps.project.db.Project",
-        action: "action-project-method-get-partner-data",
-        data: {
-          criteria: [],
-          context: {
-            _model: "com.axelor.apps.project.db.Project",
-            clientPartner: value,
-          },
-        },
-      });
+      const response = await action.post(
+        `/ws/action`,
+        requestBody.customerCurrency(value)
+      );
 
       if (response && response?.data?.status === 0) {
         return response?.data?.data[0]?.values?.currency || [];
@@ -174,17 +126,7 @@ const formApi = {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Currency/search`,
-        {
-          data: {
-            criteria: [{ fieldName: "name", operator: "like", value: value }],
-            operator: "and",
-            _domainContext: {
-              _model: "com.axelor.apps.base.db.Currency",
-            },
-          },
-          fields: ["code", "name", "id"],
-          limit: 10,
-        }
+        requestBody.currency(value)
       );
 
       if (response && response?.data?.status === 0) {
@@ -197,16 +139,10 @@ const formApi = {
 
   fetchContactAction: async ({ value }) => {
     try {
-      const domain = await action.post(`/ws/action`, {
-        action: "action-attrs-domain-on-contact-partner",
-        data: {
-          context: {
-            _model: "com.axelor.apps.project.db.Project",
-            _source: "contactPartner",
-            clientPartner: value,
-          },
-        },
-      });
+      const domain = await action.post(
+        `/ws/action`,
+        requestBody.contactAction(value)
+      );
       if (domain && domain?.data?.status === 0) {
         return domain?.data?.data[0]?.attrs?.contactPartner?.domain || {};
       }
@@ -244,42 +180,7 @@ const formApi = {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Address/search`,
-        {
-          fields: [
-            "id",
-            "fullName",
-            "addressL2",
-            "addressL3",
-            "addressL4",
-            "addressL5",
-            "addressL6",
-          ],
-
-          data: {
-            addressL2: value,
-            addressL3: value,
-            addressL4: value,
-            addressL5: value,
-            addressL6: value,
-            fullName: value,
-
-            _domain:
-              "self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)",
-            _domainContext: {
-              company: {
-                code: "AXE",
-                name: "Axelor",
-                id: 1,
-              },
-              clientPartner: client,
-
-              _model: "com.axelor.apps.project.db.Project",
-            },
-          },
-          limit: 10,
-          offset: 0,
-          translate: true,
-        }
+        requestBody.address({ value: value, client: client })
       );
 
       if (response && response?.data?.status === 0) {

@@ -65,14 +65,6 @@ const TicketForm = () => {
     assignedTo,
   } = formData;
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
   const handleProjectChange = async (e, value) => {
     setFormData({
       ...formData,
@@ -95,12 +87,10 @@ const TicketForm = () => {
     const errors = validateForm(formData, regex, regexMessege, errorMessages);
     setError(errors);
     if (Object.keys(errors)?.length === 0) {
-      handleClickOpen();
+      setOpen(true);
     }
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+
   const handleSave = () => {
     setOpen(false);
     api.save(formData);
@@ -176,7 +166,15 @@ const TicketForm = () => {
                     defaultValue={0}
                     valueLabelDisplay="auto"
                     step={10}
-                    color="info"
+                    color={
+                      progressSelect <= 20
+                        ? "primary"
+                        : progressSelect > 20 && progressSelect <= 50
+                        ? "warning"
+                        : progressSelect > 50 && progressSelect <= 80
+                        ? "info"
+                        : "success"
+                    }
                     min={0}
                     max={100}
                   />
@@ -287,8 +285,12 @@ const TicketForm = () => {
         type="Save"
         id={id}
         open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
+        handleCancel={() => {
+          setOpen(false);
+        }}
+        handleClose={() => {
+          setOpen(false);
+        }}
         onClick={handleSave}
       />
     </>

@@ -113,14 +113,6 @@ const ProjectForm = () => {
     setCustomerContactOptions(fetchCustomerContact);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
   const fetchContactsApi = async ({ value }) => {
     const res = await formApi.fetchCustomerContact({
       value: { id: value.id, fullName: value.fullName },
@@ -142,13 +134,10 @@ const ProjectForm = () => {
     const errors = validateForm(formData, regex, regexMessege, errorMessages);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
-      handleClickOpen();
+      setOpen(true);
     }
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   const handleSave = () => {
     api.save(formData);
     navigate("/projects");
@@ -156,266 +145,280 @@ const ProjectForm = () => {
   };
   return (
     <>
-      {loading ? (
-        <Container className={styles["loading-container"]}>
-          <CircularProgress className={styles["loading"]} />
-        </Container>
-      ) : (
-        <>
-          <Typography
-            component="h3"
-            variant="h3"
-            align="center"
-            className={styles["form-heading"]}
-          >
-            {id ? "Update Project Data" : "Add a new Project"}
-          </Typography>
-          <Container className={styles["form-container"]}>
-            <form onSubmit={handleSubmit}>
-              <Grid
-                container
-                spacing={2}
-                id="form"
-                onSubmit={handleSubmit}
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Grid item align="right" xs={12} sm={6}>
-                  <StatusSelect
-                    data={formData}
-                    setData={setFormData}
-                    defaultValue={projectStatus?.name || "New"}
-                  />
-                </Grid>
-                <Grid item align="center" xs={12} sm={6}>
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography>Business Project</Typography>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          name="isBusinessProject"
-                          checked={isBusinessProject}
-                          onClick={(e) =>
-                            onChange?.switch(e, formData, setFormData)
-                          }
-                          color="warning"
-                        />
-                      }
+      <div className={styles["container"]}>
+        {loading ? (
+          <Container className={styles["loading-container"]}>
+            <CircularProgress className={styles["loading"]} />
+          </Container>
+        ) : (
+          <>
+            <Typography
+              component="h3"
+              variant="h3"
+              align="center"
+              className={styles["form-heading"]}
+            >
+              {id ? "Update Project Data" : "Add a new Project"}
+            </Typography>
+            <Container className={styles["form-container"]}>
+              <form onSubmit={handleSubmit}>
+                <Grid
+                  container
+                  spacing={2}
+                  id="form"
+                  onSubmit={handleSubmit}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Grid item align="right" xs={12} sm={6}>
+                    <StatusSelect
+                      data={formData}
+                      setData={setFormData}
+                      defaultValue={projectStatus?.name || "New"}
                     />
-                  </Stack>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    id="name"
-                    name="name"
-                    label="Add Name"
-                    value={name || ""}
-                    onChange={(e) => onChange?.change(e, formData, setFormData)}
-                    helperText={errors?.name ? `${errors.name}` : ""}
-                    error={errors?.name ? true : false}
-                    variant="outlined"
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    name="code"
-                    id="code"
-                    label="Add Code"
-                    value={code || ""}
-                    onChange={(e) => onChange?.change(e, formData, setFormData)}
-                    error={errors?.code ? true : false}
-                    helperText={errors?.code ? `${errors.code}` : ""}
-                    variant="outlined"
-                    fullWidth
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={8}>
-                  <Selection
-                    label="Parent Project"
-                    fetchApi={formApi?.projects}
-                    value={parentProject}
-                    getOptionLabel={(option) => {
-                      return option?.fullName;
-                    }}
-                    handleChange={(e, value) =>
-                      onChange?.project(e, value, formData, setFormData)
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12} sm={8}>
-                  <Selection
-                    fetchApi={formApi?.assignedTo}
-                    value={assignedTo}
-                    getOptionLabel={(option) => {
-                      return option?.fullName;
-                    }}
-                    handleChange={(e, value) =>
-                      onChange?.assignedTo(e, value, formData, setFormData)
-                    }
-                    label="Assigned To"
-                  />
-
-                  <Grid item xs={12} sm={12}>
+                  </Grid>
+                  <Grid item align="center" xs={12} sm={6}>
                     <Stack direction="row" spacing={2} alignItems="center">
-                      <Typography>Imputable :</Typography>
+                      <Typography>Business Project</Typography>
                       <FormControlLabel
                         control={
                           <Switch
+                            name="isBusinessProject"
+                            checked={isBusinessProject}
                             onClick={(e) =>
                               onChange?.switch(e, formData, setFormData)
                             }
-                            checked={imputable}
-                            color="success"
-                            name="imputable"
+                            color="warning"
                           />
                         }
-                        label={imputable ? "True" : "False"}
                       />
                     </Stack>
                   </Grid>
-                </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      id="name"
+                      name="name"
+                      label="Add Name"
+                      value={name || ""}
+                      onChange={(e) =>
+                        onChange?.change(e, formData, setFormData)
+                      }
+                      helperText={errors?.name ? `${errors.name}` : ""}
+                      error={errors?.name ? true : false}
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <TextField
+                      name="code"
+                      id="code"
+                      label="Add Code"
+                      value={code || ""}
+                      onChange={(e) =>
+                        onChange?.change(e, formData, setFormData)
+                      }
+                      error={errors?.code ? true : false}
+                      helperText={errors?.code ? `${errors.code}` : ""}
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
 
-                {isBusinessProject ? (
-                  <>
-                    <Grid item xs={12} sm={8}>
-                      <Selection
-                        label="Customer"
-                        fetchApi={formApi?.fetchCustomer}
-                        value={clientPartner}
-                        getOptionLabel={(option) => {
-                          return option.fullName;
-                        }}
-                        handleChange={handleCustomerChange}
-                      />
+                  <Grid item xs={12} sm={8}>
+                    <Selection
+                      label="Parent Project"
+                      fetchApi={formApi?.projects}
+                      value={parentProject}
+                      getOptionLabel={(option) => {
+                        return option?.fullName;
+                      }}
+                      handleChange={(e, value) =>
+                        onChange?.project(e, value, formData, setFormData)
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={8}>
+                    <Selection
+                      fetchApi={formApi?.assignedTo}
+                      value={assignedTo}
+                      getOptionLabel={(option) => {
+                        return option?.fullName;
+                      }}
+                      handleChange={(e, value) =>
+                        onChange?.assignedTo(e, value, formData, setFormData)
+                      }
+                      label="Assigned To"
+                    />
+
+                    <Grid item xs={12} sm={12}>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Typography>Imputable :</Typography>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              onClick={(e) =>
+                                onChange?.switch(e, formData, setFormData)
+                              }
+                              checked={imputable}
+                              color="success"
+                              name="imputable"
+                            />
+                          }
+                          label={imputable ? "True" : "False"}
+                        />
+                      </Stack>
                     </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <Selection
-                        label="Currency"
-                        fetchApi={formApi?.fetchCurrency}
-                        value={currency}
-                        getOptionLabel={(option) => {
-                          return option?.name;
-                        }}
-                        handleChange={(e, value) =>
-                          onChange?.currency(e, value, formData, setFormData)
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <Selection
-                        label="Customer Contact"
-                        fetchApi={fetchContactsApi}
-                        value={contactPartner}
-                        getOptionLabel={(option) => {
-                          return option?.fullName;
-                        }}
-                        options={customerContactOptions}
-                        handleChange={(e, value) =>
-                          onChange?.customerContact(
-                            e,
-                            value,
-                            formData,
-                            setFormData
-                          )
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={8}>
-                      <Selection
-                        label="Address"
-                        fetchApi={fetchAddressApi}
-                        value={customerAddress}
-                        getOptionLabel={(option) => {
-                          return option?.fullName;
-                        }}
-                        handleChange={(e, value) =>
-                          onChange?.address(e, value, formData, setFormData)
-                        }
-                        options={addressOptions}
-                      />
-                    </Grid>
-                  </>
-                ) : null}
-                <Grid item xs={12} sm={8}>
-                  <TextField
-                    id="fromDate"
-                    name="fromDate"
-                    type="date"
-                    value={fromDate?.slice(0, 10) || ""}
-                    onChange={(e) => onChange?.change(e, formData, setFormData)}
-                    variant="outlined"
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={8}>
-                  <TextField
-                    id="toDate"
-                    name="toDate"
-                    type="date"
-                    value={toDate?.slice(0, 10) || ""}
-                    onChange={(e) => onChange?.change(e, formData, setFormData)}
-                    variant="outlined"
-                    fullWidth
-                  />
-                  {id ? (
+                  </Grid>
+
+                  {isBusinessProject ? (
                     <>
                       <Grid item xs={12} sm={8}>
-                        <Typography component="h6" variant="h6">
-                          Task Tree
-                        </Typography>
+                        <Selection
+                          label="Customer"
+                          fetchApi={formApi?.fetchCustomer}
+                          value={clientPartner}
+                          getOptionLabel={(option) => {
+                            return option.fullName;
+                          }}
+                          handleChange={handleCustomerChange}
+                        />
                       </Grid>
-                      <Grid item xs={12} sm={12}>
-                        <ProjectTaskTable id={id} />
+                      <Grid item xs={12} sm={8}>
+                        <Selection
+                          label="Currency"
+                          fetchApi={formApi?.fetchCurrency}
+                          value={currency}
+                          getOptionLabel={(option) => {
+                            return option?.name;
+                          }}
+                          handleChange={(e, value) =>
+                            onChange?.currency(e, value, formData, setFormData)
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={8}>
+                        <Selection
+                          label="Customer Contact"
+                          fetchApi={fetchContactsApi}
+                          value={contactPartner}
+                          getOptionLabel={(option) => {
+                            return option?.fullName;
+                          }}
+                          options={customerContactOptions}
+                          handleChange={(e, value) =>
+                            onChange?.customerContact(
+                              e,
+                              value,
+                              formData,
+                              setFormData
+                            )
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={8}>
+                        <Selection
+                          label="Address"
+                          fetchApi={fetchAddressApi}
+                          value={customerAddress}
+                          getOptionLabel={(option) => {
+                            return option?.fullName;
+                          }}
+                          handleChange={(e, value) =>
+                            onChange?.address(e, value, formData, setFormData)
+                          }
+                          options={addressOptions}
+                        />
                       </Grid>
                     </>
                   ) : null}
-                </Grid>
-                <Grid item xs={12} sm={8}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="success"
-                    className={styles["form-btn"]}
-                    onClick={handleSubmit}
-                  >
+                  <Grid item xs={12} sm={8}>
+                    <TextField
+                      id="fromDate"
+                      name="fromDate"
+                      type="date"
+                      value={fromDate?.slice(0, 10) || ""}
+                      onChange={(e) =>
+                        onChange?.change(e, formData, setFormData)
+                      }
+                      variant="outlined"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={8}>
+                    <TextField
+                      id="toDate"
+                      name="toDate"
+                      type="date"
+                      value={toDate?.slice(0, 10) || ""}
+                      onChange={(e) =>
+                        onChange?.change(e, formData, setFormData)
+                      }
+                      variant="outlined"
+                      fullWidth
+                    />
                     {id ? (
                       <>
-                        Update
-                        <EditIcon fontSize="small" />
+                        <Grid item xs={12} sm={8}>
+                          <Typography component="h6" variant="h6">
+                            Task Tree
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                          <ProjectTaskTable id={id} />
+                        </Grid>
                       </>
-                    ) : (
-                      <>
-                        Add
-                        <Add fontSize="small" />
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() => {
-                      navigate("/projects");
-                    }}
-                  >
-                    Back
-                    <ClearIcon fontSize="small" />
-                  </Button>
+                    ) : null}
+                  </Grid>
+                  <Grid item xs={12} sm={8}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="success"
+                      className={styles["form-btn"]}
+                      onClick={handleSubmit}
+                    >
+                      {id ? (
+                        <>
+                          Update
+                          <EditIcon fontSize="small" />
+                        </>
+                      ) : (
+                        <>
+                          Add
+                          <Add fontSize="small" />
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={() => {
+                        navigate("/projects");
+                      }}
+                    >
+                      Back
+                      <ClearIcon fontSize="small" />
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </form>
-          </Container>
-        </>
-      )}
-      <DialogBox
-        type="Save"
-        id={id}
-        open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleSave}
-      />
+              </form>
+            </Container>
+          </>
+        )}
+        <DialogBox
+          type="Save"
+          id={id}
+          open={open}
+          handleCancel={() => {
+            setOpen(false);
+          }}
+          handleClose={() => {
+            setOpen(false);
+          }}
+          onClick={handleSave}
+        />
+      </div>
     </>
   );
 };
