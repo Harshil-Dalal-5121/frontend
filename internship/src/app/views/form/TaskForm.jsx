@@ -18,7 +18,7 @@ import { useNavigate, useParams } from "react-router";
 import api from "../tasks/api";
 import formApi from "./api";
 import styles from "./Forms.module.css";
-import onChange from "./onChange";
+import onChange from "../../utils/onChange";
 import EditIcon from "@mui/icons-material/Edit";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -42,13 +42,6 @@ const errorMessages = {
   project: `Project  is required`,
 };
 
-const regex = {
-  name: /^[a-zA-Z]{3,20}/,
-};
-
-const regexMessege = {
-  name: "Invalid Subject Name",
-};
 const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
@@ -77,10 +70,9 @@ const TaskForm = () => {
       project: {
         id: value?.id || "",
         fullName: value?.fullName || "",
-        code: value?.code || null,
+        code: value?.code || "",
       },
     });
-
     const options = await formApi.parentTask({
       projectId: value?.id,
       taskId: +id,
@@ -90,12 +82,7 @@ const TaskForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidation(
-      formData,
-      regex,
-      regexMessege,
-      errorMessages
-    );
+    const errors = handleValidation(formData, errorMessages);
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
@@ -186,7 +173,7 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
-                    handleChange={handleProjectChange}
+                    handleChange={(e, value) => handleProjectChange(e, value)}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>

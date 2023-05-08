@@ -24,7 +24,7 @@ import styles from "./Forms.module.css";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
 import DialogBox from "app/components/Dialog";
 import handleValidation from "app/utils/handleValidation";
-import onChange from "./onChange";
+import onChange from "../../utils/onChange";
 
 const initialValues = {
   name: "",
@@ -35,7 +35,7 @@ const initialValues = {
   toDate: "",
   imputable: false,
   projectStatus: "",
-  isBusinessProject: true,
+  isBusinessProject: false,
   assignedTo: "",
   code: "",
   customerAddress: "",
@@ -45,14 +45,6 @@ const initialValues = {
 const errorMessages = {
   name: `Project Name is required`,
   code: `Code is required`,
-};
-
-const regex = {
-  name: /^[a-zA-Z]{3,20}/,
-};
-
-const regexMessege = {
-  name: "Invalid Project Name",
 };
 
 const ProjectForm = () => {
@@ -133,11 +125,11 @@ const ProjectForm = () => {
     e.preventDefault();
     const errors = handleValidation(
       formData,
-      regex,
-      regexMessege,
+
       errorMessages
     );
     setErrors(errors);
+    console.log(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
     }

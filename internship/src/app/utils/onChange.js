@@ -73,8 +73,8 @@ const onChange = {
     setData({
       ...data,
       priority: {
-        id: value.id,
-        name: value.name,
+        id: value?.id,
+        name: value?.name,
         $version: 0,
       },
     });

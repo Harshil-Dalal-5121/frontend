@@ -1,4 +1,4 @@
-import requestBody from "./requestBody";
+import requestBody from "../../utils/requestBody";
 import rest from "../../services/rest";
 import { model } from "../projects/api";
 import axios from "axios";

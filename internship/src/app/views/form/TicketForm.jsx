@@ -17,7 +17,7 @@ import api from "../tickets/api";
 import formApi from "./api";
 import styles from "./Forms.module.css";
 import handleValidation from "app/utils/handleValidation";
-import onChange from "./onChange";
+import onChange from "../../utils/onChange";
 import ProgressBar from "app/components/ProgressBar";
 
 import { Add } from "@mui/icons-material";
@@ -37,14 +37,6 @@ const initialValues = {
 const errorMessages = {
   name: `Subject is required`,
   project: `Project  is required`,
-};
-
-const regex = {
-  name: /^[a-zA-Z]{3,20}/,
-};
-
-const regexMessege = {
-  name: "Invalid Subject Name",
 };
 
 const TicketForm = () => {
@@ -88,12 +80,7 @@ const TicketForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidation(
-      formData,
-      regex,
-      regexMessege,
-      errorMessages
-    );
+    const errors = handleValidation(formData, errorMessages);
     setError(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);

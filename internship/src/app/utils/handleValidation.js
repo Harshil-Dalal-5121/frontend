@@ -1,12 +1,8 @@
-const handleValidation = (data, regex, regexMessege, errorMessages) => {
+const handleValidation = (data, errorMessages) => {
   const error = {};
 
-  Object.keys(errorMessages).forEach((key) => {
-    if (data[key]) {
-      if (!regex[key]?.test(data[key])) {
-        error[key] = regexMessege[key];
-      }
-    } else {
+  Object.keys(errorMessages)?.forEach((key) => {
+    if (!data[key] || data[key]?.fullName?.trim() === "") {
       error[key] = errorMessages[key];
     }
   });
