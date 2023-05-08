@@ -20,6 +20,7 @@ const onChange = {
       ...data,
       assignedTo: {
         id: value?.id || "",
+
         fullName: value?.fullName || "",
       },
     });
@@ -33,6 +34,17 @@ const onChange = {
         fullName: value?.fullName || "",
         code: value?.code || "",
         $version: value?.version,
+      },
+    });
+  },
+
+  company: (e, value, data, setData) => {
+    setData({
+      ...data,
+      company: {
+        id: value?.id || "",
+        code: value?.code || "",
+        name: value?.name || "",
       },
     });
   },

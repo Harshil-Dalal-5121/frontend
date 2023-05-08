@@ -14,12 +14,11 @@ const Selection = ({
 }) => {
   const [options, setOptions] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const handleInputChange = async (e, value) => {
     setLoader(true);
     const options = await fetchApi({ value: value });
-    setOptions(options || []);
+    setOptions(options);
     setLoader(false);
   };
 
@@ -31,13 +30,6 @@ const Selection = ({
         fullWidth
         filterOptions={(x) => x}
         value={value || null}
-        open={open}
-        onOpen={() => {
-          setOpen(true);
-        }}
-        onClose={() => {
-          setOpen(false);
-        }}
         options={_options ? _options : options}
         onInputChange={delayedSearch}
         getOptionLabel={getOptionLabel}

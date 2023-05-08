@@ -4,7 +4,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDebounce } from "app/services/custom-hooks/useDebounce";
 
-const LoadOnOpen = ({
+const LoadOnOpenSelection = ({
   label,
   fetchApi,
   value,
@@ -24,7 +24,7 @@ const LoadOnOpen = ({
 
     const fetchOptions = async () => {
       try {
-        const response = await fetchApi({ value: "" });
+        const response = await fetchApi({ value });
 
         if (active) {
           setOptions(response || []);
@@ -38,7 +38,7 @@ const LoadOnOpen = ({
     return () => {
       active = false;
     };
-  }, [fetchApi, loading]);
+  }, [fetchApi, loading, value]);
 
   React.useEffect(() => {
     if (!open) {
@@ -95,4 +95,4 @@ const LoadOnOpen = ({
   );
 };
 
-export default LoadOnOpen;
+export default LoadOnOpenSelection;

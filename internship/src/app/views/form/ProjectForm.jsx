@@ -25,7 +25,7 @@ import StatusSelect from "app/components/StatusSelect";
 import DialogBox from "app/components/Dialog";
 import handleValidation from "app/utils/handleValidation";
 import onChange from "../../utils/onChange";
-import LoadOnOpen from "app/components/LoadOnOpen";
+import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
 
 const initialValues = {
   name: "",
@@ -36,7 +36,7 @@ const initialValues = {
   toDate: "",
   imputable: false,
   projectStatus: "",
-  isBusinessProject: true,
+  isBusinessProject: false,
   assignedTo: "",
   code: "",
   customerAddress: "",
@@ -107,23 +107,12 @@ const ProjectForm = () => {
     setCustomerContactOptions(fetchCustomerContact);
   };
 
-  const handleCompanyChange = (e, value) => {
-    setFormData({
-      ...formData,
-      company: {
-        id: value?.id || "",
-        code: value?.code || "",
-        name: value?.name || "",
-      },
-    });
-  };
-
   const fetchContactsApi = async ({ value }) => {
     const res = await formApi.fetchCustomerContact({
       value: { id: value.id, fullName: value.fullName },
       client: clientPartner,
     });
-    setCustomerContactOptions(res);
+    setCustomerContactOptions(res || []);
   };
 
   const fetchAddressApi = async ({ value }) => {
@@ -136,10 +125,11 @@ const ProjectForm = () => {
   };
 
   const fetchCustomerApi = async ({ value }) => {
-    return await formApi.fetchCustomer({
+    const res = await formApi.fetchCustomer({
       value: value,
       company: company,
     });
+    console.log(res);
   };
 
   const handleSubmit = (e) => {
@@ -257,14 +247,14 @@ const ProjectForm = () => {
                       }
                     />
                   </Grid>
-                  <Grid item xs={12} sm={8}></Grid>
+
                   <Grid item xs={12} sm={8}>
                     <Selection
                       label="Assigned To"
                       fetchApi={formApi?.assignedTo}
                       value={assignedTo}
                       getOptionLabel={(option) => {
-                        return option?.fullName;
+                        return option?.fullName9;
                       }}
                       handleChange={(e, value) =>
                         onChange?.assignedTo(e, value, formData, setFormData)
@@ -298,26 +288,29 @@ const ProjectForm = () => {
                       getOptionLabel={(option) => {
                         return option.name;
                       }}
-                      handleChange={handleCompanyChange}
+                      handleChange={(e, value) => {
+                        onChange?.company(e, value, formData, setFormData);
+                      }}
                     />
                   </Grid>
 
                   {isBusinessProject ? (
                     <>
                       <Grid item xs={12} sm={8}>
-                        <LoadOnOpen
-                          company={company}
+                        <LoadOnOpenSelection
                           label="Customer"
                           fetchApi={fetchCustomerApi}
                           value={clientPartner}
                           getOptionLabel={(option) => {
                             return option.fullName;
                           }}
-                          handleChange={handleCustomerChange}
+                          handleChange={(e, value) => {
+                            handleCustomerChange(e, value);
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={8}>
-                        <Selection
+                        <LoadOnOpenSelection
                           label="Currency"
                           fetchApi={formApi?.fetchCurrency}
                           value={currency}
@@ -330,7 +323,7 @@ const ProjectForm = () => {
                         />
                       </Grid>
                       <Grid item xs={12} sm={8}>
-                        <Selection
+                        <LoadOnOpenSelection
                           label="Customer Contact"
                           fetchApi={fetchContactsApi}
                           value={contactPartner}

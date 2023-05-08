@@ -18,6 +18,7 @@ const formFields = [
   "code",
   "customerAddress",
   "currency",
+  "company",
 ];
 
 const api = {
