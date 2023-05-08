@@ -77,7 +77,7 @@ const requestBody = {
     };
   },
 
-  customer: (value) => {
+  customer: ({ value, company }) => {
     return {
       data: {
         criteria: [
@@ -92,11 +92,7 @@ const requestBody = {
           "self.isCustomer = true AND :company member of self.companySet",
 
         _domainContext: {
-          company: {
-            code: "AXE",
-            name: "Axelor",
-            id: 1,
-          },
+          company: company,
 
           _model: "com.axelor.apps.project.db.Project",
         },
@@ -146,7 +142,7 @@ const requestBody = {
     };
   },
 
-  address: ({ value, client }) => {
+  address: ({ value, client, company }) => {
     return {
       fields: [
         "id",
@@ -169,11 +165,7 @@ const requestBody = {
         _domain:
           "self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)",
         _domainContext: {
-          company: {
-            code: "AXE",
-            name: "Axelor",
-            id: 1,
-          },
+          company: company,
           clientPartner: client,
 
           _model: "com.axelor.apps.project.db.Project",

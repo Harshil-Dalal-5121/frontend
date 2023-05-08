@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import { useDebounce } from "app/services/custom-hooks/useDebounce";
 
-// function Xselection({ title, value, options: _options, ...rest }) {
-//   return <Autocomplete {...rest} value={value || null} />;
-// }
-
 const Selection = ({
   fetchApi,
   value,
@@ -18,6 +14,7 @@ const Selection = ({
 }) => {
   const [options, setOptions] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleInputChange = async (e, value) => {
     setLoader(true);
@@ -34,6 +31,13 @@ const Selection = ({
         fullWidth
         filterOptions={(x) => x}
         value={value || null}
+        open={open}
+        onOpen={() => {
+          setOpen(true);
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
         options={_options ? _options : options}
         onInputChange={delayedSearch}
         getOptionLabel={getOptionLabel}

@@ -94,11 +94,11 @@ const formApi = {
     }
   },
 
-  fetchCustomer: async ({ value }) => {
+  fetchCustomer: async ({ value, company }) => {
     try {
       const response = await rest.post(
         `/com.axelor.apps.base.db.Partner/search`,
-        requestBody.customer(value)
+        requestBody.customer({ value: value, company: company })
       );
 
       if (response && response?.data?.status === 0) {
@@ -108,6 +108,28 @@ const formApi = {
       console.log(error);
     }
   },
+
+  fetchCompany: async ({ value }) => {
+    try {
+      const response = await rest.post(
+        `/com.axelor.apps.base.db.Company/search`,
+        {
+          data: {
+            _domainContext: {},
+            name: value,
+            code: value,
+          },
+          fields: ["id", "name", "code"],
+        }
+      );
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data || [];
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   fetchCustomerCurrency: async ({ value }) => {
     try {
       const response = await action.post(

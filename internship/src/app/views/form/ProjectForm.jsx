@@ -9,8 +9,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Selection from "app/components/Selection";
-import StatusSelect from "app/components/StatusSelect";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -22,9 +20,12 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 import styles from "./Forms.module.css";
 import ProjectTaskTable from "./sideTable/ProjectTaskTable";
+import Selection from "app/components/Selection";
+import StatusSelect from "app/components/StatusSelect";
 import DialogBox from "app/components/Dialog";
 import handleValidation from "app/utils/handleValidation";
 import onChange from "../../utils/onChange";
+import LoadOnOpen from "app/components/LoadOnOpen";
 
 const initialValues = {
   name: "",
@@ -35,7 +36,7 @@ const initialValues = {
   toDate: "",
   imputable: false,
   projectStatus: "",
-  isBusinessProject: false,
+  isBusinessProject: true,
   assignedTo: "",
   code: "",
   customerAddress: "",
@@ -72,6 +73,7 @@ const ProjectForm = () => {
     isBusinessProject,
     code,
     name,
+    company,
     customerAddress,
     currency,
   } = formData;
@@ -105,6 +107,17 @@ const ProjectForm = () => {
     setCustomerContactOptions(fetchCustomerContact);
   };
 
+  const handleCompanyChange = (e, value) => {
+    setFormData({
+      ...formData,
+      company: {
+        id: value?.id || "",
+        code: value?.code || "",
+        name: value?.name || "",
+      },
+    });
+  };
+
   const fetchContactsApi = async ({ value }) => {
     const res = await formApi.fetchCustomerContact({
       value: { id: value.id, fullName: value.fullName },
@@ -117,8 +130,16 @@ const ProjectForm = () => {
     const res = await formApi.fetchAddress({
       value: value,
       client: clientPartner,
+      company: company,
     });
     setAddressOptions(res);
+  };
+
+  const fetchCustomerApi = async ({ value }) => {
+    return await formApi.fetchCustomer({
+      value: value,
+      company: company,
+    });
   };
 
   const handleSubmit = (e) => {
@@ -129,7 +150,7 @@ const ProjectForm = () => {
       errorMessages
     );
     setErrors(errors);
-    console.log(errors);
+
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
     }
@@ -140,6 +161,7 @@ const ProjectForm = () => {
     navigate("/projects");
     setOpen(false);
   };
+
   return (
     <>
       <div className={styles["container"]}>
@@ -235,8 +257,10 @@ const ProjectForm = () => {
                       }
                     />
                   </Grid>
+                  <Grid item xs={12} sm={8}></Grid>
                   <Grid item xs={12} sm={8}>
                     <Selection
+                      label="Assigned To"
                       fetchApi={formApi?.assignedTo}
                       value={assignedTo}
                       getOptionLabel={(option) => {
@@ -245,7 +269,6 @@ const ProjectForm = () => {
                       handleChange={(e, value) =>
                         onChange?.assignedTo(e, value, formData, setFormData)
                       }
-                      label="Assigned To"
                     />
 
                     <Grid item xs={12} sm={12}>
@@ -267,13 +290,25 @@ const ProjectForm = () => {
                       </Stack>
                     </Grid>
                   </Grid>
+                  <Grid item xs={12} sm={8}>
+                    <Selection
+                      label="Company"
+                      fetchApi={formApi?.fetchCompany}
+                      value={company}
+                      getOptionLabel={(option) => {
+                        return option.name;
+                      }}
+                      handleChange={handleCompanyChange}
+                    />
+                  </Grid>
 
                   {isBusinessProject ? (
                     <>
                       <Grid item xs={12} sm={8}>
-                        <Selection
+                        <LoadOnOpen
+                          company={company}
                           label="Customer"
-                          fetchApi={formApi?.fetchCustomer}
+                          fetchApi={fetchCustomerApi}
                           value={clientPartner}
                           getOptionLabel={(option) => {
                             return option.fullName;
@@ -367,7 +402,7 @@ const ProjectForm = () => {
                       </>
                     ) : null}
                   </Grid>
-                  <Grid item xs={12} sm={8}>
+                  <Grid item xs={12} sm={8} className={styles["btn-grid"]}>
                     <Button
                       variant="contained"
                       color="warning"

@@ -7,10 +7,6 @@ const handleValidation = (data, errorMessages) => {
     }
   });
 
-  if (data.taskDate > data.taskEndDate) {
-    error.taskEndDate = `End Date is invalid`;
-  }
-
   return error;
 };
 
