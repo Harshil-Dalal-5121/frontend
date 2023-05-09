@@ -27,6 +27,7 @@ import handleValidation from "app/utils/handleValidation";
 import onChange from "../../utils/onChange";
 import IOSSwitch from "./../../components/iOSSwitch";
 import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
+import { InputLabel } from "@mui/material";
 
 const initialValues = {
   name: "",
@@ -213,7 +214,7 @@ const ProjectForm = () => {
                             }}
                           />
                         </Grid>
-                        <Grid id="business badge" item xl={6}>
+                        <Grid id="business badge" align="right" item xl={6}>
                           <Chip
                             label="Business"
                             color="info"
@@ -378,6 +379,7 @@ const ProjectForm = () => {
                 xs={12}
                 style={{
                   borderRadius: 10,
+                  boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
                 }}
               >
                 <Grid>
@@ -437,7 +439,6 @@ const ProjectForm = () => {
                     item
                     xl={12}
                     style={{
-                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
                       margin: "1vw",
                       padding: "1vh ",
                     }}
@@ -495,7 +496,6 @@ const ProjectForm = () => {
                     item
                     xl={12}
                     style={{
-                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
                       margin: "1vw",
                       padding: "1vh",
                     }}
@@ -523,7 +523,6 @@ const ProjectForm = () => {
                     item
                     xl={12}
                     style={{
-                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
                       margin: "1vw",
                       padding: "1vh",
                     }}
@@ -534,6 +533,7 @@ const ProjectForm = () => {
                     <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }} />
                     <Grid container spacing={2} id="dates">
                       <Grid id="from-date" sx={{ padding: "2vh" }} item xl={6}>
+                        <InputLabel>From Date</InputLabel>
                         <TextField
                           id="fromDate"
                           name="fromDate"
@@ -547,6 +547,7 @@ const ProjectForm = () => {
                         />
                       </Grid>
                       <Grid id="to-date" sx={{ padding: "2vh" }} item xl={6}>
+                        <InputLabel>To Date</InputLabel>
                         <TextField
                           id="toDate"
                           name="toDate"
