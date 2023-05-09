@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -15,6 +15,16 @@ const LoadOnOpenSelection = ({
   const [options, setOptions] = React.useState([]);
   const loading = open && options.length === 0;
 
+  const fetchOps = useCallback(async () => {
+    try {
+      const response = await fetchApi({ value: "" });
+
+      return response;
+    } catch (err) {
+      console.error(err);
+    }
+  }, [fetchApi]);
+
   React.useEffect(() => {
     let active = true;
 
@@ -22,23 +32,17 @@ const LoadOnOpenSelection = ({
       return undefined;
     }
 
-    const fetchOptions = async () => {
-      try {
-        const response = await fetchApi({ value });
-
-        if (active) {
-          setOptions(response || []);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchOptions();
+    if (active) {
+      (async () => {
+        const response = await fetchOps();
+        setOptions(response || []);
+      })();
+    }
 
     return () => {
       active = false;
     };
-  }, [fetchApi, loading, value]);
+  }, [fetchOps, loading]);
 
   React.useEffect(() => {
     if (!open) {

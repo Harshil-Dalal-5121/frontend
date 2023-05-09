@@ -23,6 +23,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Add } from "@mui/icons-material";
+import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
 
 const initialValues = {
   name: "",
@@ -67,12 +68,11 @@ const TaskForm = () => {
   const handleProjectChange = async (e, value) => {
     setFormData({
       ...formData,
-      project: {
-        id: value?.id || "",
-        fullName: value?.fullName || "",
-        code: value?.code || "",
-      },
+      project: value?.fullName
+        ? { id: value?.id, fullName: value?.fullName, code: value?.code }
+        : "",
     });
+
     const options = await formApi.parentTask({
       projectId: value?.id,
       taskId: +id,
@@ -173,11 +173,13 @@ const TaskForm = () => {
                     getOptionLabel={(option) => {
                       return option?.fullName;
                     }}
-                    handleChange={(e, value) => handleProjectChange(e, value)}
+                    handleChange={(e, value) => {
+                      handleProjectChange(e, value);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                  <Selection
+                  <LoadOnOpenSelection
                     label=" Priority"
                     fetchApi={formApi?.priority}
                     value={priority}
@@ -243,9 +245,7 @@ const TaskForm = () => {
                     variant="contained"
                     color="warning"
                     startIcon={
-                      <ArrowBackIosIcon
-                        style={{ width: "15px", height: "15px" }}
-                      />
+                      <ArrowBackIosIcon className={styles["form-btn-icon"]} />
                     }
                     onClick={() => {
                       navigate(-1);
@@ -259,9 +259,9 @@ const TaskForm = () => {
                     type="submit"
                     startIcon={
                       id ? (
-                        <Add style={{ width: "15px", height: "15px" }} />
+                        <EditIcon className={styles["form-btn-icon"]} />
                       ) : (
-                        <EditIcon style={{ width: "15px", height: "15px" }} />
+                        <Add className={styles["form-btn-icon"]} />
                       )
                     }
                     onClick={handleSubmit}

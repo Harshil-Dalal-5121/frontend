@@ -36,7 +36,7 @@ const initialValues = {
   toDate: "",
   imputable: false,
   projectStatus: "",
-  isBusinessProject: false,
+  isBusinessProject: true,
   assignedTo: "",
   code: "",
   customerAddress: "",
@@ -124,12 +124,11 @@ const ProjectForm = () => {
     setAddressOptions(res);
   };
 
-  const fetchCustomerApi = async ({ value }) => {
-    const res = await formApi.fetchCustomer({
+  const fetchCustomerApi = ({ value }) => {
+    return formApi.fetchCustomer({
       value: value,
       company: company,
     });
-    console.log(res);
   };
 
   const handleSubmit = (e) => {
@@ -254,7 +253,7 @@ const ProjectForm = () => {
                       fetchApi={formApi?.assignedTo}
                       value={assignedTo}
                       getOptionLabel={(option) => {
-                        return option?.fullName9;
+                        return option?.fullName;
                       }}
                       handleChange={(e, value) =>
                         onChange?.assignedTo(e, value, formData, setFormData)
@@ -323,7 +322,7 @@ const ProjectForm = () => {
                         />
                       </Grid>
                       <Grid item xs={12} sm={8}>
-                        <LoadOnOpenSelection
+                        <Selection
                           label="Customer Contact"
                           fetchApi={fetchContactsApi}
                           value={contactPartner}

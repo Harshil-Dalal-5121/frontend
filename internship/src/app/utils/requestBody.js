@@ -35,7 +35,7 @@ const requestBody = {
         operator: "and",
         criteria: [],
       },
-      fields: ["name"],
+      fields: ["fullName"],
     };
   },
   parentTaskAction: ({ projectId, taskId }) => {
@@ -80,27 +80,17 @@ const requestBody = {
   customer: ({ value, company }) => {
     return {
       data: {
-        criteria: [
-          {
-            fieldName: "fullName",
-            operator: "like",
-            value: value,
-          },
-        ],
-        operator: "and",
         _domain:
           "self.isCustomer = true AND :company member of self.companySet",
-
+        fullName: value,
         _domainContext: {
           company: company,
-
-          _model: "com.axelor.apps.project.db.Project",
         },
       },
-      fields: ["fullName"],
       limit: 10,
       offset: 0,
-      sortBy: ["name"],
+
+      fields: ["id", "fullName"],
     };
   },
   customerCurrency: (value) => {

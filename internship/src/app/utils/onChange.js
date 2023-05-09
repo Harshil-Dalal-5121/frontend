@@ -18,89 +18,104 @@ const onChange = {
   assignedTo: (e, value, data, setData) => {
     setData({
       ...data,
-      assignedTo: {
-        id: value?.id || "",
-
-        fullName: value?.fullName || "",
-      },
+      assignedTo: value
+        ? {
+            id: value?.id || "",
+            fullName: value?.fullName || "",
+          }
+        : "",
     });
   },
 
   project: (e, value, data, setData) => {
     setData({
       ...data,
-      parentProject: {
-        id: value?.id || "",
-        fullName: value?.fullName || "",
-        code: value?.code || "",
-        $version: value?.version,
-      },
+      parentProject: value
+        ? {
+            id: value?.id || "",
+            fullName: value?.fullName || "",
+            code: value?.code || "",
+            $version: value?.version,
+          }
+        : "",
     });
   },
 
   company: (e, value, data, setData) => {
     setData({
       ...data,
-      company: {
-        id: value?.id || "",
-        code: value?.code || "",
-        name: value?.name || "",
-      },
+      company: value
+        ? {
+            id: value?.id || "",
+            code: value?.code || "",
+            name: value?.name || "",
+          }
+        : "",
     });
   },
 
   currency: (e, value, data, setData) => {
     setData({
       ...data,
-      currency: {
-        code: value?.code || "",
-        id: value?.id || "",
-        name: value?.name || "",
-      },
+      currency: value
+        ? {
+            code: value?.code || "",
+            id: value?.id || "",
+            name: value?.name || "",
+          }
+        : "",
     });
   },
 
   customerContact: (e, value, data, setData) => {
     setData({
       ...data,
-      contactPartner: {
-        fullName: value?.fullName || "",
-        id: value?.id || "",
-        $version: value?.$version || "",
-      },
+      contactPartner: value
+        ? {
+            fullName: value?.fullName || "",
+            id: value?.id || "",
+            $version: value?.$version || "",
+          }
+        : "",
     });
   },
 
   address: (e, value, data, setData) => {
     setData({
       ...data,
-      customerAddress: {
-        fullName: value?.fullName || "",
-        id: value?.id || "",
-      },
+      customerAddress: value
+        ? {
+            fullName: value?.fullName || "",
+            id: value?.id || "",
+          }
+        : "",
     });
   },
 
   priority: (e, value, data, setData) => {
     setData({
       ...data,
-      priority: {
-        id: value?.id,
-        name: value?.name,
-        $version: 0,
-      },
+      priority: value
+        ? {
+            id: value?.id,
+            name: value?.name,
+            $version: 0,
+          }
+        : "",
     });
   },
 
   parentTask: (e, value, data, setData) => {
     setData({
       ...data,
-      parentTask: {
-        id: value?.id,
-        name: value?.name,
-        fullName: value?.fullName,
-        version: value?.version,
-      },
+      parentTask: value
+        ? {
+            id: value?.id,
+            name: value?.name,
+            fullName: value?.fullName,
+            version: value?.version,
+          }
+        : "",
     });
   },
 };
