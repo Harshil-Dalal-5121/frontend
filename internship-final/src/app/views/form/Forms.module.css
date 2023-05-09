@@ -1,0 +1,43 @@
+.loading-container {
+    height: 50vh;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading {
+    margin: auto;
+}
+
+.container {
+    padding-block: "20px"
+}
+
+
+.form-heading {
+    margin: 5vh auto !important;
+
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 5vh;
+}
+
+.form-btn-icon {
+    width: 15px !important;
+    height: 15px !important
+}
+
+
+
+.btn-grid {
+    display: flex;
+    justify-content: space-between;
+}
+
+.m1 {
+    margin: 1em !important;
+}

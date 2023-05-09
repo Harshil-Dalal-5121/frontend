@@ -1,0 +1,12 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    height: 10px !important;
+
+
+}
+
+.pagination-grid {
+    margin: 1em 0 !important;
+    box-sizing: border-box !important;
+}

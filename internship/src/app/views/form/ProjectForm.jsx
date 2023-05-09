@@ -1,11 +1,11 @@
 import {
   Button,
   CircularProgress,
+  Chip,
   FormControlLabel,
   Grid,
   Container,
   Stack,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -25,6 +25,7 @@ import StatusSelect from "app/components/StatusSelect";
 import DialogBox from "app/components/Dialog";
 import handleValidation from "app/utils/handleValidation";
 import onChange from "../../utils/onChange";
+import IOSSwitch from "./../../components/iOSSwitch";
 import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
 
 const initialValues = {
@@ -68,7 +69,6 @@ const ProjectForm = () => {
     contactPartner,
     toDate,
     fromDate,
-    imputable,
     projectStatus,
     isBusinessProject,
     code,
@@ -168,118 +168,110 @@ const ProjectForm = () => {
             >
               {id ? "Update Project Data" : "Add a new Project"}
             </Typography>
-            <Container className={styles["form-container"]}>
-              <form onSubmit={handleSubmit}>
+            <Grid
+              id="container"
+              container
+              spacing={2}
+              justifyContent="center"
+              sx={{ padding: "2vh" }}
+            >
+              <Grid
+                id="form-fields"
+                item
+                xl={8}
+                sx={{
+                  marginRight: "1em",
+                  borderRadius: 2,
+                  boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
+                }}
+              >
                 <Grid
+                  id="status"
                   container
                   spacing={2}
-                  id="form"
-                  onSubmit={handleSubmit}
-                  justifyContent="center"
-                  alignItems="center"
+                  sx={{ padding: "2vh" }}
+                  justifyContent="space-between"
                 >
-                  <Grid item align="right" xs={12} sm={6}>
+                  <Grid id="status-bar" item xl={6}>
                     <StatusSelect
                       data={formData}
                       setData={setFormData}
                       defaultValue={projectStatus?.name || "New"}
                     />
                   </Grid>
-                  <Grid item align="center" xs={12} sm={6}>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Typography>Business Project</Typography>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            name="isBusinessProject"
-                            checked={isBusinessProject}
-                            onClick={(e) =>
-                              onChange?.switch(e, formData, setFormData)
-                            }
+                  {isBusinessProject ? (
+                    <>
+                      <Grid id="badges" container xl={2}>
+                        <Grid id="invoice badge" item xl={6}>
+                          <Chip
+                            label=" To Invoice"
                             color="warning"
+                            style={{
+                              padding: "0.2em 0.6em 0.3em",
+                              fontSize: "75%",
+                              fontWeight: "bold",
+                            }}
                           />
-                        }
-                      />
-                    </Stack>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      id="name"
-                      name="name"
-                      label="Add Name"
-                      value={name || ""}
-                      onChange={(e) =>
-                        onChange?.change(e, formData, setFormData)
-                      }
-                      helperText={errors?.name ? `${errors.name}` : ""}
-                      error={errors?.name ? true : false}
-                      variant="outlined"
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
+                        </Grid>
+                        <Grid id="business badge" item xl={6}>
+                          <Chip
+                            label="Business"
+                            color="info"
+                            style={{
+                              padding: "0.2em 0.6em 0.3em",
+                              fontSize: "75%",
+                              fontWeight: "bold",
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
+                    </>
+                  ) : null}
+                </Grid>
+                <Grid
+                  id="code-name"
+                  container
+                  spacing={4}
+                  sx={{ padding: "2vh" }}
+                >
+                  <Grid id="code" item xl={2}>
                     <TextField
                       name="code"
                       id="code"
-                      label="Add Code"
+                      label="Code"
                       value={code || ""}
                       onChange={(e) =>
                         onChange?.change(e, formData, setFormData)
                       }
                       error={errors?.code ? true : false}
                       helperText={errors?.code ? `${errors.code}` : ""}
-                      variant="outlined"
+                      variant="standard"
                       fullWidth
                     />
                   </Grid>
-
-                  <Grid item xs={12} sm={8}>
-                    <Selection
-                      label="Parent Project"
-                      fetchApi={formApi?.projects}
-                      value={parentProject}
-                      getOptionLabel={(option) => {
-                        return option?.fullName;
-                      }}
-                      handleChange={(e, value) =>
-                        onChange?.project(e, value, formData, setFormData)
+                  <Grid id="name" item xl={6}>
+                    <TextField
+                      id="name"
+                      name="name"
+                      label="Name"
+                      value={name || ""}
+                      onChange={(e) =>
+                        onChange?.change(e, formData, setFormData)
                       }
+                      helperText={errors?.name ? `${errors.name}` : ""}
+                      error={errors?.name ? true : false}
+                      variant="standard"
+                      fullWidth
                     />
                   </Grid>
-
-                  <Grid item xs={12} sm={8}>
-                    <Selection
-                      label="Assigned To"
-                      fetchApi={formApi?.assignedTo}
-                      value={assignedTo}
-                      getOptionLabel={(option) => {
-                        return option?.fullName;
-                      }}
-                      handleChange={(e, value) =>
-                        onChange?.assignedTo(e, value, formData, setFormData)
-                      }
-                    />
-
-                    <Grid item xs={12} sm={12}>
-                      <Stack direction="row" spacing={2} alignItems="center">
-                        <Typography>Imputable :</Typography>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              onClick={(e) =>
-                                onChange?.switch(e, formData, setFormData)
-                              }
-                              checked={imputable}
-                              color="success"
-                              name="imputable"
-                            />
-                          }
-                          label={imputable ? "True" : "False"}
-                        />
-                      </Stack>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} sm={8}>
+                </Grid>
+                <Grid
+                  container
+                  spacing={4}
+                  id="company-customer-currency"
+                  sx={{ padding: "2vh" }}
+                >
+                  <Grid id="company" item xl={4}>
                     <Selection
                       label="Company"
                       fetchApi={formApi?.fetchCompany}
@@ -295,7 +287,7 @@ const ProjectForm = () => {
 
                   {isBusinessProject ? (
                     <>
-                      <Grid item xs={12} sm={8}>
+                      <Grid id="customer" item xl={4}>
                         <LoadOnOpenSelection
                           label="Customer"
                           fetchApi={fetchCustomerApi}
@@ -308,7 +300,7 @@ const ProjectForm = () => {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={8}>
+                      <Grid id="currency" item xl={4}>
                         <LoadOnOpenSelection
                           label="Currency"
                           fetchApi={formApi?.fetchCurrency}
@@ -321,7 +313,18 @@ const ProjectForm = () => {
                           }
                         />
                       </Grid>
-                      <Grid item xs={12} sm={8}>
+                    </>
+                  ) : null}
+                </Grid>
+                {isBusinessProject ? (
+                  <>
+                    <Grid
+                      id="customerContact-address"
+                      container
+                      spacing={2}
+                      sx={{ padding: "2vh" }}
+                    >
+                      <Grid id="customer-contact" item xl={6}>
                         <Selection
                           label="Customer Contact"
                           fetchApi={fetchContactsApi}
@@ -340,7 +343,7 @@ const ProjectForm = () => {
                           }
                         />
                       </Grid>
-                      <Grid item xs={12} sm={8}>
+                      <Grid id="address" item xl={6}>
                         <Selection
                           label="Address"
                           fetchApi={fetchAddressApi}
@@ -354,62 +357,41 @@ const ProjectForm = () => {
                           options={addressOptions}
                         />
                       </Grid>
-                    </>
-                  ) : null}
-                  <Grid item xs={12} sm={8}>
-                    <TextField
-                      id="fromDate"
-                      name="fromDate"
-                      type="date"
-                      value={fromDate?.slice(0, 10) || ""}
-                      onChange={(e) =>
-                        onChange?.change(e, formData, setFormData)
-                      }
-                      variant="outlined"
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={8}>
-                    <TextField
-                      id="toDate"
-                      name="toDate"
-                      type="date"
-                      value={toDate?.slice(0, 10) || ""}
-                      onChange={(e) =>
-                        onChange?.change(e, formData, setFormData)
-                      }
-                      variant="outlined"
-                      fullWidth
-                    />
-                    {id ? (
-                      <>
-                        <Grid item xs={12} sm={8}>
-                          <Typography component="h6" variant="h6">
-                            Task Tree
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={12}>
-                          <ProjectTaskTable id={id} />
-                        </Grid>
-                      </>
-                    ) : null}
-                  </Grid>
-                  <Grid item xs={12} sm={8} className={styles["btn-grid"]}>
+                    </Grid>
+                  </>
+                ) : null}
+                {id ? (
+                  <>
+                    <Grid item sx={{ padding: "2vh" }} xl={12}>
+                      <Typography component="h6" variant="h6">
+                        Task Tree
+                      </Typography>
+                      <ProjectTaskTable id={id} />
+                    </Grid>
+                  </>
+                ) : null}
+              </Grid>
+              <Grid
+                id="actions"
+                item
+                xl={3}
+                xs={12}
+                style={{
+                  borderRadius: 10,
+                }}
+              >
+                <Grid>
+                  <Grid
+                    id="add-btn"
+                    item
+                    xl={12}
+                    style={{
+                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
+                      margin: "1vw",
+                    }}
+                  >
                     <Button
-                      variant="contained"
-                      color="warning"
-                      startIcon={
-                        <ArrowBackIosIcon
-                          style={{ width: "15px", height: "15px" }}
-                        />
-                      }
-                      onClick={() => {
-                        navigate(-1);
-                      }}
-                    >
-                      Back
-                    </Button>
-                    <Button
+                      fullWidth
                       variant="contained"
                       color="success"
                       type="submit"
@@ -425,9 +407,163 @@ const ProjectForm = () => {
                       {id ? "Update" : "Add"}
                     </Button>
                   </Grid>
+                  <Grid
+                    id="cancel-btn"
+                    item
+                    xl={12}
+                    style={{
+                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
+                      margin: "1vw",
+                    }}
+                  >
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="warning"
+                      startIcon={
+                        <ArrowBackIosIcon
+                          style={{ width: "15px", height: "15px" }}
+                        />
+                      }
+                      onClick={() => {
+                        navigate(-1);
+                      }}
+                    >
+                      Back
+                    </Button>
+                  </Grid>
+                  <Grid
+                    id="characteristics"
+                    item
+                    xl={12}
+                    style={{
+                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
+                      margin: "1vw",
+                      padding: "1vh ",
+                    }}
+                  >
+                    <Typography component="h6" variant="h6">
+                      Characteristics
+                    </Typography>
+                    <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }} />
+                    <Grid
+                      id="business-project"
+                      style={{
+                        padding: "1vh 1vw",
+                      }}
+                      item
+                      xl={12}
+                    >
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Typography>Business Project</Typography>
+                        <FormControlLabel
+                          control={
+                            <IOSSwitch
+                              name="isBusinessProject"
+                              checked={isBusinessProject}
+                              onClick={(e) =>
+                                onChange?.switch(e, formData, setFormData)
+                              }
+                            />
+                          }
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid
+                      id="parent-project"
+                      item
+                      xl={12}
+                      style={{
+                        padding: "1vh",
+                      }}
+                    >
+                      <Selection
+                        label="Parent Project"
+                        fetchApi={formApi?.projects}
+                        value={parentProject}
+                        getOptionLabel={(option) => {
+                          return option?.fullName;
+                        }}
+                        handleChange={(e, value) =>
+                          onChange?.project(e, value, formData, setFormData)
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    id="follow-up"
+                    item
+                    xl={12}
+                    style={{
+                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
+                      margin: "1vw",
+                      padding: "1vh",
+                    }}
+                  >
+                    <Typography component="h6" variant="h6">
+                      Follow Up
+                    </Typography>
+                    <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }} />
+                    <Grid id="assigned-to" item xl={12} sx={{ padding: "2vh" }}>
+                      <Selection
+                        label="Assigned To"
+                        fetchApi={formApi?.assignedTo}
+                        value={assignedTo}
+                        getOptionLabel={(option) => {
+                          return option?.fullName;
+                        }}
+                        handleChange={(e, value) =>
+                          onChange?.assignedTo(e, value, formData, setFormData)
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    id="dates"
+                    item
+                    xl={12}
+                    style={{
+                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
+                      margin: "1vw",
+                      padding: "1vh",
+                    }}
+                  >
+                    <Typography component="h6" variant="h6">
+                      Dates
+                    </Typography>
+                    <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }} />
+                    <Grid container spacing={2} id="dates">
+                      <Grid id="from-date" sx={{ padding: "2vh" }} item xl={6}>
+                        <TextField
+                          id="fromDate"
+                          name="fromDate"
+                          type="date"
+                          value={fromDate?.slice(0, 10) || ""}
+                          onChange={(e) =>
+                            onChange?.change(e, formData, setFormData)
+                          }
+                          variant="standard"
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid id="to-date" sx={{ padding: "2vh" }} item xl={6}>
+                        <TextField
+                          id="toDate"
+                          name="toDate"
+                          type="date"
+                          value={toDate?.slice(0, 10) || ""}
+                          onChange={(e) =>
+                            onChange?.change(e, formData, setFormData)
+                          }
+                          variant="standard"
+                          fullWidth
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
-              </form>
-            </Container>
+              </Grid>
+            </Grid>
           </>
         )}
         <DialogBox

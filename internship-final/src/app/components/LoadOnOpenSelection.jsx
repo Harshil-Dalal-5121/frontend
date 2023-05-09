@@ -80,7 +80,6 @@ const LoadOnOpenSelection = ({
       loading={loading}
       renderInput={(params) => (
         <TextField
-          variant="standard"
           {...params}
           label={`${label}`}
           InputProps={{

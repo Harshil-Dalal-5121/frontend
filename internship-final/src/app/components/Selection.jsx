@@ -41,7 +41,6 @@ const Selection = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            variant="standard"
             label={`${label}`}
             error={error}
             helperText={helperText}

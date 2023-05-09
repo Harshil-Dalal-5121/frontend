@@ -1,0 +1,10 @@
+.loading-container {
+    height: 29vh;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading {
+    margin: auto;
+}
