@@ -8,7 +8,6 @@ const ProgressBar = ({ name, value, step, onChange }) => {
         value={value || 0}
         name={`${name}`}
         onChange={(e) => onChange(e)}
-        sx={{ width: 300 }}
         defaultValue={0}
         valueLabelDisplay="auto"
         step={step}

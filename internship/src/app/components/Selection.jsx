@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Autocomplete, CircularProgress, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  CircularProgress,
+  InputLabel,
+  TextField,
+} from "@mui/material";
 import { useDebounce } from "app/services/custom-hooks/useDebounce";
 
 const Selection = ({
@@ -26,6 +31,7 @@ const Selection = ({
 
   return (
     <>
+      <InputLabel>{`${label}`}</InputLabel>
       <Autocomplete
         fullWidth
         filterOptions={(x) => x}
@@ -42,7 +48,6 @@ const Selection = ({
           <TextField
             {...params}
             variant="standard"
-            label={`${label}`}
             error={error}
             helperText={helperText}
             InputProps={{

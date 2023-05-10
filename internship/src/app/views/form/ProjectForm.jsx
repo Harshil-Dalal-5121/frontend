@@ -38,7 +38,7 @@ const initialValues = {
   toDate: "",
   imputable: false,
   projectStatus: "",
-  isBusinessProject: true,
+  isBusinessProject: false,
   assignedTo: "",
   code: "",
   customerAddress: "",
@@ -174,12 +174,12 @@ const ProjectForm = () => {
               container
               spacing={2}
               justifyContent="center"
-              sx={{ padding: "2vh" }}
+              // sx={{ padding: "2vh" }}
             >
               <Grid
                 id="form-fields"
                 item
-                xl={8}
+                xl={8.5}
                 sx={{
                   marginRight: "1em",
                   borderRadius: 2,
@@ -360,7 +360,9 @@ const ProjectForm = () => {
                       </Grid>
                     </Grid>
                   </>
-                ) : null}
+                ) : (
+                  <></>
+                )}
                 {id ? (
                   <>
                     <Grid item sx={{ padding: "2vh" }} xl={12}>
@@ -370,7 +372,9 @@ const ProjectForm = () => {
                       <ProjectTaskTable id={id} />
                     </Grid>
                   </>
-                ) : null}
+                ) : (
+                  <></>
+                )}
               </Grid>
               <Grid
                 id="actions"

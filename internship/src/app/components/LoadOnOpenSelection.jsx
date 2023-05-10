@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useDebounce } from "app/services/custom-hooks/useDebounce";
+import { InputLabel } from "@mui/material";
 
 const LoadOnOpenSelection = ({
   label,
@@ -58,45 +59,47 @@ const LoadOnOpenSelection = ({
   const delayedSearch = useDebounce(handleInputChange);
 
   return (
-    <Autocomplete
-      fullWidth
-      id="asynchronous-demo"
-      open={open}
-      value={value || null}
-      filterOptions={(x) => x}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      onChange={(e, value) => handleChange(e, value)}
-      onInputChange={delayedSearch}
-      isOptionEqualToValue={(option, value) =>
-        option.value === value.value || value === ""
-      }
-      getOptionLabel={getOptionLabel}
-      options={options}
-      loading={loading}
-      renderInput={(params) => (
-        <TextField
-          variant="standard"
-          {...params}
-          label={`${label}`}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
-    />
+    <>
+      <InputLabel>{`${label}`}</InputLabel>
+      <Autocomplete
+        fullWidth
+        id="asynchronous-demo"
+        open={open}
+        value={value || null}
+        filterOptions={(x) => x}
+        onOpen={() => {
+          setOpen(true);
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
+        onChange={(e, value) => handleChange(e, value)}
+        onInputChange={delayedSearch}
+        isOptionEqualToValue={(option, value) =>
+          option.value === value.value || value === ""
+        }
+        getOptionLabel={getOptionLabel}
+        options={options}
+        loading={loading}
+        renderInput={(params) => (
+          <TextField
+            variant="standard"
+            {...params}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+          />
+        )}
+      />
+    </>
   );
 };
 
