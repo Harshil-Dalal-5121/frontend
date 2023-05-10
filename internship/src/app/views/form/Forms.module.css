@@ -9,29 +9,45 @@
     margin: auto;
 }
 
-.container {
-    padding-block: "20px"
-}
-
-
-.form-heading {
-    margin: 2vh auto !important;
-
-}
-
-.form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 5vh;
-}
-
-.form-btn-icon {
+.form-fields .form-btn-icon {
     width: 15px !important;
     height: 15px !important
 }
 
+.container {
+    padding: 0 5vh !important
+}
 
+.box-shadow {
+    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15) !important;
+}
+
+.badge {
+    padding: 0.2em 0.6em 0.3em;
+    font-size: 75%;
+    font-weight: bold;
+}
+
+.p-2 {
+    padding: 2vh !important
+}
+
+.form-btn {
+    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15);
+    margin: 1vw,
+}
+
+.m-y-1 {
+    margin: 1vh 0 !important
+}
+
+.border-radius-2 {
+    border-radius: 2 !important;
+}
+
+.border-radius-10 {
+    border-radius: 10 !important;
+}
 
 .btn-grid {
     display: flex;
@@ -41,3 +57,18 @@
 .m1 {
     margin: 1em !important;
 }
+
+.m1-p1 {
+    margin: 1vw;
+    padding: 1vh;
+}
+
+
+
+/* 
+className={styles[""]}
+className={styles["p-2"]}
+
+
+
+*/

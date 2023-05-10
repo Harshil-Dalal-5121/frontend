@@ -1,7 +1,14 @@
 import { Grid, Typography } from "@mui/material";
+import { MuiTelInput } from "mui-tel-input";
 import React from "react";
 
 const TaskForm = () => {
+  const [value, setValue] = React.useState("");
+
+  const handleChange = (newValue) => {
+    setValue(newValue);
+  };
+  console.log(value);
   return (
     <>
       <div id="container" style={{ padding: "0 5vh" }}>
@@ -107,7 +114,11 @@ const TaskForm = () => {
                     backgroundColor: "yellow",
                   }}
                 >
-                  Assigned To
+                  <MuiTelInput
+                    value={value}
+                    onChange={handleChange}
+                    defaultCountry="IN"
+                  />
                 </Grid>
               </Grid>
             </Grid>

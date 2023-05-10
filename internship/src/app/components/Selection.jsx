@@ -31,7 +31,7 @@ const Selection = ({
 
   return (
     <>
-      <InputLabel>{`${label}`}</InputLabel>
+      <InputLabel error={error}>{`${label}`}</InputLabel>
       <Autocomplete
         fullWidth
         filterOptions={(x) => x}

@@ -1,38 +1,63 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.navigation {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-left: 40px;
 }
 
-.App-link {
-  color: #61dafb;
+.input {
+  display: block;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  font-weight: bold;
+  color: inherit;
+  background: none;
+}
+
+#days {
+  display: grid;
+  grid-template-columns: repeat(7, 6ch);
+
+}
+
+.title {
+  font-weight: bold;
+}
+
+
+li {
+  list-style: none;
+  border: 1px solid grey;
+  text-align: center;
+  padding: 10px;
+  color: gray;
+  margin: -1px -1px 0 0;
+
+}
+
+#date {
+  cursor: pointer;
+
+}
+
+#date:hover {
+  /* border: 2px solid black;
+  font-weight: bold; */
+  background-color: blueviolet;
+}
+
+#date:nth-child(7n+8) {
+  color: red;
+}
+
+#date:nth-child(7n+13) {
+  color: green;
+}
+
+.inp {
+  margin-left: 10px;
+  width: 150px;
 }
