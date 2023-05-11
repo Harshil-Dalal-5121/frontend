@@ -150,7 +150,7 @@ const TaskForm = () => {
                     <Grid id="subject" item xl={9}>
                       <TextField
                         value={name || ""}
-                        onChange={(e) =>
+                        onChange={(e, value) =>
                           onChange?.change(e, formData, setFormData)
                         }
                         fullWidth
@@ -295,7 +295,7 @@ const TaskForm = () => {
                   <Typography component="h6" variant="h6">
                     Dates
                   </Typography>
-                  <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }} />
+
                   <Grid container p={2} spacing={2}>
                     <Grid id="fromDate" item xl={5}>
                       <InputLabel>From Date</InputLabel>
@@ -334,14 +334,14 @@ const TaskForm = () => {
                   <Button
                     fullWidth
                     variant="contained"
-                    color="success"
+                    color="info"
                     type="submit"
                     className={styles["box-shadow"]}
                     startIcon={
                       id ? (
-                        <Add className={styles["form-btn-icon"]} />
-                      ) : (
                         <EditIcon className={styles["form-btn-icon"]} />
+                      ) : (
+                        <Add className={styles["form-btn-icon"]} />
                       )
                     }
                     onClick={handleSubmit}
@@ -353,7 +353,7 @@ const TaskForm = () => {
                   <Button
                     fullWidth
                     variant="contained"
-                    color="warning"
+                    color="error"
                     startIcon={
                       <ArrowBackIosIcon className={styles["form-btn-icon"]} />
                     }

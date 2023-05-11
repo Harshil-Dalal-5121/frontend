@@ -331,14 +331,14 @@ const TicketForm = () => {
                   <Button
                     fullWidth
                     variant="contained"
-                    color="success"
+                    color="info"
                     type="submit"
                     className={styles["box-shadow"]}
                     startIcon={
                       id ? (
-                        <Add className={styles["form-btn-icon"]} />
-                      ) : (
                         <EditIcon className={styles["form-btn-icon"]} />
+                      ) : (
+                        <Add className={styles["form-btn-icon"]} />
                       )
                     }
                     onClick={handleSubmit}
@@ -350,7 +350,7 @@ const TicketForm = () => {
                   <Button
                     fullWidth
                     variant="contained"
-                    color="warning"
+                    color="error"
                     startIcon={
                       <ArrowBackIosIcon className={styles["form-btn-icon"]} />
                     }

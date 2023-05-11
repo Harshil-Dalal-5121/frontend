@@ -14,7 +14,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import api from "../projects/api";
 import formApi from "./api";
-import { Add } from "@mui/icons-material";
+
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
@@ -28,6 +28,7 @@ import onChange from "../../utils/onChange";
 import IOSSwitch from "./../../components/iOSSwitch";
 import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
 import { InputLabel } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 const initialValues = {
   name: "",
@@ -365,14 +366,14 @@ const ProjectForm = () => {
                     <Button
                       fullWidth
                       variant="contained"
-                      color="success"
+                      color="info"
                       type="submit"
-                      className={styles["box-shadow"]}
+                      className={styles["forma-btn"]}
                       startIcon={
                         id ? (
-                          <Add className={styles["form-btn-icon"]} />
-                        ) : (
                           <EditIcon className={styles["form-btn-icon"]} />
+                        ) : (
+                          <AddIcon className={styles["form-btn-icon"]} />
                         )
                       }
                       onClick={handleSubmit}
@@ -383,8 +384,9 @@ const ProjectForm = () => {
                   <Grid id="cancel-btn" item xl={12} m={1} p={1}>
                     <Button
                       fullWidth
+                      className={styles["form-btn"]}
                       variant="contained"
-                      color="warning"
+                      color="error"
                       startIcon={
                         <ArrowBackIosIcon className={styles["form-btn-icon"]} />
                       }

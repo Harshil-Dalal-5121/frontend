@@ -7,16 +7,18 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 
 const Toolbar = ({ setView, View, setPage }) => {
   const [card, setCard] = React.useState(false);
+
+  const handleViewChange = (type, bool) => {
+    setPage(1);
+    setView(View[type]);
+    setCard(bool);
+  };
   return (
     <>
       <Button
         variant={card ? "outlined" : "contained"}
         sx={{ marginRight: 2 }}
-        onClick={() => {
-          setPage(1);
-          setView(View.table);
-          setCard(false);
-        }}
+        onClick={() => handleViewChange("table", false)}
         endIcon=<ViewListIcon />
         color="secondary"
       >
@@ -26,11 +28,7 @@ const Toolbar = ({ setView, View, setPage }) => {
       <Button
         variant={card ? "contained" : "outlined"}
         color="warning"
-        onClick={() => {
-          setPage(1);
-          setView(View.card);
-          setCard(true);
-        }}
+        onClick={() => handleViewChange("card", true)}
         endIcon=<DashboardIcon />
       >
         Card

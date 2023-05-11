@@ -18,6 +18,7 @@ const NavBar = ({
   path,
 }) => {
   const navigate = useNavigate();
+
   return (
     <Grid container className={styles["grid-container"]}>
       <Grid item xs={4} sm={4} className={styles["grid-item-new"]}>
@@ -25,9 +26,7 @@ const NavBar = ({
           variant="contained"
           color="info"
           startIcon={<Add />}
-          onClick={() => {
-            navigate(`${path}`);
-          }}
+          onClick={() => navigate(`${path}`)}
           className={styles["grid-btn m1"]}
         >
           Create {title}
