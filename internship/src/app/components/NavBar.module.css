@@ -19,7 +19,7 @@
 
 .grid-item-search {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: center;
     height: 70px;
     padding: 0 1em

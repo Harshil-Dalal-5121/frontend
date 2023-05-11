@@ -116,35 +116,27 @@ const TaskForm = () => {
       ) : (
         <>
           <div className={styles["container"]}>
-            <Typography
-              component="h3"
-              variant="h3"
-              className={styles["p-2"]}
-              align="center"
-            >
+            <Typography component="h3" variant="h3" p={2} align="center">
               {id ? "Update Task Data" : "Add a new Task"}
             </Typography>
             <Grid
               id="container"
-              className={`${styles["p-2"]} ${styles["box-shadow"]}`}
+              className={styles["box-shadow"]}
               container
+              p={1}
               spacing={2}
               justifyContent="center"
             >
-              <Grid item xl={10} className={styles["p-2"]}>
+              <Grid item xl={10}>
                 <Grid
                   id="form-fields"
                   item
+                  p={1}
                   xl={12}
                   className={styles["border-radius-2"]}
                 >
                   {id ? (
-                    <Grid
-                      id="status"
-                      container
-                      spacing={2}
-                      className={styles["p-2"]}
-                    >
+                    <Grid id="status" container>
                       <Grid id="status-bar" item xl={12}>
                         <StatusSelect
                           data={formData}
@@ -154,12 +146,7 @@ const TaskForm = () => {
                       </Grid>
                     </Grid>
                   ) : null}
-                  <Grid
-                    id="subject"
-                    container
-                    spacing={2}
-                    className={styles["p-2"]}
-                  >
+                  <Grid id="subject" container spacing={2} p={1}>
                     <Grid id="subject" item xl={9}>
                       <TextField
                         value={name || ""}
@@ -176,12 +163,7 @@ const TaskForm = () => {
                       />
                     </Grid>
                   </Grid>
-                  <Grid
-                    container
-                    spacing={2}
-                    id="project-parentTask"
-                    className={styles["p-2"]}
-                  >
+                  <Grid container spacing={2} id="project-parentTask" p={2}>
                     <Grid id="project" item xl={5.5}>
                       <Selection
                         label="Parent Project"
@@ -227,12 +209,7 @@ const TaskForm = () => {
                       )}
                     </Grid>
                   </Grid>
-                  <Grid
-                    id="assignedto"
-                    container
-                    spacing={2}
-                    className={styles["p-2"]}
-                  >
+                  <Grid id="assignedto" container spacing={2} p={2}>
                     <Grid id="assigned to" item xl={6}>
                       {project ? (
                         <>
@@ -277,7 +254,7 @@ const TaskForm = () => {
                         Characteristics
                       </Typography>
 
-                      <Grid container className={styles["p-2"]} spacing={4}>
+                      <Grid container p={2} spacing={4}>
                         <Grid id="priority" item xl={5}>
                           <LoadOnOpenSelection
                             label=" Priority"
@@ -319,7 +296,7 @@ const TaskForm = () => {
                     Dates
                   </Typography>
                   <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }} />
-                  <Grid container className={styles["p-2"]} spacing={2}>
+                  <Grid container p={2} spacing={2}>
                     <Grid id="fromDate" item xl={5}>
                       <InputLabel>From Date</InputLabel>
                       <TextField
@@ -353,17 +330,13 @@ const TaskForm = () => {
                 </Grid>
               </Grid>
               <Grid item xl={2}>
-                <Grid
-                  id="add-btn"
-                  item
-                  xl={12}
-                  className={`${styles["box-shadow"]} ${styles["m-y-1"]}`}
-                >
+                <Grid id="add-btn" item xl={12} m={1} p={1}>
                   <Button
                     fullWidth
                     variant="contained"
                     color="success"
                     type="submit"
+                    className={styles["box-shadow"]}
                     startIcon={
                       id ? (
                         <Add className={styles["form-btn-icon"]} />
@@ -376,12 +349,7 @@ const TaskForm = () => {
                     {id ? "Update" : "Add"}
                   </Button>
                 </Grid>
-                <Grid
-                  id="cancel-btn"
-                  item
-                  xl={12}
-                  className={styles["box-shadow"]}
-                >
+                <Grid id="cancel-btn" item xl={12} m={1} p={1}>
                   <Button
                     fullWidth
                     variant="contained"

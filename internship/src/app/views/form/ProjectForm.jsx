@@ -160,7 +160,7 @@ const ProjectForm = () => {
             <CircularProgress className={styles["loading"]} />
           </Container>
         ) : (
-          <>
+          <div>
             <Typography
               component="h3"
               variant="h3"
@@ -169,31 +169,24 @@ const ProjectForm = () => {
             >
               {id ? "Update Project Data" : "Add a new Project"}
             </Typography>
-            <Grid
-              id="container"
-              container
-              spacing={2}
-              justifyContent="center"
-              sx={{ padding: "2vh" }}
-            >
+            <Grid id="container" container justifyContent="center" p={2}>
               <Grid
                 id="form-fields"
                 item
-                xl={8}
-                sx={{
-                  marginRight: "1em",
-                  borderRadius: 2,
-                  boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
-                }}
+                md={8}
+                sm={12}
+                m={1}
+                p={2}
+                className={styles["form-fields"]}
               >
                 <Grid
                   id="status"
                   container
                   spacing={2}
-                  sx={{ padding: "2vh" }}
+                  p={2}
                   justifyContent="space-between"
                 >
-                  <Grid id="status-bar" item xl={6}>
+                  <Grid id="status-bar" item xl={6} xs={12}>
                     <StatusSelect
                       data={formData}
                       setData={setFormData}
@@ -207,35 +200,22 @@ const ProjectForm = () => {
                           <Chip
                             label=" To Invoice"
                             color="warning"
-                            style={{
-                              padding: "0.2em 0.6em 0.3em",
-                              fontSize: "75%",
-                              fontWeight: "bold",
-                            }}
+                            className={styles["badge"]}
                           />
                         </Grid>
                         <Grid id="business badge" align="right" item xl={6}>
                           <Chip
                             label="Business"
                             color="info"
-                            style={{
-                              padding: "0.2em 0.6em 0.3em",
-                              fontSize: "75%",
-                              fontWeight: "bold",
-                            }}
+                            className={styles["badge"]}
                           />
                         </Grid>
                       </Grid>
                     </>
                   ) : null}
                 </Grid>
-                <Grid
-                  id="code-name"
-                  container
-                  spacing={4}
-                  sx={{ padding: "2vh" }}
-                >
-                  <Grid id="code" item xl={2}>
+                <Grid id="code-name" container spacing={4} p={2}>
+                  <Grid id="code" item xl={2} lg={2} md={2} sm={8}>
                     <TextField
                       name="code"
                       id="code"
@@ -250,7 +230,7 @@ const ProjectForm = () => {
                       fullWidth
                     />
                   </Grid>
-                  <Grid id="name" item xl={6}>
+                  <Grid id="name" item xl={6} lg={6} md={6} sm={8}>
                     <TextField
                       id="name"
                       name="name"
@@ -270,9 +250,9 @@ const ProjectForm = () => {
                   container
                   spacing={4}
                   id="company-customer-currency"
-                  sx={{ padding: "2vh" }}
+                  p={2}
                 >
-                  <Grid id="company" item xl={4}>
+                  <Grid id="company" item md={4} xs={8}>
                     <Selection
                       label="Company"
                       fetchApi={formApi?.fetchCompany}
@@ -288,7 +268,7 @@ const ProjectForm = () => {
 
                   {isBusinessProject ? (
                     <>
-                      <Grid id="customer" item xl={4}>
+                      <Grid id="customer" item md={4} xs={8}>
                         <LoadOnOpenSelection
                           label="Customer"
                           fetchApi={fetchCustomerApi}
@@ -301,7 +281,7 @@ const ProjectForm = () => {
                           }}
                         />
                       </Grid>
-                      <Grid id="currency" item xl={4}>
+                      <Grid id="currency" item md={4} xs={8}>
                         <LoadOnOpenSelection
                           label="Currency"
                           fetchApi={formApi?.fetchCurrency}
@@ -323,9 +303,9 @@ const ProjectForm = () => {
                       id="customerContact-address"
                       container
                       spacing={2}
-                      sx={{ padding: "2vh" }}
+                      p={2}
                     >
-                      <Grid id="customer-contact" item xl={6}>
+                      <Grid id="customer-contact" item md={6} xs={8}>
                         <Selection
                           label="Customer Contact"
                           fetchApi={fetchContactsApi}
@@ -344,7 +324,7 @@ const ProjectForm = () => {
                           }
                         />
                       </Grid>
-                      <Grid id="address" item xl={6}>
+                      <Grid id="address" item md={6} xs={8}>
                         <Selection
                           label="Address"
                           fetchApi={fetchAddressApi}
@@ -363,7 +343,7 @@ const ProjectForm = () => {
                 ) : null}
                 {id ? (
                   <>
-                    <Grid item sx={{ padding: "2vh" }} xl={12}>
+                    <Grid item p={2} xl={12}>
                       <Typography component="h6" variant="h6">
                         Task Tree
                       </Typography>
@@ -375,33 +355,24 @@ const ProjectForm = () => {
               <Grid
                 id="actions"
                 item
-                xl={3}
-                xs={12}
-                style={{
-                  borderRadius: 10,
-                  boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
-                }}
+                m={1}
+                md={3}
+                sm={12}
+                className={styles["actions"]}
               >
                 <Grid>
-                  <Grid
-                    id="add-btn"
-                    item
-                    xl={12}
-                    style={{
-                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
-                      margin: "1vw",
-                    }}
-                  >
+                  <Grid id="add-btn" item xl={12} m={1} p={1}>
                     <Button
                       fullWidth
                       variant="contained"
                       color="success"
                       type="submit"
+                      className={styles["box-shadow"]}
                       startIcon={
                         id ? (
-                          <Add style={{ width: "15px", height: "15px" }} />
+                          <Add className={styles["form-btn-icon"]} />
                         ) : (
-                          <EditIcon style={{ width: "15px", height: "15px" }} />
+                          <EditIcon className={styles["form-btn-icon"]} />
                         )
                       }
                       onClick={handleSubmit}
@@ -409,23 +380,13 @@ const ProjectForm = () => {
                       {id ? "Update" : "Add"}
                     </Button>
                   </Grid>
-                  <Grid
-                    id="cancel-btn"
-                    item
-                    xl={12}
-                    style={{
-                      boxShadow: "1px 2px 8px 0px rgba(0, 0, 0, 0.15)",
-                      margin: "1vw",
-                    }}
-                  >
+                  <Grid id="cancel-btn" item xl={12} m={1} p={1}>
                     <Button
                       fullWidth
                       variant="contained"
                       color="warning"
                       startIcon={
-                        <ArrowBackIosIcon
-                          style={{ width: "15px", height: "15px" }}
-                        />
+                        <ArrowBackIosIcon className={styles["form-btn-icon"]} />
                       }
                       onClick={() => {
                         navigate(-1);
@@ -434,27 +395,12 @@ const ProjectForm = () => {
                       Back
                     </Button>
                   </Grid>
-                  <Grid
-                    id="characteristics"
-                    item
-                    xl={12}
-                    style={{
-                      margin: "1vw",
-                      padding: "1vh ",
-                    }}
-                  >
+                  <Grid id="characteristics" item xl={12} m={1} p={1}>
                     <Typography component="h6" variant="h6">
                       Characteristics
                     </Typography>
                     <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }} />
-                    <Grid
-                      id="business-project"
-                      style={{
-                        padding: "1vh 1vw",
-                      }}
-                      item
-                      xl={12}
-                    >
+                    <Grid id="business-project" p={1} item xl={12}>
                       <Stack direction="row" spacing={2} alignItems="center">
                         <Typography>Business Project</Typography>
                         <FormControlLabel
@@ -470,14 +416,7 @@ const ProjectForm = () => {
                         />
                       </Stack>
                     </Grid>
-                    <Grid
-                      id="parent-project"
-                      item
-                      xl={12}
-                      style={{
-                        padding: "1vh",
-                      }}
-                    >
+                    <Grid id="parent-project" item xl={12} p={1}>
                       <Selection
                         label="Parent Project"
                         fetchApi={formApi?.projects}
@@ -491,20 +430,12 @@ const ProjectForm = () => {
                       />
                     </Grid>
                   </Grid>
-                  <Grid
-                    id="follow-up"
-                    item
-                    xl={12}
-                    style={{
-                      margin: "1vw",
-                      padding: "1vh",
-                    }}
-                  >
+                  <Grid id="follow-up" item xl={12} m={1} p={1}>
                     <Typography component="h6" variant="h6">
                       Follow Up
                     </Typography>
                     <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }} />
-                    <Grid id="assigned-to" item xl={12} sx={{ padding: "2vh" }}>
+                    <Grid id="assigned-to" item xl={12} p={1}>
                       <Selection
                         label="Assigned To"
                         fetchApi={formApi?.assignedTo}
@@ -518,21 +449,13 @@ const ProjectForm = () => {
                       />
                     </Grid>
                   </Grid>
-                  <Grid
-                    id="dates"
-                    item
-                    xl={12}
-                    style={{
-                      margin: "1vw",
-                      padding: "1vh",
-                    }}
-                  >
+                  <Grid id="dates" item xl={12} m={1} p={1}>
                     <Typography component="h6" variant="h6">
                       Dates
                     </Typography>
                     <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }} />
                     <Grid container spacing={2} id="dates">
-                      <Grid id="from-date" sx={{ padding: "2vh" }} item xl={6}>
+                      <Grid id="from-date" p={1} item xl={6}>
                         <InputLabel>From Date</InputLabel>
                         <TextField
                           id="fromDate"
@@ -546,7 +469,7 @@ const ProjectForm = () => {
                           fullWidth
                         />
                       </Grid>
-                      <Grid id="to-date" sx={{ padding: "2vh" }} item xl={6}>
+                      <Grid id="to-date" p={1} item xl={6}>
                         <InputLabel>To Date</InputLabel>
                         <TextField
                           id="toDate"
@@ -565,7 +488,7 @@ const ProjectForm = () => {
                 </Grid>
               </Grid>
             </Grid>
-          </>
+          </div>
         )}
         <DialogBox
           type="Save"

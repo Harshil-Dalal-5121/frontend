@@ -9,7 +9,7 @@
     margin: auto;
 }
 
-.form-fields .form-btn-icon {
+.form-btn-icon {
     width: 15px !important;
     height: 15px !important
 }
@@ -23,23 +23,23 @@
 }
 
 .badge {
-    padding: 0.2em 0.6em 0.3em;
-    font-size: 75%;
-    font-weight: bold;
+    padding: 0.2em 0.6em 0.3em !important;
+    font-size: 75% !important;
+    font-weight: bold !important;
 }
 
-.p-2 {
-    padding: 2vh !important
+
+.form-fields {
+
+    border-radius: 10px !important;
+    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15);
 }
 
 .form-btn {
-    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15);
-    margin: 1vw,
+    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15) !important;
 }
 
-.m-y-1 {
-    margin: 1vh 0 !important
-}
+
 
 .border-radius-2 {
     border-radius: 2 !important;
@@ -54,21 +54,7 @@
     justify-content: space-between;
 }
 
-.m1 {
-    margin: 1em !important;
+.actions {
+    border-radius: 10px !important;
+    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15) !important;
 }
-
-.m1-p1 {
-    margin: 1vw;
-    padding: 1vh;
-}
-
-
-
-/* 
-className={styles[""]}
-className={styles["p-2"]}
-
-
-
-*/
