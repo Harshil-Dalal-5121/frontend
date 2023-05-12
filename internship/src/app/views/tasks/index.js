@@ -3,21 +3,26 @@ import { List } from "app/components/ListComponent";
 import { useTranslation } from "app/services/translate";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import CardList from "./card/TaskCardList";
+
 import TasksTable from "./table/TasksTable";
 import NavBar from "app/components/NavBar";
 
 import { useDebounce } from "../../services/custom-hooks/useDebounce";
 import api from "./api";
+import { taskCard } from "app/utils/card";
+import CardList from "app/components/Card";
 
 const View = {
   table: "table",
   card: "card",
 };
+const TaskCard = (props) => {
+  return <CardList card={taskCard} fetchApi={api.delete} {...props} />;
+};
 
 const ViewComponent = {
   table: TasksTable,
-  card: CardList,
+  card: TaskCard,
 };
 
 const LIMIT = 6;

@@ -1,32 +1,33 @@
-import { CircularProgress, Grid } from "@mui/material";
-import { Container } from "@mui/system";
-import React from "react";
+import * as React from "react";
 
-import DialogBox from "./Dialog";
-import PaginationComponent from "./Pagination";
+import { Grid, Card, Container, CircularProgress } from "@mui/material";
+
+import PaginationComponent from "app/components/Pagination";
+
 import styles from "./Card.module.css";
+import DialogBox from "app/components/Dialog";
 
-const Card = ({
-  fetchApi,
-  card,
+export default function CardList({
   data,
+  fetchApi,
   loading,
-  limit,
+  card,
   page,
+  limit,
   setData,
   setPage,
   total,
-}) => {
+}) {
   const [open, setOpen] = React.useState(false);
 
-  const [deleteProject, setDeleteProject] = React.useState({
+  const [deleteData, setDeleteData] = React.useState({
     id: "",
     version: "",
     name: "",
     setData: "",
   });
-  const handleDeleteProject = async () => {
-    const { name, id, version, setData } = deleteProject;
+  const handleDeleteData = async () => {
+    const { name, id, version, setData } = deleteData;
     await fetchApi({ id, version, name });
     setData((prev) => prev.filter((project) => project.id !== id));
 
@@ -34,8 +35,8 @@ const Card = ({
   };
 
   const handleClickOpen = (id, version, name, setData) => {
-    setDeleteProject({
-      ...deleteProject,
+    setDeleteData({
+      ...deleteData,
       id: id,
       version: version,
       name: name,
@@ -48,7 +49,7 @@ const Card = ({
   };
 
   const handleDelete = () => {
-    handleDeleteProject();
+    handleDeleteData();
     setOpen(false);
   };
 
@@ -69,7 +70,7 @@ const Card = ({
                 <>
                   <Grid item xs={12} sm={4}>
                     <Card variant="outlined" sx={styles.card} key={i}>
-                      {card(project, handleClickOpen, setData)}
+                      {card(project, handleClickOpen, setData, i)}
                     </Card>
                   </Grid>
                 </>
@@ -98,6 +99,4 @@ const Card = ({
       />
     </>
   );
-};
-
-export default Card;
+}
