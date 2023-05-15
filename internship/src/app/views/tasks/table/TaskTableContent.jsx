@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Button,
-  Container,
   TableBody,
   TableCell,
   TableRow,
   tableCellClasses,
+  TableFooter,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
-import DialogBox from "app/components/Dialog";
-
 import { Delete, Edit } from "@mui/icons-material";
-import api from "../api";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -29,40 +26,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
+
   "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
 
-const TaskTableContent = ({ data, setData }) => {
-  const [open, setOpen] = useState(false);
-
-  const [deleteProject, setDeleteProject] = useState({
-    id: "",
-    version: "",
-    name: "",
-    setData: "",
-  });
-  const handleDeleteTask = async () => {
-    const { name, id, version, setData } = deleteProject;
-    await api.delete({ id, version, name });
-    setData((prev) => prev.filter((project) => project.id !== id));
-
-    setOpen(false);
-  };
-
-  const handleClickOpen = (id, version, name, setData) => {
-    setDeleteProject({
-      ...deleteProject,
-      id: id,
-      version: version,
-      name: name,
-      setData: setData,
-    });
-    setOpen(true);
-  };
-
+const TaskTableContent = ({ data, setData, handleClickOpen }) => {
   const getDate = (val) => {
     var date = new Date(val);
 
@@ -75,17 +45,6 @@ const TaskTableContent = ({ data, setData }) => {
     return dateString;
   };
 
-  const handleDelete = () => {
-    handleDeleteTask();
-    setOpen(false);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleCancel = () => {
-    setOpen(false);
-  };
   return (
     <>
       {data ? (
@@ -173,15 +132,12 @@ const TaskTableContent = ({ data, setData }) => {
           ))}
         </TableBody>
       ) : (
-        <Container>No Records</Container>
+        <TableFooter>
+          <TableRow>
+            <TableCell>No Records</TableCell>
+          </TableRow>
+        </TableFooter>
       )}
-      <DialogBox
-        type="Delete"
-        open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleDelete}
-      />
     </>
   );
 };

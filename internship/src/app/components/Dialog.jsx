@@ -26,7 +26,7 @@ const DialogBox = ({ type, id, open, handleCancel, handleClose, onClick }) => {
         onClose={handleClose}
         aria-describedby="responsive-alert-dialog-slide-description"
       >
-        <DialogTitle>{" Question"}</DialogTitle>
+        <DialogTitle>{"Alert"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             {type === "Delete"

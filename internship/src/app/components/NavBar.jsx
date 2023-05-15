@@ -40,7 +40,9 @@ const NavBar = ({
           <TextField
             className={styles["m1"]}
             id="search"
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e);
+            }}
             name="search"
             label={`Search ${title}`}
             variant="outlined"
@@ -54,7 +56,7 @@ const NavBar = ({
           />
 
           <Search
-            onClick={() => handleChange()}
+            onClick={(e) => handleChange(e)}
             variant="contained"
             className={styles["btn-search"]}
             color="success"

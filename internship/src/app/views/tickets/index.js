@@ -45,9 +45,9 @@ export function Tickets() {
   const debouncedChangeSearch = useDebounce(handleChangeSearch);
 
   const handleFetch = useCallback(async ({ offset, search }) => {
-    const { data } = await api.find({ offset, search });
-    setTickets(data?.data);
-    setTotal(data?.total);
+    const response = await api.find({ offset, search });
+    setTickets(response?.data);
+    setTotal(response?.total);
   }, []);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export function Tickets() {
       </legend>
 
       <NavBar
-        title="Tickets"
+        title="Ticket"
         View={View}
         loading={loading}
         setView={setView}
@@ -90,6 +90,8 @@ export function Tickets() {
         ViewComponent={ViewComponent}
         view={view}
         data={tickets}
+        setTotal={setTotal}
+        api={api}
         loading={loading}
         total={total}
         page={page}

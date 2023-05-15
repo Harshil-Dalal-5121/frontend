@@ -147,9 +147,9 @@ const ProjectForm = () => {
     }
   };
 
-  const handleSave = () => {
-    api.save(formData);
-    navigate("/projects");
+  const handleSave = async () => {
+    const response = await api.save(formData);
+    response && navigate("/projects");
     setOpen(false);
   };
 
@@ -190,6 +190,7 @@ const ProjectForm = () => {
                   <Grid id="status-bar" item xl={6} xs={12}>
                     <StatusSelect
                       data={formData}
+                      property="projectStatus"
                       setData={setFormData}
                       defaultValue={projectStatus?.name || "New"}
                     />

@@ -90,10 +90,10 @@ const TaskForm = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setOpen(false);
-    api.save(formData);
-    navigate(-1);
+    const response = await api.save(formData);
+    response && navigate("/tasks");
   };
 
   useEffect(() => {
@@ -141,6 +141,7 @@ const TaskForm = () => {
                         <StatusSelect
                           data={formData}
                           setData={setFormData}
+                          property="status"
                           defaultValue={status?.name || "New"}
                         />
                       </Grid>

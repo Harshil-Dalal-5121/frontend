@@ -3,9 +3,9 @@ import {
   CardActions,
   CardContent,
   IconButton,
-  Link,
   Typography,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const projectCard = (project, handleClickOpen, setData) => {
   return (
@@ -24,8 +24,12 @@ const projectCard = (project, handleClickOpen, setData) => {
         <Typography>Progess - {project?.projectStatus?.name}</Typography>
       </CardContent>
       <CardActions>
-        <Link to={`${project.id}`}>
-          <IconButton variant="contained" color="success">
+        <Link to={`${project?.id}`}>
+          <IconButton
+            variant="contained"
+            onClick={() => console.log(project.id)}
+            color="success"
+          >
             <Edit />
           </IconButton>
         </Link>

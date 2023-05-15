@@ -26,7 +26,7 @@ const api = {
       sortBy: ["id"],
     });
     if (response) {
-      return response;
+      return response?.data;
     }
   },
 
@@ -43,10 +43,22 @@ const api = {
       console.log(error);
     }
   },
-
-  save: (data) => {
+  delete: async ({ id, version, name }) => {
     try {
-      rest.post(
+      const response = await rest.post(`${model}/removeAll`, {
+        records: [{ id: id, version: version, name: name }],
+      });
+      if (response && response.data.status !== -1) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  save: async (data) => {
+    try {
+      const response = await rest.post(
         `${model}`,
         { data },
         {
@@ -56,6 +68,10 @@ const api = {
           },
         }
       );
+
+      if (response && response?.data?.status === 0) {
+        return response;
+      }
     } catch (error) {
       console.log(error);
     }

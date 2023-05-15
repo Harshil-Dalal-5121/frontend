@@ -6,18 +6,23 @@ import PaginationComponent from "app/components/Pagination";
 
 import styles from "./Card.module.css";
 import DialogBox from "app/components/Dialog";
+import { LIMIT } from "app/views/tasks/api";
 
 export default function CardList({
   data,
-  fetchApi,
-  loading,
-  card,
-  page,
-  limit,
   setData,
+  page,
+  card,
+  api,
+  limit,
   setPage,
+  loading,
   total,
+  setTotal,
 }) {
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
   const [open, setOpen] = React.useState(false);
 
   const [deleteData, setDeleteData] = React.useState({
@@ -28,8 +33,19 @@ export default function CardList({
   });
   const handleDeleteData = async () => {
     const { name, id, version, setData } = deleteData;
-    await fetchApi({ id, version, name });
-    setData((prev) => prev.filter((project) => project.id !== id));
+    const response = await api.delete({ id, version, name });
+    if (response) {
+      const response = await api.find({
+        search: "",
+        offset: (page - 1) * LIMIT,
+      });
+      setData(response?.data);
+      setTotal(response?.total);
+
+      if (response?.total % 6 === 0) {
+        setPage(page - 1);
+      }
+    }
 
     setOpen(false);
   };
@@ -43,9 +59,6 @@ export default function CardList({
       setData: setData,
     });
     setOpen(true);
-  };
-  const handleChange = (event, value) => {
-    setPage(value);
   };
 
   const handleDelete = () => {
@@ -63,14 +76,14 @@ export default function CardList({
   return (
     <>
       {!loading ? (
-        <div className={styles.container}>
+        <div className={styles?.container}>
           <Grid container spacing={2}>
-            {data?.map((project, i) => {
+            {data?.map((item, i) => {
               return (
                 <>
-                  <Grid item xs={12} sm={4}>
-                    <Card variant="outlined" sx={styles.card} key={i}>
-                      {card(project, handleClickOpen, setData, i)}
+                  <Grid item xs={12} sm={4} key={i}>
+                    <Card variant="outlined" className={styles?.card} key={i}>
+                      {card(item, handleClickOpen, setData, i)}
                     </Card>
                   </Grid>
                 </>
@@ -85,7 +98,7 @@ export default function CardList({
       )}
 
       <PaginationComponent
-        total={total}
+        total={total || 0}
         limit={limit}
         page={page}
         handleChange={handleChange}

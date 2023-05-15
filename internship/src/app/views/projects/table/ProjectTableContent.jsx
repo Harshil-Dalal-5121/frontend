@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Button,
   TableBody,
   TableCell,
   TableRow,
-  Container,
   tableCellClasses,
+  TableFooter,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
-import api from "../api";
-
-import DialogBox from "app/components/Dialog";
 
 import { Delete, Edit } from "@mui/icons-material";
 import { Check, XCircle } from "react-bootstrap-icons";
@@ -25,7 +22,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => {
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
     },
-    // color: "inherit",
   };
 });
 
@@ -40,41 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: "7.5vh",
 }));
 
-const ProjectTableContent = ({ data, setData, renderer }) => {
-  const [open, setOpen] = useState(false);
-
-  const [deleteProject, setDeleteProject] = useState({
-    id: "",
-    version: "",
-    name: "",
-    setData: "",
-  });
-
-  const handleClickOpen = (id, version, name, setData) => {
-    setDeleteProject({
-      ...deleteProject,
-      id: id,
-      version: version,
-      name: name,
-      setData: setData,
-    });
-    setOpen(true);
-  };
-
-  const handleDelete = async () => {
-    const { name, id, version, setData } = deleteProject;
-    await api.delete({ id, version, name });
-    setData((prev) => prev.filter((project) => project.id !== id));
-    setOpen(false);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
+const ProjectTableContent = ({ data, setData, handleClickOpen }) => {
   const getDate = (val) => {
     var date = new Date(val);
 
@@ -96,9 +58,6 @@ const ProjectTableContent = ({ data, setData, renderer }) => {
               key={i}
               sx={{
                 "&:last-child td, &:last-child th": { border: 0 },
-                // color: ` ${
-                //   project?.projectStatus?.name === "New" ? "red" : "green"
-                // }`,
               }}
             >
               <StyledTableCell align="center">{project.id}</StyledTableCell>
@@ -157,16 +116,12 @@ const ProjectTableContent = ({ data, setData, renderer }) => {
           ))}
         </TableBody>
       ) : (
-        <Container>No Records</Container>
+        <TableFooter>
+          <TableRow>
+            <TableCell>No Records</TableCell>
+          </TableRow>
+        </TableFooter>
       )}
-
-      <DialogBox
-        type="Delete"
-        open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleDelete}
-      />
     </>
   );
 };

@@ -43,11 +43,12 @@ const List = ({
   setData,
   data,
   loading,
+  setTotal,
   page,
   limit,
   setPage,
   total,
-  setSearchParams,
+  api,
 }) => {
   const ListComponent = ViewComponent[view];
 
@@ -56,11 +57,12 @@ const List = ({
       data={data}
       loading={loading}
       total={total}
+      setTotal={setTotal}
       page={page}
+      api={api}
       setData={setData}
       limit={limit}
       setPage={setPage}
-      setSearchParams={setSearchParams}
     />
   );
 };

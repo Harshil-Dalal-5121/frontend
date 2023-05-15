@@ -25,7 +25,7 @@ const status = [
   },
 ];
 
-const StatusSelect = ({ data, setData, defaultValue }) => {
+const StatusSelect = ({ data, setData, property, defaultValue }) => {
   return (
     <>
       <FormControl>
@@ -45,7 +45,11 @@ const StatusSelect = ({ data, setData, defaultValue }) => {
                 onChange={() => {
                   setData({
                     ...data,
-                    status: { id: a.id, name: a.name, $version: 0 },
+                    [property]: {
+                      id: a?.id,
+                      name: a?.name,
+                      version: a?.version,
+                    },
                   });
                 }}
               />

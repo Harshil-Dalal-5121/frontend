@@ -18,7 +18,7 @@ const View = {
 };
 
 const ProjectCard = (props) => {
-  return <CardList card={projectCard} fetchApi={api.delete} {...props} />;
+  return <CardList card={projectCard} {...props} />;
 };
 
 const ViewComponent = {
@@ -46,9 +46,9 @@ export function Projects() {
   const debouncedChangeSearch = useDebounce(handleChangeSearch);
 
   const handleFetch = useCallback(async ({ offset, search }) => {
-    const { data } = await api.find({ offset, search });
-    setProjects(data?.data);
-    setTotal(data?.total);
+    const response = await api.find({ offset, search });
+    setProjects(response?.data);
+    setTotal(response?.total);
   }, []);
 
   useEffect(() => {
@@ -93,6 +93,8 @@ export function Projects() {
         data={projects}
         loading={loading}
         total={total}
+        setTotal={setTotal}
+        api={api}
         page={page}
         limit={LIMIT}
         setData={setProjects}

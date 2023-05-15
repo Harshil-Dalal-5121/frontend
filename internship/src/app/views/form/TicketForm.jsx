@@ -87,10 +87,11 @@ const TicketForm = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setOpen(false);
-    api.save(formData);
-    navigate(-1);
+    const response = await api.save(formData);
+    console.log(response);
+    response && navigate(-1);
   };
 
   useEffect(() => {
@@ -138,6 +139,7 @@ const TicketForm = () => {
                         <StatusSelect
                           data={formData}
                           setData={setFormData}
+                          property="status"
                           defaultValue={status?.name || "New"}
                         />
                       </Grid>

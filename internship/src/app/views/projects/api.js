@@ -41,7 +41,7 @@ const api = {
         sortBy: ["id"],
       });
       if (response && response.data.status !== -1) {
-        return response;
+        return response?.data;
       }
     } catch (error) {
       console.log(error);
@@ -75,9 +75,9 @@ const api = {
     }
   },
 
-  save: (data) => {
+  save: async (data) => {
     try {
-      rest.post(
+      const response = await rest.post(
         `${model}`,
         { data },
         {
@@ -87,6 +87,10 @@ const api = {
           },
         }
       );
+
+      if (response && response?.data?.status === 0) {
+        return response;
+      }
     } catch (error) {
       console.log(error);
     }

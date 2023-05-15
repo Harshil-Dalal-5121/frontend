@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Button,
   Container,
@@ -10,10 +9,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-import DialogBox from "app/components/Dialog";
-
 import { Delete, Edit } from "@mui/icons-material";
-import api from "../api";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,34 +31,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const TicketTableContent = ({ data, setData }) => {
-  const [open, setOpen] = useState(false);
-
-  const [deleteProject, setDeleteProject] = useState({
-    id: "",
-    version: "",
-    name: "",
-    setData: "",
-  });
-  const handleDeleteTicket = async () => {
-    const { name, id, version, setData } = deleteProject;
-    await api.delete({ id, version, name });
-    setData((prev) => prev.filter((project) => project.id !== id));
-
-    setOpen(false);
-  };
-
-  const handleClickOpen = (id, version, name, setData) => {
-    setDeleteProject({
-      ...deleteProject,
-      id: id,
-      version: version,
-      name: name,
-      setData: setData,
-    });
-    setOpen(true);
-  };
-
+const TicketTableContent = ({ data, setData, handleClickOpen }) => {
   const getDate = (val) => {
     var date = new Date(val); // M-D-YYYY
 
@@ -73,18 +42,6 @@ const TicketTableContent = ({ data, setData }) => {
     var dateString =
       (d <= 9 ? "0" + d : d) + "-" + (m <= 9 ? "0" + m : m) + "-" + y;
     return dateString;
-  };
-
-  const handleDelete = () => {
-    handleDeleteTicket();
-    setOpen(false);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleCancel = () => {
-    setOpen(false);
   };
 
   return (
@@ -181,14 +138,6 @@ const TicketTableContent = ({ data, setData }) => {
       ) : (
         <Container>No Records</Container>
       )}
-
-      <DialogBox
-        type="Delete"
-        open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleDelete}
-      />
     </>
   );
 };
