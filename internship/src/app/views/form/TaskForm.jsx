@@ -83,7 +83,12 @@ const TaskForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidation(formData, errorMessages);
+    const errors = handleValidation(
+      formData,
+      errorMessages,
+      taskDate,
+      taskEndDate
+    );
     setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
@@ -313,18 +318,21 @@ const TaskForm = () => {
                       />
                     </Grid>
                     <Grid id="to date" item xl={5}>
-                      <InputLabel>To Date</InputLabel>
-
+                      <InputLabel error={error?.endDate ? true : false}>
+                        To Date
+                      </InputLabel>
                       <TextField
-                        fullWidth
-                        onChange={(e) =>
-                          onChange?.change(e, formData, setFormData)
-                        }
-                        value={taskEndDate || ""}
                         id="taskEndDate"
                         name="taskEndDate"
                         type="date"
+                        error={error?.endDate ? true : false}
+                        helperText={error?.endDate ? `${error.endDate}` : ""}
+                        value={taskEndDate || ""}
+                        onChange={(e) =>
+                          onChange?.change(e, formData, setFormData)
+                        }
                         variant="standard"
+                        fullWidth
                       />
                     </Grid>
                   </Grid>

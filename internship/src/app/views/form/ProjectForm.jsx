@@ -135,11 +135,7 @@ const ProjectForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidation(
-      formData,
-
-      errorMessages
-    );
+    const errors = handleValidation(formData, errorMessages, fromDate, toDate);
     setErrors(errors);
 
     if (Object.keys(errors)?.length === 0) {
@@ -465,6 +461,7 @@ const ProjectForm = () => {
                           name="fromDate"
                           type="date"
                           value={fromDate?.slice(0, 10) || ""}
+                          // value={fromDate || ""}
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)
                           }
@@ -473,11 +470,17 @@ const ProjectForm = () => {
                         />
                       </Grid>
                       <Grid id="to-date" p={1} item xl={6}>
-                        <InputLabel>To Date</InputLabel>
+                        <InputLabel error={errors?.endDate ? true : false}>
+                          To Date
+                        </InputLabel>
                         <TextField
                           id="toDate"
                           name="toDate"
                           type="date"
+                          error={errors?.endDate ? true : false}
+                          helperText={
+                            errors?.endDate ? `${errors.endDate}` : ""
+                          }
                           value={toDate?.slice(0, 10) || ""}
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)

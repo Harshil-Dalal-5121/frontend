@@ -80,7 +80,12 @@ const TicketForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errors = handleValidation(formData, errorMessages);
+    const errors = handleValidation(
+      formData,
+      errorMessages,
+      taskDate,
+      taskEndDate
+    );
     setError(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
@@ -90,7 +95,7 @@ const TicketForm = () => {
   const handleSave = async () => {
     setOpen(false);
     const response = await api.save(formData);
-    console.log(response);
+
     response && navigate(-1);
   };
 
@@ -311,18 +316,21 @@ const TicketForm = () => {
                       />
                     </Grid>
                     <Grid id="to date" item xl={5}>
-                      <InputLabel>To Date</InputLabel>
-
+                      <InputLabel error={error?.endDate ? true : false}>
+                        To Date
+                      </InputLabel>
                       <TextField
-                        fullWidth
-                        onChange={(e) =>
-                          onChange?.change(e, formData, setFormData)
-                        }
-                        value={taskEndDate || ""}
                         id="taskEndDate"
                         name="taskEndDate"
                         type="date"
+                        error={error?.endDate ? true : false}
+                        helperText={error?.endDate ? `${error.endDate}` : ""}
+                        value={taskEndDate || ""}
+                        onChange={(e) =>
+                          onChange?.change(e, formData, setFormData)
+                        }
                         variant="standard"
+                        fullWidth
                       />
                     </Grid>
                   </Grid>
