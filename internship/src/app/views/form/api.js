@@ -79,16 +79,47 @@ const formApi = {
     }
   },
 
-  assignedTo: async () => {
+  assignedTo: async (value) => {
     try {
       const response = await rest.post(
         `com.axelor.auth.db.User/search`,
-        requestBody.assignedTo()
+        requestBody.assignedTo(value)
       );
 
       if (response && response?.data?.status === 0) {
         return response?.data?.data || [];
       }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  fetchAssignedAction: async ({ projectId }) => {
+    try {
+      const domain = await action.post(
+        `/ws/action`,
+        requestBody.fetchAssignedAction({ projectId })
+      );
+      if (domain && domain?.data?.status !== -1) {
+        const response = domain?.data.data[0].attrs.assignedTo.domain;
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  taskAssigned: async ({ projectId, value }) => {
+    try {
+      const domain = await formApi?.fetchAssignedAction({
+        projectId: projectId,
+      });
+      const response = await rest.post(
+        `com.axelor.auth.db.User/search`,
+        requestBody.taskAssignedTo({ value: value, domain: domain })
+      );
+
+      return response?.data?.data;
     } catch (error) {
       console.log(error);
     }

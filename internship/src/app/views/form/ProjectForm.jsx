@@ -31,20 +31,91 @@ import { InputLabel } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 const initialValues = {
-  name: "",
-  fromDate: "",
-  parentProject: "",
-  clientPartner: "",
-  contactPartner: "",
-  toDate: "",
   imputable: false,
-  projectStatus: "",
-  isBusinessProject: false,
-  assignedTo: "",
-  code: "",
-  customerAddress: "",
-  currency: "",
+  projectTaskPrioritySet: [
+    {
+      name: "Low",
+      id: 1,
+      version: 0,
+    },
+    {
+      name: "Normal",
+      id: 2,
+      version: 0,
+    },
+    {
+      name: "High",
+      id: 3,
+      version: 0,
+    },
+    {
+      name: "Urgent",
+      id: 4,
+      version: 0,
+    },
+  ],
+  projectTaskStatusSet: [
+    {
+      name: "New",
+      id: 5,
+      version: 0,
+    },
+    {
+      name: "In progress",
+      id: 6,
+      version: 0,
+    },
+    {
+      name: "Done",
+      id: 7,
+      version: 0,
+    },
+    {
+      name: "Canceled",
+      id: 8,
+      version: 0,
+    },
+  ],
+  projectStatus: {
+    name: "New",
+    id: 1,
+    version: 0,
+  },
+  isBusinessProject: true,
+  assignedTo: {
+    fullName: "Admin",
+    id: 1,
+  },
 };
+
+const status = [
+  {
+    name: "New",
+    id: 1,
+    isCompleted: "false",
+    isDefaultCompleted: "false",
+    version: 0,
+  },
+  {
+    name: "In progress",
+    id: 2,
+    isCompleted: "false",
+    isDefaultCompleted: "false",
+    version: 0,
+  },
+  {
+    name: "Done",
+    id: 3,
+    isCompleted: "true",
+    isDefaultCompleted: "true",
+    version: 0,
+  },
+  {
+    name: "Canceled",
+    id: 8,
+    version: 0,
+  },
+];
 
 const errorMessages = {
   name: `Project Name is required`,
@@ -63,7 +134,7 @@ const ProjectForm = () => {
   const navigate = useNavigate();
 
   const { loading } = useFetchRecord(id, api.fetch, setFormData);
-
+  console.log(formData);
   const {
     clientPartner,
     assignedTo,
@@ -111,7 +182,7 @@ const ProjectForm = () => {
 
   const fetchContactsApi = async ({ value }) => {
     const res = await formApi.fetchCustomerContact({
-      value: { id: value.id, fullName: value.fullName },
+      value: value,
       client: clientPartner,
     });
     setCustomerContactOptions(res || []);
@@ -123,7 +194,7 @@ const ProjectForm = () => {
       client: clientPartner,
       company: company,
     });
-    setAddressOptions(res);
+    setAddressOptions(res || []);
   };
 
   const fetchCustomerApi = ({ value }) => {
@@ -186,6 +257,7 @@ const ProjectForm = () => {
                   <Grid id="status-bar" item xl={6} xs={12}>
                     <StatusSelect
                       data={formData}
+                      status={status}
                       property="projectStatus"
                       setData={setFormData}
                       defaultValue={projectStatus?.name || "New"}
@@ -256,7 +328,7 @@ const ProjectForm = () => {
                       fetchApi={formApi?.fetchCompany}
                       value={company}
                       getOptionLabel={(option) => {
-                        return option.name;
+                        return option?.name;
                       }}
                       handleChange={(e, value) => {
                         onChange?.company(e, value, formData, setFormData);
@@ -280,7 +352,7 @@ const ProjectForm = () => {
                         />
                       </Grid>
                       <Grid id="currency" item md={4} xs={8}>
-                        <LoadOnOpenSelection
+                        <Selection
                           label="Currency"
                           fetchApi={formApi?.fetchCurrency}
                           value={currency}
@@ -365,7 +437,7 @@ const ProjectForm = () => {
                       variant="contained"
                       color="info"
                       type="submit"
-                      className={styles["forma-btn"]}
+                      className={styles["form-btn"]}
                       startIcon={
                         id ? (
                           <EditIcon className={styles["form-btn-icon"]} />
@@ -461,7 +533,6 @@ const ProjectForm = () => {
                           name="fromDate"
                           type="date"
                           value={fromDate?.slice(0, 10) || ""}
-                          // value={fromDate || ""}
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)
                           }

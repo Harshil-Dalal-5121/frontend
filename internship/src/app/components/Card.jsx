@@ -80,13 +80,11 @@ export default function CardList({
           <Grid container spacing={2}>
             {data?.map((item, i) => {
               return (
-                <>
-                  <Grid item xs={12} sm={4} key={i}>
-                    <Card variant="outlined" className={styles?.card} key={i}>
-                      {card(item, handleClickOpen, setData, i)}
-                    </Card>
-                  </Grid>
-                </>
+                <Grid item xs={12} sm={4} key={i}>
+                  <Card variant="outlined" className={styles?.card} key={i}>
+                    {card(item, handleClickOpen, setData, i)}
+                  </Card>
+                </Grid>
               );
             })}
           </Grid>

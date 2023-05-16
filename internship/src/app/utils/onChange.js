@@ -22,7 +22,23 @@ const onChange = {
         ? {
             id: value?.id || "",
             fullName: value?.fullName || "",
+            version: value?.version || "",
+            code: value?.code || "",
           }
+        : "",
+      membersUserSet: value
+        ? [
+            {
+              fullName: "Admin",
+              id: 1,
+            },
+            {
+              id: value?.id || "",
+              fullName: value?.fullName || "",
+              version: value?.version || "",
+              code: value?.code || "",
+            },
+          ]
         : "",
     });
   },

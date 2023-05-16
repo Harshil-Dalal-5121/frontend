@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export function useDebounce(cb, duration = 500) {
+export function useDebounce(cb, duration = 1000) {
   const timer = useRef(null);
 
   const clearTimer = () => timer.current && clearTimeout(timer.current);

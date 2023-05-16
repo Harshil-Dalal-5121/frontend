@@ -24,20 +24,46 @@ const requestBody = {
     };
   },
 
-  assignedTo: () => {
+  fetchAssignedAction: ({ projectId }) => {
     return {
+      model: "com.axelor.apps.project.db.ProjectTask",
+      action: "action-project-task-attrs-project-assigned-to-configurations",
       data: {
-        _domain: "self.id IN(1)",
-        _domainContext: {
-          _typeSelect: "task",
-          _model: "com.axelor.apps.project.db.ProjectTask",
-        },
-        operator: "and",
         criteria: [],
+        context: {
+          project: {
+            id: projectId,
+          },
+        },
       },
-      fields: ["fullName"],
     };
   },
+
+  assignedTo: ({ value }) => {
+    return {
+      fields: ["id", "fullName", "partner", "name", "code"],
+      sortBy: null,
+      data: {
+        _domainContext: {},
+        fullName: value,
+      },
+      limit: 10,
+      offset: 0,
+      translate: true,
+    };
+  },
+
+  taskAssignedTo: ({ domain, value }) => {
+    return {
+      data: {
+        code: value,
+        fullName: value,
+        _domain: domain,
+      },
+      fields: ["id", "fullName", "code", "name"],
+    };
+  },
+
   parentTaskAction: ({ projectId, taskId }) => {
     return {
       model: "com.axelor.apps.project.db.ProjectTask",

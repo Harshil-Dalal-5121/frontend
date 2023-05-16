@@ -32,9 +32,42 @@ const initialValues = {
   taskEndDate: "",
   project: "",
   priority: "",
-  typeSelect: "ticket",
+  status: {
+    name: "New",
+    id: 1,
+    version: 0,
+  },
+  typeSelect: "task",
+  parentTask: "",
   progressSelect: 0,
+  assignedTo: {
+    fullName: "Admin",
+    id: 1,
+  },
 };
+
+const taskStatus = [
+  {
+    name: "New",
+    id: 5,
+    version: 0,
+  },
+  {
+    name: "In progress",
+    id: 6,
+    version: 0,
+  },
+  {
+    name: "Done",
+    id: 7,
+    version: 0,
+  },
+  {
+    name: "Canceled",
+    id: 8,
+    version: 0,
+  },
+];
 
 const errorMessages = {
   name: `Subject is required`,
@@ -44,8 +77,9 @@ const errorMessages = {
 const TicketForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState({});
+  const [error, setErrors] = useState({});
   const [parentTasks, setParentTasks] = useState([]);
+  const [assignedOptions, setAssignedOptions] = useState([]);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -86,17 +120,25 @@ const TicketForm = () => {
       taskDate,
       taskEndDate
     );
-    setError(errors);
+    setErrors(errors);
     if (Object.keys(errors)?.length === 0) {
       setOpen(true);
     }
   };
 
+  const fetchAssignedApi = async ({ value }) => {
+    const response = await formApi.taskAssigned({
+      value: value,
+      projectId: project?.id,
+    });
+
+    setAssignedOptions(response || []);
+  };
+
   const handleSave = async () => {
     setOpen(false);
     const response = await api.save(formData);
-
-    response && navigate(-1);
+    response && navigate("/tasks");
   };
 
   useEffect(() => {
@@ -107,6 +149,12 @@ const TicketForm = () => {
           taskId: +id,
         });
         setParentTasks(options || []);
+
+        const response = await formApi.taskAssigned({
+          projectId: +project?.id,
+        });
+
+        setAssignedOptions(response || []);
       })();
     }
   }, [project, id]);
@@ -143,6 +191,7 @@ const TicketForm = () => {
                       <Grid id="status-bar" item xl={12}>
                         <StatusSelect
                           data={formData}
+                          status={taskStatus}
                           setData={setFormData}
                           property="status"
                           defaultValue={status?.name || "New"}
@@ -218,8 +267,9 @@ const TicketForm = () => {
                       {project ? (
                         <>
                           <Selection
-                            fetchApi={formApi?.assignedTo}
+                            fetchApi={fetchAssignedApi}
                             value={assignedTo}
+                            options={assignedOptions}
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}

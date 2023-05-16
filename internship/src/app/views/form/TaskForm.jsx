@@ -32,16 +32,44 @@ const initialValues = {
   taskEndDate: "",
   project: "",
   priority: "",
-  status: "",
+  status: {
+    name: "New",
+    id: 1,
+    version: 0,
+  },
   typeSelect: "task",
   parentTask: "",
   progressSelect: 0,
   assignedTo: "",
 };
 
+const taskStatus = [
+  {
+    name: "New",
+    id: 5,
+    version: 0,
+  },
+  {
+    name: "In progress",
+    id: 6,
+    version: 0,
+  },
+  {
+    name: "Done",
+    id: 7,
+    version: 0,
+  },
+  {
+    name: "Canceled",
+    id: 8,
+    version: 0,
+  },
+];
+
 const errorMessages = {
   name: `Subject is required`,
   project: `Project  is required`,
+  assignedTo: `This field is required`,
 };
 
 const TaskForm = () => {
@@ -95,6 +123,13 @@ const TaskForm = () => {
     }
   };
 
+  const fetchAssignedApi = async ({ value }) => {
+    return await formApi.taskAssigned({
+      value: value,
+      projectId: project?.id,
+    });
+  };
+
   const handleSave = async () => {
     setOpen(false);
     const response = await api.save(formData);
@@ -145,6 +180,7 @@ const TaskForm = () => {
                       <Grid id="status-bar" item xl={12}>
                         <StatusSelect
                           data={formData}
+                          status={taskStatus}
                           setData={setFormData}
                           property="status"
                           defaultValue={status?.name || "New"}
@@ -220,8 +256,12 @@ const TaskForm = () => {
                       {project ? (
                         <>
                           <Selection
-                            fetchApi={formApi?.assignedTo}
+                            fetchApi={fetchAssignedApi}
                             value={assignedTo}
+                            error={error?.assignedTo ? true : false}
+                            helperText={
+                              error?.assignedTo ? `${error.assignedTo}` : ""
+                            }
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}
@@ -333,6 +373,9 @@ const TaskForm = () => {
                         }
                         variant="standard"
                         fullWidth
+                        InputProps={{
+                          inputProps: { min: taskDate?.slice(0, 10) || "" },
+                        }}
                       />
                     </Grid>
                   </Grid>
@@ -372,6 +415,19 @@ const TaskForm = () => {
                   >
                     Back
                   </Button>
+                  {/* <Button
+                    fullWidth
+                    variant="contained"
+                    color="info"
+                    startIcon={
+                      <ArrowBackIosIcon className={styles["form-btn-icon"]} />
+                    }
+                    onClick={() => {
+                      formApi.taskAssigned({ value: "cyril", projectId: 115 });
+                    }}
+                  >
+                    Back
+                  </Button> */}
                 </Grid>
               </Grid>
             </Grid>

@@ -1,15 +1,16 @@
 import {
   Button,
-  Container,
   styled,
   TableBody,
   TableCell,
   tableCellClasses,
+  TableFooter,
   TableRow,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import { Delete, Edit } from "@mui/icons-material";
+import DisplayProgressBar from "app/views/tasks/table/DisplayProgressBar";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,32 +74,8 @@ const TicketTableContent = ({ data, setData, handleClickOpen }) => {
               <StyledTableCell align="center">
                 {ticket?.priority?.name || "-"}
               </StyledTableCell>
-
               <StyledTableCell align="center">
-                <div
-                  className="progress"
-                  role="progressbar"
-                  aria-label="Animated striped example"
-                  aria-valuenow="75"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                >
-                  <div
-                    className={
-                      ticket?.progressSelect <= 30
-                        ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
-                        : ticket?.progressSelect > 30 &&
-                          ticket?.progressSelect <= 50
-                        ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
-                        : ticket?.progressSelect > 50 &&
-                          ticket?.progressSelect <= 80
-                        ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
-                        : "progress-bar progress-bar-striped progress-bar-animated bg-success"
-                    }
-                    style={{ width: `${ticket?.progressSelect || "0"}% ` }}
-                  ></div>
-                  {ticket?.progressSelect || "0"}%
-                </div>
+                <DisplayProgressBar data={ticket} />
               </StyledTableCell>
               <StyledTableCell align="center">
                 {!ticket?.taskEndDate ? "-" : getDate(ticket?.taskEndDate)}
@@ -136,7 +113,13 @@ const TicketTableContent = ({ data, setData, handleClickOpen }) => {
           ))}
         </TableBody>
       ) : (
-        <Container>No Records</Container>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={12} rowSpan={7}>
+              No Records
+            </TableCell>
+          </TableRow>
+        </TableFooter>
       )}
     </>
   );

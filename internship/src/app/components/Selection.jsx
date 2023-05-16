@@ -23,7 +23,7 @@ const Selection = ({
   const handleInputChange = async (e, value) => {
     setLoader(true);
     const options = await fetchApi({ value: value });
-    setOptions(options);
+    setOptions(options || []);
     setLoader(false);
   };
 
@@ -36,7 +36,7 @@ const Selection = ({
         fullWidth
         filterOptions={(x) => x}
         value={value || null}
-        options={_options ? _options : options}
+        options={_options ? _options || [] : options}
         onInputChange={delayedSearch}
         getOptionLabel={getOptionLabel}
         noOptionsText="No Records"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button, Grid, TextField } from "@mui/material";
 
@@ -11,13 +11,18 @@ import styles from "./NavBar.module.css";
 const NavBar = ({
   title,
   View,
-  loading,
   setView,
   setPage,
+  setSearch,
   handleChange,
   path,
 }) => {
   const navigate = useNavigate();
+  const [_search, _setSearch] = useState("");
+
+  const handleChangeSearch = (e) => {
+    _setSearch(e.target.value);
+  };
 
   return (
     <Grid container className={styles["grid-container"]}>
@@ -42,21 +47,22 @@ const NavBar = ({
             id="search"
             onChange={(e) => {
               handleChange(e);
+              handleChangeSearch(e);
             }}
             name="search"
             label={`Search ${title}`}
             variant="outlined"
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                if (loading) {
-                  handleChange();
-                }
+                setSearch(_search);
               }
             }}
           />
 
           <Search
-            onClick={(e) => handleChange(e)}
+            onClick={(e) => {
+              setSearch(_search);
+            }}
             variant="contained"
             className={styles["btn-search"]}
             color="success"

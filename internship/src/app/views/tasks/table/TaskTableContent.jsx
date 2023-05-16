@@ -11,6 +11,7 @@ import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
 import { Delete, Edit } from "@mui/icons-material";
+import DisplayProgressBar from "./DisplayProgressBar";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -76,30 +77,7 @@ const TaskTableContent = ({ data, setData, handleClickOpen }) => {
               </StyledTableCell>
 
               <StyledTableCell align="center">
-                <div
-                  className="progress"
-                  role="progressbar"
-                  aria-label="Animated striped example"
-                  aria-valuenow="75"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                >
-                  <div
-                    className={
-                      task?.progressSelect <= 30
-                        ? "progress-bar progress-bar-striped progress-bar-animated bg-danger"
-                        : task?.progressSelect > 30 &&
-                          task?.progressSelect <= 50
-                        ? "progress-bar progress-bar-striped progress-bar-animated bg-warning"
-                        : task?.progressSelect > 50 &&
-                          task?.progressSelect <= 80
-                        ? "progress-bar progress-bar-striped progress-bar-animated bg-info"
-                        : "progress-bar progress-bar-striped progress-bar-animated bg-success"
-                    }
-                    style={{ width: `${task?.progressSelect || "0"}% ` }}
-                  ></div>
-                  {task?.progressSelect || "0"}%
-                </div>
+                <DisplayProgressBar data={task} />
               </StyledTableCell>
               <StyledTableCell align="center">
                 {!task?.taskEndDate ? "-" : getDate(task?.taskEndDate)}

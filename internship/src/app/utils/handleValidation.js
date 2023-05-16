@@ -10,7 +10,6 @@ const handleValidation = (data, errorMessages, startDate, endDate) => {
     error["endDate"] = `Invalid End Date`;
   }
 
-  console.log(`error >>>`, error);
   return error;
 };
 

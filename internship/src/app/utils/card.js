@@ -5,6 +5,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import { Container } from "@mui/system";
 import { Link } from "react-router-dom";
 
 const projectCard = (project, handleClickOpen, setData) => {
@@ -25,11 +26,7 @@ const projectCard = (project, handleClickOpen, setData) => {
       </CardContent>
       <CardActions>
         <Link to={`${project?.id}`}>
-          <IconButton
-            variant="contained"
-            onClick={() => console.log(project.id)}
-            color="success"
-          >
+          <IconButton variant="contained" color="success">
             <Edit />
           </IconButton>
         </Link>
@@ -57,7 +54,7 @@ const taskCard = (task, handleClickOpen, setData) => {
         <Typography variant="h5" component="div">
           {task?.name || "-"}
         </Typography>
-        <Typography sx={{ mb: 1.5, width: "30%" }} color="text.secondary">
+        <Container sx={{ mb: 1.5, width: "30%" }} color="text.secondary">
           <div
             className="progress"
             role="progressbar"
@@ -80,7 +77,7 @@ const taskCard = (task, handleClickOpen, setData) => {
             ></div>
             {task?.progressSelect || "0"}%
           </div>
-        </Typography>
+        </Container>
         <Typography>
           Priority- <b>{task?.priority?.name || "-"}</b>
         </Typography>

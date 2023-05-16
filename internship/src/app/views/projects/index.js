@@ -43,13 +43,12 @@ export function Projects() {
     setPage(1);
   };
 
-  const debouncedChangeSearch = useDebounce(handleChangeSearch);
-
   const handleFetch = useCallback(async ({ offset, search }) => {
     const response = await api.find({ offset, search });
     setProjects(response?.data);
     setTotal(response?.total);
   }, []);
+  const debouncedChangeSearch = useDebounce(handleChangeSearch);
 
   useEffect(() => {
     setLoading(true);
@@ -79,12 +78,11 @@ export function Projects() {
       <NavBar
         title="Project"
         View={View}
-        loading={loading}
         setView={setView}
         path="/projects/new"
         setPage={setPage}
+        setSearch={setSearch}
         handleChange={debouncedChangeSearch}
-        search={search}
       />
 
       <List
