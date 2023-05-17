@@ -54,6 +54,7 @@ const initialValues = {
       version: 0,
     },
   ],
+  createdBy: { code: "admin", fullName: "Admin", id: 1, $version: 6 },
   projectTaskStatusSet: [
     {
       name: "New",
@@ -81,10 +82,12 @@ const initialValues = {
     id: 1,
     version: 0,
   },
-  isBusinessProject: true,
+  isBusinessProject: false,
   assignedTo: {
+    code: "admin",
     fullName: "Admin",
     id: 1,
+    version: 6,
   },
 };
 
@@ -204,6 +207,10 @@ const ProjectForm = () => {
     });
   };
 
+  const fetchParentProject = ({ value }) => {
+    return formApi.projects({ value: value, id: id });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errors = handleValidation(formData, errorMessages, fromDate, toDate);
@@ -219,6 +226,21 @@ const ProjectForm = () => {
     setShowMessage(response ? true : false);
     setOpen(false);
   };
+
+  const date = new Date();
+  const getDate = (val) => {
+    var date = new Date(val);
+
+    var d = date.getDate();
+    var m = date.getMonth() + 1;
+    var y = date.getFullYear();
+
+    var dateString =
+      y + "-" + (m <= 9 ? "0" + m : m) + "-" + (d <= 9 ? "0" + d : d);
+    return dateString;
+  };
+
+  console.log(formData);
 
   return (
     <>
@@ -493,7 +515,7 @@ const ProjectForm = () => {
                     <Grid id="parent-project" item xl={12} p={1}>
                       <Selection
                         label="Parent Project"
-                        fetchApi={formApi?.projects}
+                        fetchApi={fetchParentProject}
                         value={parentProject}
                         getOptionLabel={(option) => {
                           return option?.fullName;
@@ -535,7 +557,8 @@ const ProjectForm = () => {
                           id="fromDate"
                           name="fromDate"
                           type="date"
-                          value={fromDate?.slice(0, 10) || ""}
+                          defaultValue={getDate(date)}
+                          value={fromDate?.slice(0, 10)}
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)
                           }
@@ -559,6 +582,9 @@ const ProjectForm = () => {
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)
                           }
+                          InputProps={{
+                            inputProps: { min: fromDate?.slice(0, 10) || "" },
+                          }}
                           variant="standard"
                           fullWidth
                         />

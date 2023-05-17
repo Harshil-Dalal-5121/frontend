@@ -26,7 +26,7 @@ const NavBar = ({
 
   return (
     <Grid container className={styles["grid-container"]}>
-      <Grid item xs={4} sm={4} className={styles["grid-item-new"]}>
+      <Grid item md={4} xs={12} className={styles["grid-item-new"]}>
         <Button
           variant="contained"
           color="info"
@@ -37,10 +37,10 @@ const NavBar = ({
           Create {title}
         </Button>
       </Grid>
-      <Grid item xs={4} sm={4} className={styles["grid-item-view"]}>
+      <Grid item md={4} xs={12} className={styles["grid-item-view"]}>
         <Toolbar setView={setView} View={View} setPage={setPage} />
       </Grid>
-      <Grid item xs={4} sm={4} className={styles["grid-item-search"]}>
+      <Grid item md={4} xs={12} className={styles["grid-item-search"]}>
         <div className={styles["grid-container-search"]}>
           <TextField
             className={styles["m1"]}

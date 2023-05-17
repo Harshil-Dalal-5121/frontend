@@ -6,4 +6,5 @@ export * from "./StatusSelect";
 export * from "./ProgressBar";
 export * from "./Selection";
 export * from "./Card";
+export * from "./FlashMessage";
 export * from "./iOSSwitch";

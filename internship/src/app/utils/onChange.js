@@ -29,8 +29,10 @@ const onChange = {
       membersUserSet: value
         ? [
             {
+              code: "admin",
               fullName: "Admin",
               id: 1,
+              version: 6,
             },
             {
               id: value?.id || "",

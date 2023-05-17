@@ -19,7 +19,7 @@
 }
 
 .box-shadow {
-    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 2px 3px 10px 0px rgba(0, 0, 0, 0.15) !important;
 }
 
 .badge {
@@ -32,7 +32,7 @@
 .form-fields {
 
     border-radius: 10px !important;
-    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 2px 3px 10px 0px rgba(0, 0, 0, 0.15) !important;
 }
 
 .form-btn {
@@ -57,5 +57,5 @@
 
 .actions {
     border-radius: 10px !important;
-    box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 2px 3px 10px 0px rgba(0, 0, 0, 0.15) !important;
 }

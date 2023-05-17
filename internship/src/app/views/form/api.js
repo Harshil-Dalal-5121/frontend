@@ -10,11 +10,11 @@ const action = axios.create({
 });
 
 const formApi = {
-  projects: async ({ value }) => {
+  projects: async ({ value, id }) => {
     try {
       const response = await rest.post(
         `${model}/search`,
-        requestBody.project(value)
+        requestBody.project({ value, id })
       );
 
       if (response && response?.data?.status === 0) {

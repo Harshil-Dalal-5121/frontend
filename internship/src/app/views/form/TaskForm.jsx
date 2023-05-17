@@ -164,12 +164,12 @@ const TaskForm = () => {
             <Grid
               id="container"
               className={styles["box-shadow"]}
-              container
               p={1}
+              container
               spacing={2}
-              justifyContent="center"
+              justifyContent="space-between"
             >
-              <Grid item xl={10}>
+              <Grid item xs={10}>
                 <Grid
                   id="form-fields"
                   item
@@ -179,7 +179,7 @@ const TaskForm = () => {
                 >
                   {id ? (
                     <Grid id="status" container>
-                      <Grid id="status-bar" item xl={12}>
+                      <Grid id="status-bar" item xs={12}>
                         <StatusSelect
                           data={formData}
                           status={taskStatus}
@@ -191,7 +191,7 @@ const TaskForm = () => {
                     </Grid>
                   ) : null}
                   <Grid id="subject" container spacing={2} p={1}>
-                    <Grid id="subject" item xl={9}>
+                    <Grid id="subject" item sm={9} xs={12}>
                       <InputLabel error={error?.name ? true : false}>
                         Subject
                       </InputLabel>
@@ -210,7 +210,7 @@ const TaskForm = () => {
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} id="project-parentTask" p={2}>
-                    <Grid id="project" item xl={5.5}>
+                    <Grid id="project" item sm={5.5} xs={12}>
                       <Selection
                         label="Parent Project"
                         name="project"
@@ -227,7 +227,7 @@ const TaskForm = () => {
                       />
                     </Grid>
 
-                    <Grid id="parentTask" item xl={5.5}>
+                    <Grid id="parentTask" item sm={5.5} xs={12}>
                       {project ? (
                         <>
                           <Selection
@@ -256,7 +256,7 @@ const TaskForm = () => {
                     </Grid>
                   </Grid>
                   <Grid id="assignedto" container spacing={2} p={2}>
-                    <Grid id="assigned to" item xl={6}>
+                    <Grid id="assigned to" item sm={6} xs={12}>
                       {project ? (
                         <>
                           <Selection
@@ -305,7 +305,7 @@ const TaskForm = () => {
                       </Typography>
 
                       <Grid container p={2} spacing={4}>
-                        <Grid id="priority" item xl={5}>
+                        <Grid id="priority" item sm={5} xs={12}>
                           <Selection
                             label=" Priority"
                             fetchApi={formApi?.priority}
@@ -323,7 +323,7 @@ const TaskForm = () => {
                             }
                           />
                         </Grid>
-                        <Grid id="progress-bar" item xl={5}>
+                        <Grid id="progress-bar" item sm={5} xs={12}>
                           <InputLabel>Progress</InputLabel>
                           <ProgressBar
                             name="progressSelect"
@@ -347,7 +347,7 @@ const TaskForm = () => {
                   </Typography>
 
                   <Grid container p={2} spacing={2}>
-                    <Grid id="fromDate" item xl={5}>
+                    <Grid id="fromDate" item sm={5} xs={12}>
                       <InputLabel>From Date</InputLabel>
                       <TextField
                         fullWidth
@@ -361,7 +361,7 @@ const TaskForm = () => {
                         variant="standard"
                       />
                     </Grid>
-                    <Grid id="to date" item xl={5}>
+                    <Grid id="to date" item sm={5} xs={12}>
                       <InputLabel error={error?.endDate ? true : false}>
                         To Date
                       </InputLabel>
@@ -385,8 +385,8 @@ const TaskForm = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xl={2}>
-                <Grid id="add-btn" item xl={12} m={1} p={1}>
+              <Grid item md={2} xs={12}>
+                <Grid id="add-btn" item md={12} xs={5} m={1} p={1}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -405,7 +405,7 @@ const TaskForm = () => {
                     {id ? "Update" : "Add"}
                   </Button>
                 </Grid>
-                <Grid id="cancel-btn" item xl={12} m={1} p={1}>
+                <Grid id="cancel-btn" item md={12} xs={5} m={1} p={1}>
                   <Button
                     fullWidth
                     variant="contained"

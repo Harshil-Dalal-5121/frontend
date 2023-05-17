@@ -37,12 +37,14 @@ const initialValues = {
     id: 1,
     version: 0,
   },
-  typeSelect: "task",
+  typeSelect: "ticket",
   parentTask: "",
   progressSelect: 0,
   assignedTo: {
+    code: "admin",
     fullName: "Admin",
     id: 1,
+    version: 6,
   },
 };
 
@@ -79,7 +81,6 @@ const TicketForm = () => {
   const [open, setOpen] = useState(false);
   const [error, setErrors] = useState({});
   const [parentTasks, setParentTasks] = useState([]);
-  const [assignedOptions, setAssignedOptions] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
 
   const navigate = useNavigate();
@@ -128,12 +129,10 @@ const TicketForm = () => {
   };
 
   const fetchAssignedApi = async ({ value }) => {
-    const response = await formApi.taskAssigned({
+    return await formApi.taskAssigned({
       value: value,
       projectId: project?.id,
     });
-
-    setAssignedOptions(response || []);
   };
 
   const handleSave = async () => {
@@ -150,12 +149,6 @@ const TicketForm = () => {
           taskId: +id,
         });
         setParentTasks(options || []);
-
-        const response = await formApi.taskAssigned({
-          projectId: +project?.id,
-        });
-
-        setAssignedOptions(response || []);
       })();
     }
   }, [project, id]);
@@ -174,12 +167,12 @@ const TicketForm = () => {
             <Grid
               id="container"
               className={styles["box-shadow"]}
-              container
               p={1}
+              container
               spacing={2}
-              justifyContent="center"
+              justifyContent="space-between"
             >
-              <Grid item xl={10}>
+              <Grid item xs={10}>
                 <Grid
                   id="form-fields"
                   item
@@ -189,7 +182,7 @@ const TicketForm = () => {
                 >
                   {id ? (
                     <Grid id="status" container>
-                      <Grid id="status-bar" item xl={12}>
+                      <Grid id="status-bar" item xs={12}>
                         <StatusSelect
                           data={formData}
                           status={taskStatus}
@@ -201,10 +194,13 @@ const TicketForm = () => {
                     </Grid>
                   ) : null}
                   <Grid id="subject" container spacing={2} p={1}>
-                    <Grid id="subject" item xl={9}>
+                    <Grid id="subject" item sm={9} xs={12}>
+                      <InputLabel error={error?.name ? true : false}>
+                        Subject
+                      </InputLabel>
                       <TextField
                         value={name || ""}
-                        onChange={(e) =>
+                        onChange={(e, value) =>
                           onChange?.change(e, formData, setFormData)
                         }
                         fullWidth
@@ -213,16 +209,15 @@ const TicketForm = () => {
                         id="name"
                         name="name"
                         variant="standard"
-                        label="Subject"
                       />
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} id="project-parentTask" p={2}>
-                    <Grid id="project" item xl={5.5}>
+                    <Grid id="project" item sm={5.5} xs={12}>
                       <Selection
                         label="Parent Project"
                         name="project"
-                        fetchApi={formApi?.projects}
+                        fetchApi={formApi?.availableProject}
                         value={project}
                         error={error?.project ? true : false}
                         helperText={error?.project ? `${error.project}` : ""}
@@ -235,7 +230,7 @@ const TicketForm = () => {
                       />
                     </Grid>
 
-                    <Grid id="parentTask" item xl={5.5}>
+                    <Grid id="parentTask" item sm={5.5} xs={12}>
                       {project ? (
                         <>
                           <Selection
@@ -246,6 +241,7 @@ const TicketForm = () => {
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}
+                            load={parentTask ? true : false}
                             handleChange={(e, value) =>
                               onChange?.parentTask(
                                 e,
@@ -264,13 +260,16 @@ const TicketForm = () => {
                     </Grid>
                   </Grid>
                   <Grid id="assignedto" container spacing={2} p={2}>
-                    <Grid id="assigned to" item xl={6}>
+                    <Grid id="assigned to" item sm={6} xs={12}>
                       {project ? (
                         <>
                           <Selection
                             fetchApi={fetchAssignedApi}
                             value={assignedTo}
-                            options={assignedOptions}
+                            error={error?.assignedTo ? true : false}
+                            helperText={
+                              error?.assignedTo ? `${error.assignedTo}` : ""
+                            }
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}
@@ -310,7 +309,7 @@ const TicketForm = () => {
                       </Typography>
 
                       <Grid container p={2} spacing={4}>
-                        <Grid id="priority" item xl={5}>
+                        <Grid id="priority" item sm={5} xs={12}>
                           <Selection
                             label=" Priority"
                             fetchApi={formApi?.priority}
@@ -328,7 +327,7 @@ const TicketForm = () => {
                             }
                           />
                         </Grid>
-                        <Grid id="progress-bar" item xl={5}>
+                        <Grid id="progress-bar" item sm={5} xs={12}>
                           <InputLabel>Progress</InputLabel>
                           <ProgressBar
                             name="progressSelect"
@@ -350,9 +349,9 @@ const TicketForm = () => {
                   <Typography component="h6" variant="h6">
                     Dates
                   </Typography>
-                  <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.15)" }} />
+
                   <Grid container p={2} spacing={2}>
-                    <Grid id="fromDate" item xl={5}>
+                    <Grid id="fromDate" item sm={5} xs={12}>
                       <InputLabel>From Date</InputLabel>
                       <TextField
                         fullWidth
@@ -366,7 +365,7 @@ const TicketForm = () => {
                         variant="standard"
                       />
                     </Grid>
-                    <Grid id="to date" item xl={5}>
+                    <Grid id="to date" item sm={5} xs={12}>
                       <InputLabel error={error?.endDate ? true : false}>
                         To Date
                       </InputLabel>
@@ -382,13 +381,16 @@ const TicketForm = () => {
                         }
                         variant="standard"
                         fullWidth
+                        InputProps={{
+                          inputProps: { min: taskDate?.slice(0, 10) || "" },
+                        }}
                       />
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xl={2}>
-                <Grid id="add-btn" item xl={12} m={1} p={1}>
+              <Grid item md={2} xs={12}>
+                <Grid id="add-btn" item md={12} xs={5} m={1} p={1}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -407,7 +409,7 @@ const TicketForm = () => {
                     {id ? "Update" : "Add"}
                   </Button>
                 </Grid>
-                <Grid id="cancel-btn" item xl={12} m={1} p={1}>
+                <Grid id="cancel-btn" item md={12} xs={5} m={1} p={1}>
                   <Button
                     fullWidth
                     variant="contained"

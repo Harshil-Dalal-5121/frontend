@@ -1,10 +1,18 @@
 const requestBody = {
-  project: (value) => {
+  project: ({ value, id }) => {
     return {
       data: {
         code: value,
         fullName: value,
-        _domainContext: {},
+
+        if(id) {
+          return {
+            _domain: " self.id != :id",
+            _domainContext: {
+              id: id,
+            },
+          };
+        },
       },
       fields: ["id", "fullName", "code"],
     };

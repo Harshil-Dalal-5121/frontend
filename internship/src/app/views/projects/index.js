@@ -11,6 +11,7 @@ import { useDebounce } from "../../services/custom-hooks/useDebounce";
 import api from "./api";
 import { projectCard } from "./../../utils/card";
 import CardList from "app/components/Card";
+import { Grid } from "@mui/material";
 
 const View = {
   table: "table",
@@ -66,38 +67,44 @@ export function Projects() {
 
   return (
     <>
-      <legend>
-        <Typography
-          variant={"h3"}
-          style={{ margin: "0 auto ", textAlign: "center" }}
-        >
-          {t("Projects")}
-        </Typography>
-      </legend>
-
-      <NavBar
-        title="Project"
-        View={View}
-        path="/projects/new"
-        setView={setView}
-        setPage={setPage}
-        setSearch={setSearch}
-        handleChange={debouncedChangeSearch}
-      />
-
-      <List
-        ViewComponent={ViewComponent}
-        view={view}
-        data={projects}
-        loading={loading}
-        total={total}
-        setTotal={setTotal}
-        api={api}
-        page={page}
-        limit={LIMIT}
-        setData={setProjects}
-        setPage={setPage}
-      />
+      <Grid>
+        <Grid item xs={12}>
+          <legend>
+            <Typography
+              variant={"h3"}
+              style={{ margin: "0 auto ", textAlign: "center" }}
+            >
+              {t("Projects")}
+            </Typography>
+          </legend>
+        </Grid>
+        <Grid item xs={12}>
+          <NavBar
+            title="Project"
+            View={View}
+            path="/projects/new"
+            setView={setView}
+            setPage={setPage}
+            setSearch={setSearch}
+            handleChange={debouncedChangeSearch}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <List
+            ViewComponent={ViewComponent}
+            view={view}
+            data={projects}
+            loading={loading}
+            total={total}
+            setTotal={setTotal}
+            api={api}
+            page={page}
+            limit={LIMIT}
+            setData={setProjects}
+            setPage={setPage}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 }
