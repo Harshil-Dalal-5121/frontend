@@ -85,7 +85,7 @@ const ProjectTable = ({
         </Container>
       ) : (
         <TableContainer className={styles["table-container"]} component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="customized table">
+          <Table sx={{ width: "100%" }} aria-label="customized table">
             <ProjectTableHeader />
             <ProjectTableContent
               data={data}
@@ -103,6 +103,7 @@ const ProjectTable = ({
         page={page}
         handleChange={handleChange}
       />
+
       <DialogBox
         type="Delete"
         open={open}

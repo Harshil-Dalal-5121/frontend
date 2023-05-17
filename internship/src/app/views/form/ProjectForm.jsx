@@ -29,7 +29,9 @@ import IOSSwitch from "./../../components/iOSSwitch";
 import { InputLabel } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import FlashMessage from "app/components/FlashMessage";
+import getDate from "app/utils/helperFunctions";
 
+const date = new Date();
 const initialValues = {
   imputable: false,
   projectTaskPrioritySet: [
@@ -89,6 +91,7 @@ const initialValues = {
     id: 1,
     version: 6,
   },
+  fromDate: getDate(date),
 };
 
 const status = [
@@ -225,19 +228,6 @@ const ProjectForm = () => {
     const response = await api.save(formData);
     setShowMessage(response ? true : false);
     setOpen(false);
-  };
-
-  const date = new Date();
-  const getDate = (val) => {
-    var date = new Date(val);
-
-    var d = date.getDate();
-    var m = date.getMonth() + 1;
-    var y = date.getFullYear();
-
-    var dateString =
-      y + "-" + (m <= 9 ? "0" + m : m) + "-" + (d <= 9 ? "0" + d : d);
-    return dateString;
   };
 
   console.log(formData);
@@ -557,8 +547,7 @@ const ProjectForm = () => {
                           id="fromDate"
                           name="fromDate"
                           type="date"
-                          defaultValue={getDate(date)}
-                          value={fromDate?.slice(0, 10)}
+                          value={fromDate?.slice(0, 10) || ""}
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)
                           }

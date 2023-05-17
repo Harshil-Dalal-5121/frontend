@@ -7,7 +7,7 @@ const PaginationComponent = ({ total, limit, page, handleChange }) => {
   return (
     <>
       <div>
-        <Grid container className={styles["pagination-grid"]}>
+        <Grid container spacing={2} className={styles["pagination-grid"]}>
           <Grid item xs={12} sm={4} align="center">
             Total Items: {total}
           </Grid>

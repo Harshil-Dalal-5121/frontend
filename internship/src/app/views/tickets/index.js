@@ -11,6 +11,7 @@ import { useDebounce } from "../../services/custom-hooks/useDebounce";
 import api from "./api";
 import { taskCard } from "app/utils/card";
 import CardList from "app/components/Card";
+import { Grid } from "@mui/material";
 
 const View = {
   table: "table",
@@ -66,38 +67,46 @@ export function Tickets() {
 
   return (
     <>
-      <legend>
-        <Typography
-          variant={"h3"}
-          style={{ margin: "0 auto ", textAlign: "center" }}
-        >
-          {t("Tickets")}
-        </Typography>
-      </legend>
-
-      <NavBar
-        title="Ticket"
-        path="/tickets/new"
-        View={View}
-        setView={setView}
-        setPage={setPage}
-        setSearch={setSearch}
-        handleChange={debouncedChangeSearch}
-      />
-
-      <List
-        ViewComponent={ViewComponent}
-        view={view}
-        data={tickets}
-        setTotal={setTotal}
-        api={api}
-        loading={loading}
-        total={total}
-        page={page}
-        limit={LIMIT}
-        setData={setTickets}
-        setPage={setPage}
-      />
+      <Grid>
+        <Grid item xs={12}>
+          {" "}
+          <legend>
+            <Typography
+              variant={"h3"}
+              style={{ margin: "0 auto ", textAlign: "center" }}
+            >
+              {t("Tickets")}
+            </Typography>
+          </legend>
+        </Grid>
+        <Grid item xs={12}>
+          {" "}
+          <NavBar
+            title="Ticket"
+            path="/tickets/new"
+            View={View}
+            setView={setView}
+            setPage={setPage}
+            setSearch={setSearch}
+            handleChange={debouncedChangeSearch}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <List
+            ViewComponent={ViewComponent}
+            view={view}
+            data={tickets}
+            setTotal={setTotal}
+            api={api}
+            loading={loading}
+            total={total}
+            page={page}
+            limit={LIMIT}
+            setData={setTickets}
+            setPage={setPage}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 }

@@ -2,7 +2,7 @@ import Typography from "@mui/material/Typography";
 import { List } from "app/components/ListComponent";
 import { useTranslation } from "app/services/translate";
 import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 import ProjectTable from "./table/ProjectTable";
 import NavBar from "app/components/NavBar";
@@ -38,6 +38,9 @@ export function Projects() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(Number(searchParams.get("page") || 1));
   const { t } = useTranslation();
+
+  const state = useLocation();
+  console.log(state);
 
   const handleChangeSearch = (event) => {
     setSearch(event.target.value);

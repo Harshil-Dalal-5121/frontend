@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 
 import { Delete, Edit } from "@mui/icons-material";
 import DisplayProgressBar from "app/views/tasks/table/DisplayProgressBar";
+import getDate from "app/utils/helperFunctions";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,18 +34,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const TicketTableContent = ({ data, setData, handleClickOpen }) => {
-  const getDate = (val) => {
-    var date = new Date(val); // M-D-YYYY
-
-    var d = date.getDate();
-    var m = date.getMonth() + 1;
-    var y = date.getFullYear();
-
-    var dateString =
-      (d <= 9 ? "0" + d : d) + "-" + (m <= 9 ? "0" + m : m) + "-" + y;
-    return dateString;
-  };
-
   return (
     <>
       {data ? (

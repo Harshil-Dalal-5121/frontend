@@ -40,7 +40,12 @@ const initialValues = {
   typeSelect: "task",
   parentTask: "",
   progressSelect: 0,
-  assignedTo: "",
+  assignedTo: {
+    code: "admin",
+    fullName: "Admin",
+    id: 1,
+    version: 6,
+  },
 };
 
 const taskStatus = [

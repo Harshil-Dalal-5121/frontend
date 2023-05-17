@@ -11,6 +11,7 @@ import { useDebounce } from "../../services/custom-hooks/useDebounce";
 import api from "./api";
 import { taskCard } from "app/utils/card";
 import CardList from "app/components/Card";
+import { Grid } from "@mui/material";
 
 const View = {
   table: "table",
@@ -66,38 +67,45 @@ export function Projects() {
 
   return (
     <>
-      <legend>
-        <Typography
-          variant={"h3"}
-          style={{ margin: "0 auto ", textAlign: "center" }}
-        >
-          {t("Tasks")}
-        </Typography>
-      </legend>
-
-      <NavBar
-        title="Task"
-        path="/tasks/new"
-        View={View}
-        setView={setView}
-        setPage={setPage}
-        setSearch={setSearch}
-        handleChange={debouncedChangeSearch}
-      />
-
-      <List
-        ViewComponent={ViewComponent}
-        view={view}
-        data={tasks}
-        loading={loading}
-        total={total}
-        page={page}
-        limit={LIMIT}
-        api={api}
-        setTotal={setTotal}
-        setData={setTasks}
-        setPage={setPage}
-      />
+      <Grid>
+        <Grid item xs={12}>
+          {" "}
+          <legend>
+            <Typography
+              variant={"h3"}
+              style={{ margin: "0 auto ", textAlign: "center" }}
+            >
+              {t("Tasks")}
+            </Typography>
+          </legend>
+        </Grid>
+        <Grid item xs={12}>
+          <NavBar
+            title="Task"
+            path="/tasks/new"
+            View={View}
+            setView={setView}
+            setPage={setPage}
+            setSearch={setSearch}
+            handleChange={debouncedChangeSearch}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <List
+            ViewComponent={ViewComponent}
+            view={view}
+            data={tasks}
+            loading={loading}
+            total={total}
+            page={page}
+            limit={LIMIT}
+            api={api}
+            setTotal={setTotal}
+            setData={setTasks}
+            setPage={setPage}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 }

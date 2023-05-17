@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Autocomplete,
   CircularProgress,
@@ -20,13 +20,24 @@ const Selection = ({
   //
   load = true,
 }) => {
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const loading = open && options.length === 0 && load;
+  const loader = open && load;
+  const [loading, setLoading] = React.useState(null);
+  const [autoSearch, setAutoSearch] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(loader);
+  }, [loader]);
 
   const handleInputChange = async (e, value) => {
+    if (value) {
+      setAutoSearch(false);
+    }
+    setLoading(true);
     const options = await fetchApi({ value: value });
     setOptions(options || []);
+    setLoading(false);
   };
 
   const delayedSearch = useDebounce(handleInputChange);
@@ -49,17 +60,19 @@ const Selection = ({
         return undefined;
       }
 
-      if (active) {
+      if (active && autoSearch) {
         (async () => {
+          setLoading(true);
           const response = await fetchOps();
           setOptions(response || []);
+          setLoading(false);
         })();
       }
       return () => {
         active = false;
       };
     }
-  }, [fetchOps, loading, open]);
+  }, [fetchOps, autoSearch, loading, open]);
 
   React.useEffect(() => {
     if (!open) {

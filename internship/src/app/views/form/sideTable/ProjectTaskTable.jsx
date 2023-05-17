@@ -18,6 +18,7 @@ import PaginationComponent from "app/components/Pagination";
 import api from "../../tasks/api";
 
 import styles from "./ProjectTaskTable.module.css";
+import getDate from "app/utils/helperFunctions";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -56,18 +57,6 @@ const ProjectTaskTable = ({ id }) => {
     setTasks(data?.data);
     setTotal(data?.total);
   }, []);
-
-  const getDate = (val) => {
-    var date = new Date(val);
-
-    var d = date.getDate();
-    var m = date.getMonth() + 1;
-    var y = date.getFullYear();
-
-    var dateString =
-      (d <= 9 ? "0" + d : d) + "-" + (m <= 9 ? "0" + m : m) + "-" + y;
-    return dateString;
-  };
 
   useEffect(() => {
     setLoading(true);
