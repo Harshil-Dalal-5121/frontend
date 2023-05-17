@@ -9,6 +9,17 @@ const requestBody = {
       fields: ["id", "fullName", "code"],
     };
   },
+  availableProject: (value) => {
+    return {
+      data: {
+        code: value,
+        fullName: value,
+        _domain: "self.projectStatus.isCompleted = false",
+        _domainContext: {},
+      },
+      fields: ["id", "fullName", "code"],
+    };
+  },
 
   priority: (value) => {
     return {

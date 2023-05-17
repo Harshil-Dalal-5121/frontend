@@ -13,21 +13,59 @@ const Selection = ({
   getOptionLabel,
   handleChange,
   label,
+  //
   options: _options,
   error,
   helperText,
+  //
+  load = true,
 }) => {
   const [options, setOptions] = useState([]);
-  const [loader, setLoader] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const loading = open && options.length === 0 && load;
 
   const handleInputChange = async (e, value) => {
-    setLoader(true);
     const options = await fetchApi({ value: value });
     setOptions(options || []);
-    setLoader(false);
   };
 
   const delayedSearch = useDebounce(handleInputChange);
+
+  const fetchOps = React.useCallback(async () => {
+    try {
+      const response = await fetchApi({ value: "" });
+
+      return response;
+    } catch (err) {
+      console.error(err);
+    }
+  }, [fetchApi]);
+
+  React.useEffect(() => {
+    if (open) {
+      let active = true;
+
+      if (!loading) {
+        return undefined;
+      }
+
+      if (active) {
+        (async () => {
+          const response = await fetchOps();
+          setOptions(response || []);
+        })();
+      }
+      return () => {
+        active = false;
+      };
+    }
+  }, [fetchOps, loading, open]);
+
+  React.useEffect(() => {
+    if (!open) {
+      setOptions([]);
+    }
+  }, [open]);
 
   return (
     <>
@@ -43,6 +81,13 @@ const Selection = ({
         isOptionEqualToValue={(option, value) =>
           option?.value === value?.value || value === ""
         }
+        loading={loading}
+        onOpen={() => {
+          setOpen(true);
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
         onChange={(e, value) => handleChange(e, value)}
         renderInput={(params) => (
           <TextField
@@ -54,7 +99,7 @@ const Selection = ({
               ...params.InputProps,
               endAdornment: (
                 <>
-                  {loader ? (
+                  {loading ? (
                     <CircularProgress color="inherit" size={20} />
                   ) : null}
                   {params.InputProps.endAdornment}

@@ -6,5 +6,4 @@ export * from "./StatusSelect";
 export * from "./ProgressBar";
 export * from "./Selection";
 export * from "./Card";
-export * from "./LoadOnOpenSelection";
 export * from "./iOSSwitch";

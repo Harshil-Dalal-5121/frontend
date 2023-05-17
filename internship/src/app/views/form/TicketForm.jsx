@@ -24,7 +24,6 @@ import ProgressBar from "app/components/ProgressBar";
 import { Add } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
 
 const initialValues = {
   name: "",
@@ -310,7 +309,7 @@ const TicketForm = () => {
 
                       <Grid container p={2} spacing={4}>
                         <Grid id="priority" item xl={5}>
-                          <LoadOnOpenSelection
+                          <Selection
                             label=" Priority"
                             fetchApi={formApi?.priority}
                             value={priority}

@@ -24,7 +24,6 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Add } from "@mui/icons-material";
-import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
 
 const initialValues = {
   name: "",
@@ -70,6 +69,7 @@ const errorMessages = {
   name: `Subject is required`,
   project: `Project  is required`,
   assignedTo: `This field is required`,
+  priority: `Hell`,
 };
 
 const TaskForm = () => {
@@ -190,6 +190,9 @@ const TaskForm = () => {
                   ) : null}
                   <Grid id="subject" container spacing={2} p={1}>
                     <Grid id="subject" item xl={9}>
+                      <InputLabel error={error?.name ? true : false}>
+                        Subject
+                      </InputLabel>
                       <TextField
                         value={name || ""}
                         onChange={(e, value) =>
@@ -201,7 +204,6 @@ const TaskForm = () => {
                         id="name"
                         name="name"
                         variant="standard"
-                        label="Subject"
                       />
                     </Grid>
                   </Grid>
@@ -210,7 +212,7 @@ const TaskForm = () => {
                       <Selection
                         label="Parent Project"
                         name="project"
-                        fetchApi={formApi?.projects}
+                        fetchApi={formApi?.availableProject}
                         value={project}
                         error={error?.project ? true : false}
                         helperText={error?.project ? `${error.project}` : ""}
@@ -302,7 +304,7 @@ const TaskForm = () => {
 
                       <Grid container p={2} spacing={4}>
                         <Grid id="priority" item xl={5}>
-                          <LoadOnOpenSelection
+                          <Selection
                             label=" Priority"
                             fetchApi={formApi?.priority}
                             value={priority}

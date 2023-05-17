@@ -26,7 +26,6 @@ import DialogBox from "app/components/Dialog";
 import handleValidation from "app/utils/handleValidation";
 import onChange from "../../utils/onChange";
 import IOSSwitch from "./../../components/iOSSwitch";
-import LoadOnOpenSelection from "app/components/LoadOnOpenSelection";
 import { InputLabel } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -134,7 +133,7 @@ const ProjectForm = () => {
   const navigate = useNavigate();
 
   const { loading } = useFetchRecord(id, api.fetch, setFormData);
-  console.log(formData);
+
   const {
     clientPartner,
     assignedTo,
@@ -339,10 +338,11 @@ const ProjectForm = () => {
                   {isBusinessProject ? (
                     <>
                       <Grid id="customer" item md={4} xs={8}>
-                        <LoadOnOpenSelection
+                        <Selection
                           label="Customer"
                           fetchApi={fetchCustomerApi}
                           value={clientPartner}
+                          load={company ? true : false}
                           getOptionLabel={(option) => {
                             return option.fullName;
                           }}
@@ -383,6 +383,7 @@ const ProjectForm = () => {
                           getOptionLabel={(option) => {
                             return option?.fullName;
                           }}
+                          load={company ? true : false}
                           options={customerContactOptions}
                           handleChange={(e, value) =>
                             onChange?.customerContact(
@@ -399,6 +400,7 @@ const ProjectForm = () => {
                           label="Address"
                           fetchApi={fetchAddressApi}
                           value={customerAddress}
+                          load={company ? true : false}
                           getOptionLabel={(option) => {
                             return option?.fullName;
                           }}

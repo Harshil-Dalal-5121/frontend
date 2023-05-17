@@ -25,6 +25,21 @@ const formApi = {
     }
   },
 
+  availableProject: async ({ value }) => {
+    try {
+      const response = await rest.post(
+        `${model}/search`,
+        requestBody.availableProject(value)
+      );
+
+      if (response && response?.data?.status === 0) {
+        return response?.data?.data || [];
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   fetchParentTaskAction: async ({ projectId, taskId }) => {
     try {
       const response = await action.post(
