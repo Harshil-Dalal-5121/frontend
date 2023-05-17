@@ -77,13 +77,12 @@ export function Projects() {
 
       <NavBar
         title="Task"
-        View={View}
-        loading={loading}
-        setView={setView}
         path="/tasks/new"
+        View={View}
+        setView={setView}
         setPage={setPage}
+        setSearch={setSearch}
         handleChange={debouncedChangeSearch}
-        search={search}
       />
 
       <List

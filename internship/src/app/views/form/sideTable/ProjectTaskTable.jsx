@@ -9,6 +9,7 @@ import {
   TableCell,
   tableCellClasses,
   TableContainer,
+  TableFooter,
   TableHead,
   TableRow,
 } from "@mui/material";
@@ -150,7 +151,11 @@ const ProjectTaskTable = ({ id }) => {
                     })}
                   </TableBody>
                 ) : (
-                  <Container>No Records</Container>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell>No Records</TableCell>
+                    </TableRow>
+                  </TableFooter>
                 )}
               </Table>
             </TableContainer>

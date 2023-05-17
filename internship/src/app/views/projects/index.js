@@ -78,8 +78,8 @@ export function Projects() {
       <NavBar
         title="Project"
         View={View}
-        setView={setView}
         path="/projects/new"
+        setView={setView}
         setPage={setPage}
         setSearch={setSearch}
         handleChange={debouncedChangeSearch}

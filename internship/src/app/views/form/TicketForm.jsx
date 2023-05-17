@@ -24,6 +24,7 @@ import ProgressBar from "app/components/ProgressBar";
 import { Add } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import FlashMessage from "app/components/FlashMessage";
 
 const initialValues = {
   name: "",
@@ -79,6 +80,7 @@ const TicketForm = () => {
   const [error, setErrors] = useState({});
   const [parentTasks, setParentTasks] = useState([]);
   const [assignedOptions, setAssignedOptions] = useState([]);
+  const [showMessage, setShowMessage] = useState(false);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -135,9 +137,9 @@ const TicketForm = () => {
   };
 
   const handleSave = async () => {
-    setOpen(false);
     const response = await api.save(formData);
-    response && navigate("/tasks");
+    setShowMessage(response ? true : false);
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -437,6 +439,12 @@ const TicketForm = () => {
         }}
         onClick={handleSave}
       />
+      {showMessage ? (
+        <FlashMessage
+          message={id ? "Record Updated!" : "New Record Added!"}
+          path="tickets"
+        />
+      ) : null}
     </>
   );
 };

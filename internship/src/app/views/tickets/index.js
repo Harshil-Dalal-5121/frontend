@@ -77,13 +77,12 @@ export function Tickets() {
 
       <NavBar
         title="Ticket"
-        View={View}
-        loading={loading}
-        setView={setView}
         path="/tickets/new"
+        View={View}
+        setView={setView}
         setPage={setPage}
+        setSearch={setSearch}
         handleChange={debouncedChangeSearch}
-        search={search}
       />
 
       <List

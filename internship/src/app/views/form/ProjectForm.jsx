@@ -28,6 +28,7 @@ import onChange from "../../utils/onChange";
 import IOSSwitch from "./../../components/iOSSwitch";
 import { InputLabel } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import FlashMessage from "app/components/FlashMessage";
 
 const initialValues = {
   imputable: false,
@@ -125,9 +126,9 @@ const ProjectForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-
   const [customerContactOptions, setCustomerContactOptions] = useState([]);
   const [addressOptions, setAddressOptions] = useState([]);
+  const [showMessage, setShowMessage] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -215,7 +216,7 @@ const ProjectForm = () => {
 
   const handleSave = async () => {
     const response = await api.save(formData);
-    response && navigate("/projects");
+    setShowMessage(response ? true : false);
     setOpen(false);
   };
 
@@ -581,6 +582,12 @@ const ProjectForm = () => {
           }}
           onClick={handleSave}
         />
+        {showMessage ? (
+          <FlashMessage
+            message={id ? "Record Updated!" : "New Record Added!"}
+            path="projects"
+          />
+        ) : null}
       </div>
     </>
   );

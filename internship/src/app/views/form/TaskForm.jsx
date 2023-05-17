@@ -24,6 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Add } from "@mui/icons-material";
+import FlashMessage from "app/components/FlashMessage";
 
 const initialValues = {
   name: "",
@@ -77,6 +78,7 @@ const TaskForm = () => {
   const [open, setOpen] = useState(false);
   const [error, setErrors] = useState({});
   const [parentTasks, setParentTasks] = useState([]);
+  const [showMessage, setShowMessage] = useState(false);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -131,9 +133,9 @@ const TaskForm = () => {
   };
 
   const handleSave = async () => {
-    setOpen(false);
     const response = await api.save(formData);
-    response && navigate("/tasks");
+    setShowMessage(response ? true : false);
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -417,19 +419,6 @@ const TaskForm = () => {
                   >
                     Back
                   </Button>
-                  {/* <Button
-                    fullWidth
-                    variant="contained"
-                    color="info"
-                    startIcon={
-                      <ArrowBackIosIcon className={styles["form-btn-icon"]} />
-                    }
-                    onClick={() => {
-                      formApi.taskAssigned({ value: "cyril", projectId: 115 });
-                    }}
-                  >
-                    Back
-                  </Button> */}
                 </Grid>
               </Grid>
             </Grid>
@@ -448,6 +437,12 @@ const TaskForm = () => {
         }}
         onClick={handleSave}
       />
+      {showMessage ? (
+        <FlashMessage
+          message={id ? "Record Updated!" : "New Record Added!"}
+          path="tasks"
+        />
+      ) : null}
     </>
   );
 };
