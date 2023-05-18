@@ -1,7 +1,6 @@
 import rest from "../../services/rest";
-import { TICKET_TABLE_FIELDS } from "../../utils/constants";
+import { LIMIT, TICKET_TABLE_FIELDS } from "../../utils/constants";
 
-export const LIMIT = 6;
 export const model = "com.axelor.apps.project.db.ProjectTask";
 
 const api = {

@@ -298,10 +298,10 @@ const ProjectForm = () => {
                       id="code"
                       label="Code"
                       value={code || ""}
-                      onChange={(e) =>
-                        onChange?.change(e, formData, setFormData)
-                      }
-                      error={errors?.code ? true : false}
+                      onChange={(e) => {
+                        onChange?.change(e, formData, setFormData);
+                      }}
+                      error={code ? false : true}
                       helperText={errors?.code ? `${errors.code}` : ""}
                       variant="standard"
                       fullWidth
@@ -313,11 +313,11 @@ const ProjectForm = () => {
                       name="name"
                       label="Name"
                       value={name || ""}
-                      onChange={(e) =>
-                        onChange?.change(e, formData, setFormData)
-                      }
+                      onChange={(e) => {
+                        onChange?.change(e, formData, setFormData);
+                      }}
                       helperText={errors?.name ? `${errors.name}` : ""}
-                      error={errors?.name ? true : false}
+                      error={name ? false : false}
                       variant="standard"
                       fullWidth
                     />

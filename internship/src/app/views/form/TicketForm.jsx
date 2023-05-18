@@ -205,8 +205,7 @@ const TicketForm = () => {
                           onChange?.change(e, formData, setFormData)
                         }
                         fullWidth
-                        error={error?.name ? true : false}
-                        helperText={error?.name ? `${error.name}` : ""}
+                        error={name ? false : true}
                         id="name"
                         name="name"
                         variant="standard"
@@ -220,11 +219,12 @@ const TicketForm = () => {
                         name="project"
                         fetchApi={formApi?.availableProject}
                         value={project}
-                        error={error?.project ? true : false}
+                        error={project ? false : true}
                         helperText={error?.project ? `${error.project}` : ""}
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}
+                        hj
                         handleChange={(e, value) => {
                           handleProjectChange(e, value);
                         }}

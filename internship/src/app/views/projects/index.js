@@ -4,7 +4,6 @@ import { useTranslation } from "app/services/translate";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import ProjectTable from "./table/ProjectTable";
 import NavBar from "app/components/NavBar";
 
 import { useDebounce } from "../../services/custom-hooks/useDebounce";
@@ -12,6 +11,9 @@ import api from "./api";
 import { projectCard } from "./../../utils/card";
 import CardList from "app/components/Card";
 import { Grid } from "@mui/material";
+import DataTable from "app/components/DataTable";
+import { LIMIT, TASK_TABLE_FIELDS } from "app/utils/constants";
+import { ProjectTableContent } from "app/utils/table";
 
 const View = {
   table: "table",
@@ -22,12 +24,20 @@ const ProjectCard = (props) => {
   return <CardList card={projectCard} {...props} />;
 };
 
+const ProjectTable = (props) => {
+  return (
+    <DataTable
+      fields={TASK_TABLE_FIELDS}
+      tableContent={ProjectTableContent}
+      {...props}
+    />
+  );
+};
+
 const ViewComponent = {
   table: ProjectTable,
   card: ProjectCard,
 };
-
-const LIMIT = 6;
 
 export function Projects() {
   const [view, setView] = useState(View.table);

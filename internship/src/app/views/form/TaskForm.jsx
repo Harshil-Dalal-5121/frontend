@@ -77,7 +77,7 @@ const errorMessages = {
   name: `Subject is required`,
   project: `Project  is required`,
   assignedTo: `This field is required`,
-  priority: `Hell`,
+  priority: `Priority is required`,
 };
 
 const TaskForm = () => {
@@ -156,6 +156,7 @@ const TaskForm = () => {
       })();
     }
   }, [project, id]);
+
   return (
     <>
       {loading ? (
@@ -199,17 +200,15 @@ const TaskForm = () => {
                   ) : null}
                   <Grid id="subject" container spacing={2} p={1}>
                     <Grid id="subject" item sm={9} xs={12}>
-                      <InputLabel error={error?.name ? true : false}>
-                        Subject
-                      </InputLabel>
+                      <InputLabel>Subject</InputLabel>
                       <TextField
                         value={name || ""}
-                        onChange={(e, value) =>
-                          onChange?.change(e, formData, setFormData)
-                        }
+                        onChange={(e, value) => {
+                          onChange?.change(e, formData, setFormData);
+                        }}
                         fullWidth
-                        error={error?.name ? true : false}
-                        helperText={error?.name ? `${error.name}` : ""}
+                        error={name ? false : true}
+                        helperText={name ? false : error?.name}
                         id="name"
                         name="name"
                         variant="standard"
@@ -223,8 +222,7 @@ const TaskForm = () => {
                         name="project"
                         fetchApi={formApi?.availableProject}
                         value={project}
-                        error={error?.project ? true : false}
-                        helperText={error?.project ? `${error.project}` : ""}
+                        error={project ? false : errorMessages?.project}
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}
@@ -269,10 +267,7 @@ const TaskForm = () => {
                           <Selection
                             fetchApi={fetchAssignedApi}
                             value={assignedTo}
-                            error={error?.assignedTo ? true : false}
-                            helperText={
-                              error?.assignedTo ? `${error.assignedTo}` : ""
-                            }
+                            error={error?.assignedTo}
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}
@@ -320,6 +315,7 @@ const TaskForm = () => {
                             getOptionLabel={(option) => {
                               return option?.name;
                             }}
+                            error={error?.priority}
                             handleChange={(e, value) =>
                               onChange?.priority(
                                 e,

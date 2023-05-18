@@ -1,7 +1,6 @@
 import rest from "../../services/rest";
-import { TABLE_FIELDS } from "../../utils/constants";
+import { LIMIT, TABLE_FIELDS } from "../../utils/constants";
 
-export const LIMIT = 6;
 export const model = "com.axelor.apps.project.db.Project";
 
 const formFields = [

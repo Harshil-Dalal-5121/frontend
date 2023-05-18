@@ -30,8 +30,6 @@ const StatusSelect = ({
     });
   };
 
-  console.log({ defaultValue });
-
   return (
     <FormControl>
       <RadioGroup

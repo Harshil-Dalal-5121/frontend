@@ -6,7 +6,7 @@ import PaginationComponent from "app/components/Pagination";
 
 import styles from "./Card.module.css";
 import DialogBox from "app/components/Dialog";
-import { LIMIT } from "app/views/tasks/api";
+import { LIMIT } from "app/utils/constants";
 
 export default function CardList({
   data,
@@ -43,7 +43,7 @@ export default function CardList({
       setTotal(response?.total);
 
       if (response?.total % 6 === 0) {
-        setPage(page - 1);
+        page = 1 ? setPage(1) : setPage(page - 1);
       }
     }
 
@@ -77,17 +77,23 @@ export default function CardList({
     <>
       {!loading ? (
         <div className={styles?.container}>
-          <Grid container spacing={2}>
-            {data?.map((item, i) => {
-              return (
-                <Grid item xs={12} sm={4} key={i}>
-                  <Card variant="outlined" className={styles?.card} key={i}>
-                    {card(item, handleClickOpen, setData, i)}
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
+          {data ? (
+            <Grid container spacing={2}>
+              {data?.map((item, i) => {
+                return (
+                  <Grid item xs={12} sm={4} key={i}>
+                    <Card variant="outlined" className={styles?.card} key={i}>
+                      {card(item, handleClickOpen, setData, i)}
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          ) : (
+            <div className={styles?.container}>
+              <p style={{ fontSize: 24 }}>No Records !</p>
+            </div>
+          )}
         </div>
       ) : (
         <Container className={styles["loading-container"]}>

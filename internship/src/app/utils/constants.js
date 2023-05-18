@@ -34,3 +34,5 @@ export const TICKET_TABLE_FIELDS = [
   "assignedTo",
   "parentTask",
 ];
+
+export const LIMIT = 6;

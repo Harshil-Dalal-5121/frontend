@@ -1,34 +1,30 @@
 import {
   CircularProgress,
-  Container,
-  Paper,
   Table,
   TableContainer,
+  TableHead,
 } from "@mui/material";
+import { Container } from "@mui/system";
+import styles from "./DataTable.module.css";
 import React, { useState } from "react";
+import DialogBox from "./Dialog";
+import PaginationComponent from "./Pagination";
+import { StyledTableCell, StyledTableRow } from "./StyledTableComponents";
+import { LIMIT } from "app/utils/constants";
 
-import TaskTableContent from "./TaskTableContent";
-import TaskTableHeader from "./TaskTableHeader";
-import PaginationComponent from "app/components/Pagination";
-
-import styles from "./TaskTable.module.css";
-import DialogBox from "app/components/Dialog";
-import { LIMIT } from "app/views/projects/api";
-
-const TasksTable = ({
+const DataTable = ({
   data,
   setData,
   page,
+  fields,
   api,
   limit,
   setPage,
   setTotal,
   loading,
   total,
+  tableContent,
 }) => {
-  const handleChange = (event, value) => {
-    setPage(value);
-  };
   const [open, setOpen] = useState(false);
 
   const [deleteData, setDeleteData] = useState({
@@ -37,6 +33,10 @@ const TasksTable = ({
     name: "",
     setData: "",
   });
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
   const handleDeleteData = async () => {
     const { name, id, version, setData } = deleteData;
     const response = await api.delete({ id, version, name });
@@ -49,10 +49,9 @@ const TasksTable = ({
       setTotal(response?.total);
 
       if (response?.total % 6 === 0) {
-        setPage(page - 1);
+        page = 1 ? setPage(1) : setPage(page - 1);
       }
     }
-
     setOpen(false);
   };
 
@@ -77,7 +76,6 @@ const TasksTable = ({
   const handleCancel = () => {
     setOpen(false);
   };
-
   return (
     <>
       {loading ? (
@@ -86,29 +84,32 @@ const TasksTable = ({
         </Container>
       ) : (
         <>
-          <TableContainer
-            className={styles["table-container"]}
-            component={Paper}
-          >
+          <TableContainer className={styles["table-container"]}>
             <Table sx={{ minWidth: 650 }} aria-label="customized table">
-              <TaskTableHeader />
-              <TaskTableContent
-                data={data}
-                setData={setData}
-                handleClickOpen={handleClickOpen}
-                className={styles["tbody"]}
-              />
+              <TableHead>
+                <StyledTableRow>
+                  <StyledTableCell align="center">Id</StyledTableCell>
+                  {fields?.map((field, i) => {
+                    return (
+                      <StyledTableCell
+                        key={i}
+                        align="center"
+                        style={{ textTransform: "capitalize" }}
+                      >
+                        {field}
+                      </StyledTableCell>
+                    );
+                  })}
+                  <StyledTableCell align="center" colSpan={2}>
+                    Operations
+                  </StyledTableCell>
+                </StyledTableRow>
+              </TableHead>
+              {tableContent(data, setData, handleClickOpen)}
             </Table>
           </TableContainer>
         </>
       )}
-      <DialogBox
-        type="Delete"
-        open={open}
-        handleCancel={handleCancel}
-        handleClose={handleClose}
-        onClick={handleDelete}
-      />
 
       <PaginationComponent
         total={total || 0}
@@ -116,8 +117,15 @@ const TasksTable = ({
         page={page}
         handleChange={handleChange}
       />
+      <DialogBox
+        type="Delete"
+        open={open}
+        handleCancel={handleCancel}
+        handleClose={handleClose}
+        onClick={handleDelete}
+      />
     </>
   );
 };
 
-export default TasksTable;
+export default DataTable;

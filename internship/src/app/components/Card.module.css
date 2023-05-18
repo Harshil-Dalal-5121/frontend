@@ -1,7 +1,10 @@
 .container {
     height: 54vh;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
     padding: 15px;
-    overflow-y: scroll
+
 }
 
 .loading-container {

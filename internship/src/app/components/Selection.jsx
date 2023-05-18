@@ -82,7 +82,7 @@ const Selection = ({
 
   return (
     <>
-      <InputLabel error={error}>{`${label}`}</InputLabel>
+      <InputLabel>{`${label}`}</InputLabel>
       <Autocomplete
         fullWidth
         filterOptions={(x) => x}
@@ -107,7 +107,7 @@ const Selection = ({
             {...params}
             variant="standard"
             error={error}
-            helperText={helperText}
+            helperText={error}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
