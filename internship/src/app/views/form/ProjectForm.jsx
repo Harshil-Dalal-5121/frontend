@@ -26,12 +26,10 @@ import DialogBox from "app/components/Dialog";
 import handleValidation from "app/utils/handleValidation";
 import onChange from "../../utils/onChange";
 import IOSSwitch from "./../../components/iOSSwitch";
-import { InputLabel } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import FlashMessage from "app/components/FlashMessage";
-import getDate from "app/utils/helperFunctions";
+import DateField from "app/components/Date";
 
-const date = new Date();
 const initialValues = {
   imputable: false,
   projectTaskPrioritySet: [
@@ -91,7 +89,6 @@ const initialValues = {
     id: 1,
     version: 6,
   },
-  fromDate: getDate(date),
 };
 
 const status = [
@@ -229,8 +226,6 @@ const ProjectForm = () => {
     setShowMessage(response ? true : false);
     setOpen(false);
   };
-
-  console.log(formData);
 
   return (
     <>
@@ -542,40 +537,25 @@ const ProjectForm = () => {
                     <hr style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }} />
                     <Grid container spacing={2} id="dates">
                       <Grid id="from-date" p={1} item xl={6}>
-                        <InputLabel>From Date</InputLabel>
-                        <TextField
-                          id="fromDate"
+                        <DateField
+                          label="From Date"
                           name="fromDate"
-                          type="date"
-                          value={fromDate?.slice(0, 10) || ""}
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)
                           }
-                          variant="standard"
-                          fullWidth
+                          value={fromDate?.slice(0, 10)}
                         />
                       </Grid>
                       <Grid id="to-date" p={1} item xl={6}>
-                        <InputLabel error={errors?.endDate ? true : false}>
-                          To Date
-                        </InputLabel>
-                        <TextField
-                          id="toDate"
+                        <DateField
+                          label="To Date"
                           name="toDate"
-                          type="date"
-                          error={errors?.endDate ? true : false}
-                          helperText={
-                            errors?.endDate ? `${errors.endDate}` : ""
-                          }
-                          value={toDate?.slice(0, 10) || ""}
                           onChange={(e) =>
                             onChange?.change(e, formData, setFormData)
                           }
-                          InputProps={{
-                            inputProps: { min: fromDate?.slice(0, 10) || "" },
-                          }}
-                          variant="standard"
-                          fullWidth
+                          value={toDate?.slice(0, 10)}
+                          startDate={fromDate}
+                          error={errors?.endDate}
                         />
                       </Grid>
                     </Grid>

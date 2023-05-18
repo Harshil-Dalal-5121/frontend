@@ -26,6 +26,8 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Add } from "@mui/icons-material";
 import FlashMessage from "app/components/FlashMessage";
 
+import DateField from "app/components/Date";
+
 const initialValues = {
   name: "",
   taskDate: "",
@@ -353,38 +355,25 @@ const TaskForm = () => {
 
                   <Grid container p={2} spacing={2}>
                     <Grid id="fromDate" item sm={5} xs={12}>
-                      <InputLabel>From Date</InputLabel>
-                      <TextField
-                        fullWidth
+                      <DateField
+                        label="Start Date"
+                        name="taskDate"
                         onChange={(e) =>
                           onChange?.change(e, formData, setFormData)
                         }
-                        value={taskDate || ""}
-                        id="taskDate"
-                        name="taskDate"
-                        type="date"
-                        variant="standard"
+                        value={taskDate}
                       />
                     </Grid>
-                    <Grid id="to date" item sm={5} xs={12}>
-                      <InputLabel error={error?.endDate ? true : false}>
-                        To Date
-                      </InputLabel>
-                      <TextField
-                        id="taskEndDate"
+                    <Grid id="dueDate" item sm={5} xs={12}>
+                      <DateField
+                        label="Due Date"
                         name="taskEndDate"
-                        type="date"
-                        error={error?.endDate ? true : false}
-                        helperText={error?.endDate ? `${error.endDate}` : ""}
-                        value={taskEndDate || ""}
                         onChange={(e) =>
                           onChange?.change(e, formData, setFormData)
                         }
-                        variant="standard"
-                        fullWidth
-                        InputProps={{
-                          inputProps: { min: taskDate?.slice(0, 10) || "" },
-                        }}
+                        value={taskEndDate}
+                        startDate={taskDate}
+                        error={error?.endDate}
                       />
                     </Grid>
                   </Grid>

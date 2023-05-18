@@ -6,8 +6,11 @@ const handleValidation = (data, errorMessages, startDate, endDate) => {
       error[key] = errorMessages[key];
     }
   });
-  if (startDate > endDate) {
-    error["endDate"] = `Invalid End Date`;
+
+  if (endDate) {
+    if (startDate > endDate) {
+      error["endDate"] = `Invalid End Date`;
+    }
   }
 
   return error;

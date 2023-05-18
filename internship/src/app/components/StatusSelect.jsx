@@ -6,9 +6,19 @@ import {
   RadioGroup,
 } from "@mui/material";
 
-const StatusSelect = ({ data, setData, property, status, defaultValue }) => {
+const StatusSelect = ({
+  data,
+  setData,
+  property,
+  status,
+  defaultValue,
+  value,
+}) => {
+  const [radioValue, setRadioValue] = React.useState("");
+
   const handleStatusChange = (e) => {
     const { value } = e.target;
+    setRadioValue(value);
     const selectedObject = status.find((s) => s.name === value);
     setData({
       ...data,
@@ -20,13 +30,16 @@ const StatusSelect = ({ data, setData, property, status, defaultValue }) => {
     });
   };
 
+  console.log({ defaultValue });
+
   return (
     <FormControl>
       <RadioGroup
         row
         aria-labelledby="demo-radio-buttons-group-label"
         name="project-status"
-        defaultValue={defaultValue || "New"}
+        defaultValue={defaultValue}
+        value={defaultValue || radioValue}
         onChange={(e) => handleStatusChange(e)}
       >
         {status.map((s, i) => {
