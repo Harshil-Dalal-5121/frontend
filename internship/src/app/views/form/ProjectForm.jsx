@@ -89,6 +89,12 @@ const initialValues = {
     id: 1,
     version: 6,
   },
+  company: {
+    code: "AXE",
+    name: "Axelor",
+    id: 1,
+    version: 2,
+  },
 };
 
 const status = [
@@ -302,7 +308,9 @@ const ProjectForm = () => {
                         onChange?.change(e, formData, setFormData);
                       }}
                       error={code ? false : true}
-                      helperText={errors?.code ? `${errors.code}` : ""}
+                      helperText={
+                        code ? false : errors?.code ? `${errors.code}` : ""
+                      }
                       variant="standard"
                       fullWidth
                     />
@@ -316,8 +324,10 @@ const ProjectForm = () => {
                       onChange={(e) => {
                         onChange?.change(e, formData, setFormData);
                       }}
-                      helperText={errors?.name ? `${errors.name}` : ""}
-                      error={name ? false : false}
+                      helperText={
+                        name ? false : errors?.name ? `${errors.name}` : ""
+                      }
+                      error={name ? false : true}
                       variant="standard"
                       fullWidth
                     />
@@ -521,6 +531,7 @@ const ProjectForm = () => {
                         label="Assigned To"
                         fetchApi={formApi?.assignedTo}
                         value={assignedTo}
+                        load={true}
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}

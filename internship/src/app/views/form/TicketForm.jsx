@@ -75,6 +75,8 @@ const taskStatus = [
 const errorMessages = {
   name: `Subject is required`,
   project: `Project  is required`,
+  assignedTo: `This field is required`,
+  priority: `Priority is required`,
 };
 
 const TicketForm = () => {
@@ -201,11 +203,12 @@ const TicketForm = () => {
                       </InputLabel>
                       <TextField
                         value={name || ""}
-                        onChange={(e, value) =>
-                          onChange?.change(e, formData, setFormData)
-                        }
+                        onChange={(e, value) => {
+                          onChange?.change(e, formData, setFormData);
+                        }}
                         fullWidth
                         error={name ? false : true}
+                        helperText={name ? false : error?.name}
                         id="name"
                         name="name"
                         variant="standard"
@@ -220,11 +223,16 @@ const TicketForm = () => {
                         fetchApi={formApi?.availableProject}
                         value={project}
                         error={project ? false : true}
-                        helperText={error?.project ? `${error.project}` : ""}
+                        helperText={
+                          project
+                            ? false
+                            : error?.project
+                            ? `${error.project}`
+                            : ""
+                        }
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}
-                        hj
                         handleChange={(e, value) => {
                           handleProjectChange(e, value);
                         }}
@@ -267,9 +275,13 @@ const TicketForm = () => {
                           <Selection
                             fetchApi={fetchAssignedApi}
                             value={assignedTo}
-                            error={error?.assignedTo ? true : false}
+                            error={assignedTo ? false : true}
                             helperText={
-                              error?.assignedTo ? `${error.assignedTo}` : ""
+                              assignedTo
+                                ? false
+                                : error?.assignedTo
+                                ? `${error.assignedTo}`
+                                : ""
                             }
                             getOptionLabel={(option) => {
                               return option?.fullName;
@@ -318,6 +330,14 @@ const TicketForm = () => {
                             getOptionLabel={(option) => {
                               return option?.name;
                             }}
+                            error={priority ? false : true}
+                            helperText={
+                              priority
+                                ? false
+                                : error?.priority
+                                ? `${error.priority}`
+                                : ""
+                            }
                             handleChange={(e, value) =>
                               onChange?.priority(
                                 e,

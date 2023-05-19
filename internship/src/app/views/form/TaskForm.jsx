@@ -222,7 +222,14 @@ const TaskForm = () => {
                         name="project"
                         fetchApi={formApi?.availableProject}
                         value={project}
-                        error={project ? false : errorMessages?.project}
+                        error={project ? false : true}
+                        helperText={
+                          project
+                            ? false
+                            : error?.project
+                            ? `${error.project}`
+                            : ""
+                        }
                         getOptionLabel={(option) => {
                           return option?.fullName;
                         }}
@@ -267,7 +274,14 @@ const TaskForm = () => {
                           <Selection
                             fetchApi={fetchAssignedApi}
                             value={assignedTo}
-                            error={error?.assignedTo}
+                            error={assignedTo ? false : true}
+                            helperText={
+                              assignedTo
+                                ? false
+                                : error?.assignedTo
+                                ? `${error.assignedTo}`
+                                : ""
+                            }
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}
@@ -315,7 +329,14 @@ const TaskForm = () => {
                             getOptionLabel={(option) => {
                               return option?.name;
                             }}
-                            error={error?.priority}
+                            error={priority ? false : true}
+                            helperText={
+                              priority
+                                ? false
+                                : error?.priority
+                                ? `${error.priority}`
+                                : ""
+                            }
                             handleChange={(e, value) =>
                               onChange?.priority(
                                 e,

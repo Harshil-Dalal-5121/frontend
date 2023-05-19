@@ -31,9 +31,7 @@ const Selection = ({
   }, [loader]);
 
   const handleInputChange = async (e, value) => {
-    if (value) {
-      setAutoSearch(false);
-    }
+    setAutoSearch(value ? false : true);
     setLoading(true);
     const options = await fetchApi({ value: value });
     setOptions(options || []);
@@ -107,7 +105,7 @@ const Selection = ({
             {...params}
             variant="standard"
             error={error}
-            helperText={error}
+            helperText={helperText}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
