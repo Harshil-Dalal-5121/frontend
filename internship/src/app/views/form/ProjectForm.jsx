@@ -8,6 +8,7 @@ import {
   Stack,
   TextField,
   Typography,
+  InputLabel,
 } from "@mui/material";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import React, { useState } from "react";
@@ -135,8 +136,7 @@ const ProjectForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [errors, setErrors] = useState({});
-  const [customerContactOptions, setCustomerContactOptions] = useState([]);
-  const [addressOptions, setAddressOptions] = useState([]);
+
   const [showMessage, setShowMessage] = useState(false);
 
   const { id } = useParams();
@@ -176,34 +176,21 @@ const ProjectForm = () => {
         code: currencyData?.code || "",
       },
     });
-
-    const fetchCustomerContact = await formApi?.fetchCustomerContact({
-      client: value,
-    });
-
-    const fetchAddress = await formApi?.fetchAddress({
-      client: value,
-    });
-
-    setAddressOptions(fetchAddress);
-    setCustomerContactOptions(fetchCustomerContact);
   };
 
   const fetchContactsApi = async ({ value }) => {
-    const res = await formApi.fetchCustomerContact({
+    return await formApi.fetchCustomerContact({
       value: value,
       client: clientPartner,
     });
-    setCustomerContactOptions(res || []);
   };
 
   const fetchAddressApi = async ({ value }) => {
-    const res = await formApi.fetchAddress({
+    return await formApi.fetchAddress({
       value: value,
       client: clientPartner,
       company: company,
     });
-    setAddressOptions(res || []);
   };
 
   const fetchCustomerApi = ({ value }) => {
@@ -299,10 +286,10 @@ const ProjectForm = () => {
                 </Grid>
                 <Grid id="code-name" container spacing={4} p={2}>
                   <Grid id="code" item xl={2} lg={2} md={2} sm={8}>
+                    <InputLabel>Code</InputLabel>
                     <TextField
                       name="code"
                       id="code"
-                      label="Code"
                       value={code || ""}
                       onChange={(e) => {
                         onChange?.change(e, formData, setFormData);
@@ -316,10 +303,10 @@ const ProjectForm = () => {
                     />
                   </Grid>
                   <Grid id="name" item xl={6} lg={6} md={6} sm={8}>
+                    <InputLabel>Name</InputLabel>
                     <TextField
                       id="name"
                       name="name"
-                      label="Name"
                       value={name || ""}
                       onChange={(e) => {
                         onChange?.change(e, formData, setFormData);
@@ -402,7 +389,6 @@ const ProjectForm = () => {
                             return option?.fullName;
                           }}
                           load={company ? true : false}
-                          options={customerContactOptions}
                           handleChange={(e, value) =>
                             onChange?.customerContact(
                               e,
@@ -425,7 +411,6 @@ const ProjectForm = () => {
                           handleChange={(e, value) =>
                             onChange?.address(e, value, formData, setFormData)
                           }
-                          options={addressOptions}
                         />
                       </Grid>
                     </Grid>

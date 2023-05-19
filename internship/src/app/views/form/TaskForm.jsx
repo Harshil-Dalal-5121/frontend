@@ -14,7 +14,7 @@ import StatusSelect from "app/components/StatusSelect";
 
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import handleValidation from "app/utils/handleValidation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import api from "../tasks/api";
 import formApi from "./api";
@@ -84,7 +84,7 @@ const TaskForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [error, setErrors] = useState({});
-  const [parentTasks, setParentTasks] = useState([]);
+
   const [showMessage, setShowMessage] = useState(false);
 
   const navigate = useNavigate();
@@ -110,12 +110,14 @@ const TaskForm = () => {
         ? { id: value?.id, fullName: value?.fullName, code: value?.code }
         : "",
     });
+  };
 
-    const options = await formApi.parentTask({
-      projectId: value?.id,
+  const fetchTasks = async ({ value }) => {
+    return await formApi.parentTask({
+      projectId: project?.id,
       taskId: +id,
+      value: value,
     });
-    setParentTasks(options);
   };
 
   const handleSubmit = (e) => {
@@ -144,18 +146,6 @@ const TaskForm = () => {
     setShowMessage(response ? true : false);
     setOpen(false);
   };
-
-  useEffect(() => {
-    if (project) {
-      (async () => {
-        const options = await formApi.parentTask({
-          projectId: project?.id,
-          taskId: +id,
-        });
-        setParentTasks(options || []);
-      })();
-    }
-  }, [project, id]);
 
   return (
     <>
@@ -244,9 +234,9 @@ const TaskForm = () => {
                         <>
                           <Selection
                             label=" Parent Task"
-                            fetchApi={formApi?.parentTask}
+                            fetchApi={fetchTasks}
                             value={parentTask}
-                            options={parentTasks}
+                            load={project ? true : false}
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}

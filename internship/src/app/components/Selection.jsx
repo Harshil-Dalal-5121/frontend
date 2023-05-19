@@ -13,11 +13,9 @@ const Selection = ({
   getOptionLabel,
   handleChange,
   label,
-  //
   options: _options,
   error,
   helperText,
-  //
   load = true,
 }) => {
   const [options, setOptions] = React.useState([]);

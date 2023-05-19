@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useFetchRecord from "app/services/custom-hooks/useFetchRecord";
 import {
   Button,
@@ -83,7 +83,7 @@ const TicketForm = () => {
   const [formData, setFormData] = useState(initialValues);
   const [open, setOpen] = useState(false);
   const [error, setErrors] = useState({});
-  const [parentTasks, setParentTasks] = useState([]);
+
   const [showMessage, setShowMessage] = useState(false);
 
   const navigate = useNavigate();
@@ -109,12 +109,6 @@ const TicketForm = () => {
         ? { id: value?.id, fullName: value?.fullName, code: value?.code }
         : "",
     });
-
-    const options = await formApi.parentTask({
-      projectId: value?.id,
-      taskId: +id,
-    });
-    setParentTasks(options);
   };
 
   const handleSubmit = (e) => {
@@ -144,17 +138,13 @@ const TicketForm = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (project) {
-      (async () => {
-        const options = await formApi.parentTask({
-          projectId: project?.id,
-          taskId: +id,
-        });
-        setParentTasks(options || []);
-      })();
-    }
-  }, [project, id]);
+  const fetchTasks = async ({ value }) => {
+    return await formApi.parentTask({
+      projectId: project?.id,
+      taskId: +id,
+      value: value,
+    });
+  };
   return (
     <>
       {loading ? (
@@ -244,13 +234,12 @@ const TicketForm = () => {
                         <>
                           <Selection
                             label=" Parent Task"
-                            fetchApi={formApi?.parentTask}
+                            fetchApi={fetchTasks}
                             value={parentTask}
-                            options={parentTasks}
                             getOptionLabel={(option) => {
                               return option?.fullName;
                             }}
-                            load={parentTask ? true : false}
+                            load={project ? true : false}
                             handleChange={(e, value) =>
                               onChange?.parentTask(
                                 e,
